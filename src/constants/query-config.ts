@@ -1,0 +1,3 @@
+export const DEFAULT_STALE_TIME_MS = 30_000;
+export const DEFAULT_GC_TIME_MS = 600_000;
+export const REFERENCE_STALE_TIME_MS = 300_000;

@@ -1,0 +1,15 @@
+---
+description: Global project rules
+alwaysApply: true
+---
+
+Projet Jam Finder.
+
+Toujours :
+
+- TypeScript strict
+- architecture feature based
+- pas de logique métier dans les composants
+- utiliser React Query pour serveur state
+- utiliser Zustand uniquement pour client state
+- valider avec Zod
