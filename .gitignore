@@ -41,3 +41,13 @@ example
 # generated native folders
 /ios
 /android
+
+.cursor/
+.claude/
+
+ARCHITECTURE.md
+AGENTS.md
+CLAUDE.md
+DATABASE.md
+PROJECT_CONTEXT.md
+TASKS.md
