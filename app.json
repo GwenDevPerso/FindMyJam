@@ -11,7 +11,8 @@
       "icon": "./assets/expo.icon",
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "FindMyJam uses your location to show jams near you on the map."
-      }
+      },
+      "bundleIdentifier": "com.gwenaelbihan.findmyjam"
     },
     "android": {
       "adaptiveIcon": {
@@ -22,9 +23,13 @@
       },
       "predictiveBackGestureEnabled": false,
       "permissions": [
-        "ACCESS_COARSE_LOCATION",
-        "ACCESS_FINE_LOCATION"
-      ]
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.RECORD_AUDIO"
+      ],
+      "package": "com.gwenaelbihan.findmyjam"
     },
     "web": {
       "bundler": "metro",
@@ -55,11 +60,18 @@
           "photosPermission": "Allow FindMyJam to access your photos to set your profile avatar."
         }
       ],
-      "react-native-maps"
+      "react-native-maps",
+      "expo-web-browser"
     ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "2fcacc68-8dd3-43e4-9a26-46ec262db5ea"
+      }
     }
   }
 }

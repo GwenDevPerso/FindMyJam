@@ -73,46 +73,48 @@ export function BottomTabBar({ state, descriptors, navigation }: BottomTabBarPro
       className="border-t border-border bg-tab-bar"
       style={{ paddingBottom: Math.max(insets.bottom, 8) }}>
       <View className="flex-row px-2 pt-1">
-        {state.routes.map((route, index) => {
-          const isFocused = state.index === index;
-          const descriptor = descriptors[route.key];
-          const label =
-            descriptor.options.tabBarLabel !== undefined
-              ? String(descriptor.options.tabBarLabel)
-              : descriptor.options.title !== undefined
-                ? descriptor.options.title
-                : route.name;
+        {state.routes
+          .filter((route) => TAB_CONFIG.some((tab) => tab.name === route.name))
+          .map((route, index) => {
+            const isFocused = state.index === index;
+            const descriptor = descriptors[route.key];
+            const label =
+              descriptor.options.tabBarLabel !== undefined
+                ? String(descriptor.options.tabBarLabel)
+                : descriptor.options.title !== undefined
+                  ? descriptor.options.title
+                  : route.name;
 
-          const handlePress = (): void => {
-            const event = navigation.emit({
-              type: 'tabPress',
-              target: route.key,
-              canPreventDefault: true,
-            });
+            const handlePress = (): void => {
+              const event = navigation.emit({
+                type: 'tabPress',
+                target: route.key,
+                canPreventDefault: true,
+              });
 
-            if (!isFocused && !event.defaultPrevented) {
-              navigation.navigate(route.name, route.params);
-            }
-          };
+              if (!isFocused && !event.defaultPrevented) {
+                navigation.navigate(route.name, route.params);
+              }
+            };
 
-          const handleLongPress = (): void => {
-            navigation.emit({
-              type: 'tabLongPress',
-              target: route.key,
-            });
-          };
+            const handleLongPress = (): void => {
+              navigation.emit({
+                type: 'tabLongPress',
+                target: route.key,
+              });
+            };
 
-          return (
-            <TabItem
-              key={route.key}
-              routeName={route.name}
-              label={label}
-              isFocused={isFocused}
-              onPress={handlePress}
-              onLongPress={handleLongPress}
-            />
-          );
-        })}
+            return (
+              <TabItem
+                key={route.key}
+                routeName={route.name}
+                label={label}
+                isFocused={isFocused}
+                onPress={handlePress}
+                onLongPress={handleLongPress}
+              />
+            );
+          })}
       </View>
     </View>
   );

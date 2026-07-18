@@ -1,11 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
-  FlatList,
   Pressable,
   Text,
-  View,
-  type ListRenderItem,
+  View
 } from 'react-native';
 
 import { Input } from '@/components/ui/input';
@@ -90,19 +88,6 @@ export function LocationAutocompleteInput({
     };
   }, []);
 
-  const renderSuggestion: ListRenderItem<PlaceSuggestion> = ({ item }) => (
-    <Pressable
-      accessibilityRole="button"
-      onPress={() => {
-        handleSelect(item);
-      }}
-      className="border-b border-border px-3 py-3 active:bg-secondary">
-      <Text className="text-sm text-foreground" numberOfLines={2}>
-        {item.label}
-      </Text>
-    </Pressable>
-  );
-
   return (
     <View className="relative z-10">
       <Input
@@ -136,14 +121,21 @@ export function LocationAutocompleteInput({
           ) : null}
 
           {!placeSearchQuery.isFetching && suggestions.length > 0 ? (
-            <FlatList
-              data={suggestions}
-              keyExtractor={(item) => item.id}
-              renderItem={renderSuggestion}
-              keyboardShouldPersistTaps="handled"
-              nestedScrollEnabled
-              style={{ maxHeight: 220 }}
-            />
+            <View style={{ maxHeight: 220 }}>
+              {suggestions.map((item) => (
+                <Pressable
+                  key={item.id}
+                  accessibilityRole="button"
+                  onPress={() => {
+                    handleSelect(item);
+                  }}
+                  className="border-b border-border px-3 py-3 active:bg-secondary">
+                  <Text className="text-sm text-foreground" numberOfLines={2}>
+                    {item.label}
+                  </Text>
+                </Pressable>
+              ))}
+            </View>
           ) : null}
         </View>
       ) : null}

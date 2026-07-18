@@ -3,13 +3,13 @@ import { Map, Plus, Search } from 'lucide-react-native';
 import { Text, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 
+import { Loading } from '@/components/feedback/loading';
+import { EmptyState } from '@/components/layout/empty-state';
+import { ErrorState } from '@/components/layout/error-state';
+import { Screen } from '@/components/layout/screen';
 import { AnimatedListItem } from '@/components/ui/animated-list-item';
 import { AnimatedPressableScale } from '@/components/ui/animated-pressable';
 import { BadgeGroup } from '@/components/ui/badge';
-import { EmptyState } from '@/components/layout/empty-state';
-import { ErrorState } from '@/components/layout/error-state';
-import { Loading } from '@/components/feedback/loading';
-import { Screen } from '@/components/layout/screen';
 import { InstrumentBadge } from '@/components/ui/instrument-badge';
 import { StyleBadge } from '@/components/ui/style-badge';
 import { JamCard } from '@/features/jams/components/jam-card';
@@ -137,12 +137,12 @@ export function HomeScreen(): React.JSX.Element {
 
       <View className="mb-4 flex-row items-center justify-between">
         <Text className="text-lg font-bold text-foreground">Nearby jams</Text>
-        <Text
+        {/* <Text
           accessibilityRole="button"
           onPress={handleExplorePress}
           className="text-sm font-semibold text-primary">
           See all
-        </Text>
+        </Text> */}
       </View>
 
       {jamsQuery.isLoading ? (
