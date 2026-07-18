@@ -19,6 +19,7 @@ export function useDeleteJam() {
     onSuccess: (_data, jamId) => {
       void queryClient.invalidateQueries({ queryKey: queryKeys.jams.detail(jamId) });
       void queryClient.invalidateQueries({ queryKey: queryKeys.jams.lists() });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.jams.infinites() });
       if (userId !== null) {
         void queryClient.invalidateQueries({ queryKey: queryKeys.profiles.createdJams(userId) });
         void queryClient.invalidateQueries({ queryKey: queryKeys.profiles.jams(userId) });

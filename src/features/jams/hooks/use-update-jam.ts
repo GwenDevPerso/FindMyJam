@@ -25,6 +25,7 @@ export function useUpdateJam() {
     onSuccess: (jam) => {
       void queryClient.invalidateQueries({ queryKey: queryKeys.jams.detail(jam.id) });
       void queryClient.invalidateQueries({ queryKey: queryKeys.jams.lists() });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.jams.infinites() });
     },
   });
 }

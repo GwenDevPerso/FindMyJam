@@ -76,7 +76,7 @@ export function BottomTabBar({ state, descriptors, navigation }: BottomTabBarPro
         {state.routes
           .filter((route) => TAB_CONFIG.some((tab) => tab.name === route.name))
           .map((route, index) => {
-            const isFocused = state.index === index;
+            const isFocused = state.routes[state.index]?.key === route.key;
             const descriptor = descriptors[route.key];
             const label =
               descriptor.options.tabBarLabel !== undefined

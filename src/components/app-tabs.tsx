@@ -8,7 +8,7 @@ export default function AppTabs(): React.JSX.Element {
       tabBar={(props) => <BottomTabBar {...props} />}
       screenOptions={{
         headerShown: false,
-        animation: 'shift',
+        // animation: 'shift',
       }}>
       <Tabs.Screen name="index" options={{ title: 'Home' }} />
       <Tabs.Screen name="explore" options={{ title: 'Explore' }} />

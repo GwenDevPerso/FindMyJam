@@ -11,6 +11,10 @@ export const queryKeys = {
       'list',
       filters,
     ],
+    infinites: (): readonly ['jams', 'infinite'] => ['jams', 'infinite'],
+    infinite: (
+      filters: Record<string, unknown>,
+    ): readonly ['jams', 'infinite', Record<string, unknown>] => ['jams', 'infinite', filters],
     detail: (id: string): readonly ['jams', 'detail', string] => ['jams', 'detail', id],
     participants: (jamId: string): readonly ['jams', 'participants', string] => [
       'jams',

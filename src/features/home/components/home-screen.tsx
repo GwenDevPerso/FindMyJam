@@ -84,6 +84,10 @@ export function HomeScreen(): React.JSX.Element {
     router.push(`/jams/${jamId}` as Href);
   };
 
+  const handleSeeAllJamsPress = (): void => {
+    router.push('/jams/all');
+  };
+
   return (
     <Screen scrollable={true} contentClassName="pb-8" withTabBarInset={true}>
       <Animated.View entering={FadeInDown.duration(400).springify()} className="mb-6 pt-2">
@@ -137,12 +141,12 @@ export function HomeScreen(): React.JSX.Element {
 
       <View className="mb-4 flex-row items-center justify-between">
         <Text className="text-lg font-bold text-foreground">Nearby jams</Text>
-        {/* <Text
+        <Text
           accessibilityRole="button"
-          onPress={handleExplorePress}
+          onPress={handleSeeAllJamsPress}
           className="text-sm font-semibold text-primary">
           See all
-        </Text> */}
+        </Text>
       </View>
 
       {jamsQuery.isLoading ? (

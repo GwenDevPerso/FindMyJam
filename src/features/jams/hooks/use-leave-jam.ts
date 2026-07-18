@@ -20,6 +20,7 @@ export function useLeaveJam() {
       void queryClient.invalidateQueries({ queryKey: queryKeys.jams.detail(jamId) });
       void queryClient.invalidateQueries({ queryKey: queryKeys.jams.participants(jamId) });
       void queryClient.invalidateQueries({ queryKey: queryKeys.jams.lists() });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.jams.infinites() });
     },
   });
 }

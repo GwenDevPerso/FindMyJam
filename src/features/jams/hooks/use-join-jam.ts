@@ -20,6 +20,7 @@ export function useJoinJam() {
       void queryClient.invalidateQueries({ queryKey: queryKeys.jams.detail(jamId) });
       void queryClient.invalidateQueries({ queryKey: queryKeys.jams.participants(jamId) });
       void queryClient.invalidateQueries({ queryKey: queryKeys.jams.lists() });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.jams.infinites() });
       if (userId !== null) {
         void queryClient.invalidateQueries({ queryKey: queryKeys.profiles.participatedJams(userId) });
       }

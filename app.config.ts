@@ -23,9 +23,8 @@ function withGoogleMapsApiKey(
 }
 
 export default ({ config }: ConfigContext): ExpoConfig => {
-  const googleMapsApiKey = process.env.GOOGLE_MAPS_API_KEY;
-
-  if (googleMapsApiKey === undefined || googleMapsApiKey.length === 0) {
+  const googleMapsApiKey = process.env.GOOGLE_MAPS_API_KEY ?? '';
+  if (googleMapsApiKey.length === 0 && process.env.EAS_BUILD === 'true') {
     throw new Error('Missing GOOGLE_MAPS_API_KEY environment variable');
   }
 

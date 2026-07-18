@@ -19,6 +19,7 @@ export function useCreateJam() {
     },
     onSuccess: (jam) => {
       void queryClient.invalidateQueries({ queryKey: queryKeys.jams.lists() });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.jams.infinites() });
       void queryClient.invalidateQueries({ queryKey: queryKeys.map.all });
       void queryClient.invalidateQueries({ queryKey: queryKeys.profiles.createdJams(jam.creatorId) });
       void queryClient.invalidateQueries({ queryKey: queryKeys.profiles.jams(jam.creatorId) });
