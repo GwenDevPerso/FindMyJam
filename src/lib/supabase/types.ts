@@ -7,6 +7,19 @@ export type SkillLevel =
 
 export type FriendshipStatus = 'pending' | 'accepted' | 'rejected' | 'blocked';
 
+export type NotificationType =
+  | 'FRIEND_REQUEST'
+  | 'FRIEND_ACCEPTED'
+  | 'NEW_JAM_CITY'
+  | 'NEW_JAM_RADIUS'
+  | 'NEW_JAM_MATCH'
+  | 'JAM_UPDATED'
+  | 'JAM_CANCELLED'
+  | 'JAM_STARTING_SOON'
+  | 'SYSTEM';
+
+export type DevicePlatform = 'ios' | 'android' | 'web';
+
 export type Database = {
   public: {
     Tables: {
@@ -243,6 +256,120 @@ export type Database = {
           updated_at?: string;
         };
       };
+      devices: {
+        Row: {
+          id: string;
+          user_id: string;
+          expo_push_token: string;
+          platform: DevicePlatform;
+          app_version: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          expo_push_token: string;
+          platform: DevicePlatform;
+          app_version?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          expo_push_token?: string;
+          platform?: DevicePlatform;
+          app_version?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
+      notification_preferences: {
+        Row: {
+          user_id: string;
+          friend_requests: boolean;
+          friend_acceptance: boolean;
+          new_jams_city: boolean;
+          new_jams_radius: boolean;
+          new_matching_jams: boolean;
+          jam_updates: boolean;
+          jam_starting: boolean;
+          marketing: boolean;
+          radius_km: number;
+          quiet_hours_start: string | null;
+          quiet_hours_end: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          user_id: string;
+          friend_requests?: boolean;
+          friend_acceptance?: boolean;
+          new_jams_city?: boolean;
+          new_jams_radius?: boolean;
+          new_matching_jams?: boolean;
+          jam_updates?: boolean;
+          jam_starting?: boolean;
+          marketing?: boolean;
+          radius_km?: number;
+          quiet_hours_start?: string | null;
+          quiet_hours_end?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          user_id?: string;
+          friend_requests?: boolean;
+          friend_acceptance?: boolean;
+          new_jams_city?: boolean;
+          new_jams_radius?: boolean;
+          new_matching_jams?: boolean;
+          jam_updates?: boolean;
+          jam_starting?: boolean;
+          marketing?: boolean;
+          radius_km?: number;
+          quiet_hours_start?: string | null;
+          quiet_hours_end?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
+      notifications: {
+        Row: {
+          id: string;
+          user_id: string;
+          type: NotificationType;
+          title: string;
+          body: string;
+          image_url: string | null;
+          data: Record<string, unknown>;
+          is_read: boolean;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          type: NotificationType;
+          title: string;
+          body: string;
+          image_url?: string | null;
+          data?: Record<string, unknown>;
+          is_read?: boolean;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          type?: NotificationType;
+          title?: string;
+          body?: string;
+          image_url?: string | null;
+          data?: Record<string, unknown>;
+          is_read?: boolean;
+          created_at?: string;
+        };
+      };
     };
     Functions: {
       search_profiles: {
@@ -275,6 +402,21 @@ export type Database = {
       get_jam_participant_count: {
         Args: {
           p_jam_id: string;
+        };
+        Returns: number;
+      };
+      get_user_notifications: {
+        Args: {
+          p_user_id: string;
+          p_limit?: number;
+          p_cursor_created_at?: string | null;
+          p_cursor_id?: string | null;
+        };
+        Returns: NotificationRow[];
+      };
+      get_unread_notifications_count: {
+        Args: {
+          p_user_id: string;
         };
         Returns: number;
       };
@@ -315,3 +457,17 @@ export type FriendshipInsert = Database['public']['Tables']['friendships']['Inse
 export type FriendshipUpdate = Database['public']['Tables']['friendships']['Update'];
 
 export type SearchProfileRow = ProfileRow;
+
+export type DeviceRow = Database['public']['Tables']['devices']['Row'];
+export type DeviceInsert = Database['public']['Tables']['devices']['Insert'];
+export type DeviceUpdate = Database['public']['Tables']['devices']['Update'];
+
+export type NotificationPreferencesRow = Database['public']['Tables']['notification_preferences']['Row'];
+export type NotificationPreferencesInsert =
+  Database['public']['Tables']['notification_preferences']['Insert'];
+export type NotificationPreferencesUpdate =
+  Database['public']['Tables']['notification_preferences']['Update'];
+
+export type NotificationRow = Database['public']['Tables']['notifications']['Row'];
+export type NotificationInsert = Database['public']['Tables']['notifications']['Insert'];
+export type NotificationUpdate = Database['public']['Tables']['notifications']['Update'];

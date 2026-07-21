@@ -4,6 +4,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { queryClient } from '@/lib/query/client';
 import { AuthProvider } from '@/providers/auth-provider';
+import { NotificationsProvider } from '@/providers/notifications-provider';
 import { ThemeProvider } from '@/providers/theme-provider';
 
 type AppProvidersProps = {
@@ -15,7 +16,9 @@ export function AppProviders({ children }: AppProvidersProps): React.JSX.Element
     <QueryClientProvider client={queryClient}>
       <SafeAreaProvider>
         <ThemeProvider>
-          <AuthProvider>{children}</AuthProvider>
+          <AuthProvider>
+            <NotificationsProvider>{children}</NotificationsProvider>
+          </AuthProvider>
         </ThemeProvider>
       </SafeAreaProvider>
     </QueryClientProvider>

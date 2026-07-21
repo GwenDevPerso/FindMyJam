@@ -47,7 +47,8 @@
   "devDependencies": {
     "@types/react": "~19.2.2",
     "babel-preset-expo": "^57.0.2",
-    "typescript": "~6.0.3"
+    "typescript": "~6.0.3",
+    "vitest": "^3.2.7"
   },
   "scripts": {
     "start": "expo start",
@@ -55,7 +56,9 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "lint": "expo lint"
+    "lint": "expo lint",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "private": true
 }

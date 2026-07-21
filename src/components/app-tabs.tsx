@@ -15,6 +15,7 @@ export default function AppTabs(): React.JSX.Element {
       <Tabs.Screen name="friends" options={{ title: 'Friends' }} />
       <Tabs.Screen name="profile" options={{ title: 'Profile' }} />
       <Tabs.Screen name="jams" options={{ href: null }} />
+      <Tabs.Screen name="notifications" options={{ href: null }} />
     </Tabs>
   );
 }

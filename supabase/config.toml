@@ -275,6 +275,24 @@ enabled = false
 # Obtain from https://clerk.com/setup/supabase
 # domain = "example.clerk.accounts.dev"
 
+[functions.send-friend-request-notification]
+verify_jwt = false
+
+[functions.send-friend-accepted-notification]
+verify_jwt = false
+
+[functions.send-new-jam-notification]
+verify_jwt = false
+
+[functions.send-jam-updated-notification]
+verify_jwt = false
+
+[functions.send-jam-cancelled-notification]
+verify_jwt = false
+
+[functions.send-jam-starting-soon-notification]
+verify_jwt = false
+
 [edge_runtime]
 enabled = true
 # Configure one of the supported request policies: `oneshot`, `per_worker`.

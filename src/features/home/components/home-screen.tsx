@@ -1,5 +1,5 @@
 import { type Href, router } from 'expo-router';
-import { Map, Plus, Search } from 'lucide-react-native';
+import { Bell, Map, Plus, Search } from 'lucide-react-native';
 import { Text, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 
@@ -14,9 +14,12 @@ import { InstrumentBadge } from '@/components/ui/instrument-badge';
 import { StyleBadge } from '@/components/ui/style-badge';
 import { JamCard } from '@/features/jams/components/jam-card';
 import { useJams } from '@/features/jams/hooks/use-jams';
+import { NotificationBadge } from '@/features/notifications/components/notification-badge';
+import { useUnreadNotificationsCount } from '@/features/notifications/hooks/use-unread-notifications-count';
 import { DEFAULT_RADIUS_METERS } from '@/features/map/constants';
 import { useUserLocation } from '@/features/map/hooks/use-user-location';
 import { useProfile } from '@/features/profile/hooks/use-profile';
+import { Routes } from '@/constants/routes';
 import { useTheme } from '@/hooks/use-theme';
 import { useAuthStore } from '@/store/auth.store';
 
@@ -65,6 +68,8 @@ export function HomeScreen(): React.JSX.Element {
     enabled: true,
   });
 
+  const unreadCountQuery = useUnreadNotificationsCount({ enabled: userId !== null });
+
   const profile = profileQuery.data;
   const jams = jamsQuery.data?.jams ?? [];
 
@@ -88,13 +93,31 @@ export function HomeScreen(): React.JSX.Element {
     router.push('/jams/all');
   };
 
+  const handleNotificationsPress = (): void => {
+    router.push(Routes.notifications as Href);
+  };
+
   return (
     <Screen scrollable={true} contentClassName="pb-8" withTabBarInset={true}>
-      <Animated.View entering={FadeInDown.duration(400).springify()} className="mb-6 pt-2">
-        <Text className="text-sm font-medium text-muted-foreground">Welcome back</Text>
-        <Text className="text-3xl font-bold text-foreground">
-          {profile?.username ?? 'Musician'}
-        </Text>
+      <Animated.View entering={FadeInDown.duration(400).springify()} className="mb-6 flex-row items-start justify-between pt-2">
+        <View className="flex-1">
+          <Text className="text-sm font-medium text-muted-foreground">Welcome back</Text>
+          <Text className="text-3xl font-bold text-foreground">
+            {profile?.username ?? 'Musician'}
+          </Text>
+        </View>
+
+        <AnimatedPressableScale
+          accessibilityRole="button"
+          accessibilityLabel="Open notifications"
+          scaleValue={0.92}
+          onPress={handleNotificationsPress}
+          className="rounded-full border border-border bg-card-elevated p-3">
+          <View>
+            <Bell size={20} color={theme.primary} />
+            <NotificationBadge count={unreadCountQuery.data ?? 0} />
+          </View>
+        </AnimatedPressableScale>
       </Animated.View>
 
       {profile !== undefined &&

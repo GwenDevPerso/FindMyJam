@@ -76,4 +76,18 @@ export const queryKeys = {
       proximityKey,
     ],
   },
+  notifications: {
+    all: ['notifications'] as const,
+    list: (userId: string): readonly ['notifications', 'list', string] => ['notifications', 'list', userId],
+    unreadCount: (userId: string): readonly ['notifications', 'unread-count', string] => [
+      'notifications',
+      'unread-count',
+      userId,
+    ],
+    preferences: (userId: string): readonly ['notifications', 'preferences', string] => [
+      'notifications',
+      'preferences',
+      userId,
+    ],
+  },
 };

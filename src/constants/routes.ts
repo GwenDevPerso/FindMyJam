@@ -8,6 +8,8 @@ export const Routes = {
   profile: '/profile',
   profileEdit: '/profile/edit',
   jamsCreate: '/jams/create',
+  jamsAll: '/jams/all',
+  notifications: '/notifications',
   jamDetail: (id: string) => `/jams/${id}` as const,
   notFound: '/+not-found',
 } as const;
