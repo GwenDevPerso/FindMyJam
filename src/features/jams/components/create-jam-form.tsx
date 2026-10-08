@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, useForm, useWatch } from 'react-hook-form';
 import { Pressable, Text, View } from 'react-native';
 
 import { Button } from '@/components/ui/button';
@@ -56,7 +56,6 @@ export function CreateJamForm({
     control,
     handleSubmit,
     setValue,
-    watch,
     formState: { errors },
   } = useForm<CreateJamFormValues>({
     resolver: zodResolver(createJamFormSchema),
@@ -75,12 +74,12 @@ export function CreateJamForm({
     },
   });
 
-  const instrumentIds = watch('instrumentIds');
-  const styleIds = watch('styleIds');
-  const skillLevel = watch('skillLevel');
-  const latitude = watch('latitude');
-  const longitude = watch('longitude');
-  const locationName = watch('locationName');
+  const instrumentIds = useWatch({ control, name: 'instrumentIds' });
+  const styleIds = useWatch({ control, name: 'styleIds' });
+  const skillLevel = useWatch({ control, name: 'skillLevel' });
+  const latitude = useWatch({ control, name: 'latitude' });
+  const longitude = useWatch({ control, name: 'longitude' });
+  const locationName = useWatch({ control, name: 'locationName' });
 
   const proximity = { latitude: defaultLatitude, longitude: defaultLongitude };
 

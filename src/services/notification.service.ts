@@ -9,7 +9,6 @@ import type {
   UpdateNotificationPreferencesInput,
 } from '@/features/notifications/types';
 import { updateNotificationPreferencesSchema } from '@/features/notifications/schemas/notification.schema';
-import { AppError } from '@/lib/errors/app-error';
 import { mapSupabaseError } from '@/lib/errors/map-supabase-error';
 import type { NotificationPreferencesRow, NotificationRow } from '@/lib/supabase/types';
 import {

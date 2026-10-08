@@ -25,16 +25,16 @@ export function AnimatedPressableScale({
   const scale = useSharedValue(1);
 
   const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: scale.value }],
+    transform: [{ scale: scale.get() }],
   }));
 
   const handlePressIn = (event: Parameters<NonNullable<PressableProps['onPressIn']>>[0]): void => {
-    scale.value = withSpring(scaleValue, { damping: 15, stiffness: 300 });
+    scale.set(withSpring(scaleValue, { damping: 15, stiffness: 300 }));
     onPressIn?.(event);
   };
 
   const handlePressOut = (event: Parameters<NonNullable<PressableProps['onPressOut']>>[0]): void => {
-    scale.value = withSpring(1, { damping: 15, stiffness: 300 });
+    scale.set(withSpring(1, { damping: 15, stiffness: 300 }));
     onPressOut?.(event);
   };
 

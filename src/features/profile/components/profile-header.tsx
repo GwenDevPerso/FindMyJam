@@ -2,10 +2,9 @@ import { Text, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 
 import { Avatar } from '@/components/ui/avatar';
-import { BadgeGroup } from '@/components/ui/badge';
+import { Badge, BadgeGroup } from '@/components/ui/badge';
 import { InstrumentBadge } from '@/components/ui/instrument-badge';
 import { StyleBadge } from '@/components/ui/style-badge';
-import { Badge } from '@/components/ui/badge';
 import type { ProfileDetail } from '@/features/profile/types';
 import { formatSkillLevel } from '@/utils/format';
 

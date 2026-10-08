@@ -1,3 +1,4 @@
+import { createElement } from 'react';
 import { Text, View } from 'react-native';
 
 import { useTheme } from '@/hooks/use-theme';
@@ -33,7 +34,6 @@ export function InstrumentBadge({
   className,
 }: InstrumentBadgeProps): React.JSX.Element {
   const theme = useTheme();
-  const Icon = getInstrumentIcon(slug);
 
   return (
     <View
@@ -44,7 +44,11 @@ export function InstrumentBadge({
         sizeClasses[size],
         className,
       )}>
-      <Icon size={iconSizes[size]} color={theme.accent} strokeWidth={2.5} />
+      {createElement(getInstrumentIcon(slug), {
+        size: iconSizes[size],
+        color: theme.accent,
+        strokeWidth: 2.5,
+      })}
       <Text className={cn('font-medium text-accent', textSizes[size])}>{name}</Text>
     </View>
   );

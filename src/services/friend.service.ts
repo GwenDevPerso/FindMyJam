@@ -43,10 +43,6 @@ function mapFriendProfile(row: { id: string; username: string; avatar_url: strin
   };
 }
 
-function getOtherUserId(friendship: FriendshipWithProfiles, currentUserId: string): string {
-  return friendship.requester_id === currentUserId ? friendship.addressee_id : friendship.requester_id;
-}
-
 function getOtherUserProfile(friendship: FriendshipWithProfiles, currentUserId: string): FriendProfile {
   const profile =
     friendship.requester_id === currentUserId ? friendship.addressee : friendship.requester;

@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, useForm, useWatch } from 'react-hook-form';
 import { Text, View } from 'react-native';
 
 import { Button } from '@/components/ui/button';
@@ -38,7 +38,6 @@ export function EditProfileForm({ profile, onSuccess }: EditProfileFormProps): R
     control,
     handleSubmit,
     setValue,
-    watch,
     formState: { errors },
   } = useForm<UpdateProfileFormValues>({
     resolver: zodResolver(updateProfileFormSchema),
@@ -54,9 +53,9 @@ export function EditProfileForm({ profile, onSuccess }: EditProfileFormProps): R
     },
   });
 
-  const instrumentIds = watch('instrumentIds');
-  const styleIds = watch('styleIds');
-  const skillLevel = watch('skillLevel');
+  const instrumentIds = useWatch({ control, name: 'instrumentIds' });
+  const styleIds = useWatch({ control, name: 'styleIds' });
+  const skillLevel = useWatch({ control, name: 'skillLevel' });
 
   const onSubmit = handleSubmit(async (values) => {
     await updateProfile({

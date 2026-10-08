@@ -38,9 +38,11 @@ export function LocationPickerMap({
     );
   }, []);
 
+  const { latitude, longitude } = coordinates;
+
   useEffect(() => {
-    animateToCoordinates(coordinates);
-  }, [animateToCoordinates, coordinates.latitude, coordinates.longitude]);
+    animateToCoordinates({ latitude, longitude });
+  }, [animateToCoordinates, latitude, longitude]);
 
   const handleDragEnd: MapMarkerProps['onDragEnd'] = (event) => {
     const nextCoordinates: Coordinates = {
