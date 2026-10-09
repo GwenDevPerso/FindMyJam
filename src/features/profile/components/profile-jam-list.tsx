@@ -1,14 +1,16 @@
-import { Pressable, Text, View } from 'react-native';
+import {Pressable, Text, View} from 'react-native';
 
-import { AnimatedListItem } from '@/components/ui/animated-list-item';
-import { EmptyState } from '@/components/layout/empty-state';
-import { ErrorState } from '@/components/layout/error-state';
-import { Loading } from '@/components/feedback/loading';
-import { JamCard } from '@/features/jams/components/jam-card';
-import { useProfileCreatedJams } from '@/features/profile/hooks/use-profile-created-jams';
-import { useProfileParticipatedJams } from '@/features/profile/hooks/use-profile-participated-jams';
-import type { ProfileJamTab } from '@/features/profile/types';
-import { cn } from '@/utils/cn';
+import {Loading} from '@/components/feedback/loading';
+import {EmptyState} from '@/components/layout/empty-state';
+import {ErrorState} from '@/components/layout/error-state';
+import {AnimatedListItem} from '@/components/ui/animated-list-item';
+import {JamCard} from '@/features/jams/components/jam-card';
+import {useProfileCreatedJams} from '@/features/profile/hooks/use-profile-created-jams';
+import {useProfileParticipatedJams} from '@/features/profile/hooks/use-profile-participated-jams';
+import type {ProfileJamTab} from '@/features/profile/types';
+import {useAuthStore} from '@/store/auth.store';
+import {cn} from '@/utils/cn';
+
 
 type ProfileJamListProps = {
   userId: string;
@@ -22,11 +24,11 @@ type ProfileJamTabButtonProps = {
   onPress: () => void;
 };
 
-function ProfileJamTabButton({ label, isActive, onPress }: ProfileJamTabButtonProps): React.JSX.Element {
+function ProfileJamTabButton({label, isActive, onPress}: ProfileJamTabButtonProps): React.JSX.Element {
   return (
     <Pressable
       accessibilityRole="tab"
-      accessibilityState={{ selected: isActive }}
+      accessibilityState={{selected: isActive}}
       onPress={onPress}
       className={cn('flex-1 items-center rounded-lg py-2.5', isActive && 'bg-card-elevated')}>
       <Text
@@ -45,6 +47,8 @@ export function ProfileJamList({
   activeTab,
   onJamPress,
 }: ProfileJamListProps): React.JSX.Element {
+  const userAuth = useAuthStore((state) => state.userId);
+
   const createdJamsQuery = useProfileCreatedJams({
     userId,
     enabled: activeTab === 'created',
@@ -56,6 +60,8 @@ export function ProfileJamList({
   });
 
   const activeQuery = activeTab === 'created' ? createdJamsQuery : participatedJamsQuery;
+
+  const createDescription = userAuth === userId ? 'Create your first jam and invite other musicians.' : '';
 
   if (activeQuery.isLoading) {
     return (
@@ -85,7 +91,7 @@ export function ProfileJamList({
         title={activeTab === 'created' ? 'No jams created yet' : 'No jams joined yet'}
         description={
           activeTab === 'created'
-            ? 'Create your first jam and invite other musicians.'
+            ? createDescription
             : 'Explore jams near you and join one.'
         }
       />
