@@ -1,3 +1,4 @@
+import { type Href, router } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { FlatList, Text, View, type ListRenderItem } from 'react-native';
 
@@ -5,6 +6,7 @@ import { EmptyState } from '@/components/layout/empty-state';
 import { ErrorState } from '@/components/layout/error-state';
 import { Loading } from '@/components/feedback/loading';
 import { Input } from '@/components/ui/input';
+import { Routes } from '@/constants/routes';
 import { UserSearchResultCard } from '@/features/friends/components/user-search-result-card';
 import { useRemoveFriend } from '@/features/friends/hooks/use-remove-friend';
 import { useSearchUsers } from '@/features/friends/hooks/use-search-users';
@@ -52,6 +54,9 @@ export function UserSearchForm(): React.JSX.Element {
   const renderItem: ListRenderItem<UserSearchResult> = ({ item }) => (
     <UserSearchResultCard
       user={item}
+      onPress={(userId) => {
+        router.push(Routes.userProfile(userId) as Href);
+      }}
       onSendRequest={(addresseeId) => {
         sendRequestMutation.mutate(addresseeId);
       }}

@@ -1,8 +1,10 @@
+import { type Href, router } from 'expo-router';
 import { FlatList, type ListRenderItem } from 'react-native';
 
 import { EmptyState } from '@/components/layout/empty-state';
 import { ErrorState } from '@/components/layout/error-state';
 import { Loading } from '@/components/feedback/loading';
+import { Routes } from '@/constants/routes';
 import { FriendCard } from '@/features/friends/components/friend-card';
 import { useFriends } from '@/features/friends/hooks/use-friends';
 import { useRemoveFriend } from '@/features/friends/hooks/use-remove-friend';
@@ -54,6 +56,9 @@ export function FriendList({ enabled }: FriendListProps): React.JSX.Element {
   const renderItem: ListRenderItem<FriendListItem> = ({ item }) => (
     <FriendCard
       friend={item}
+      onPress={(userId) => {
+        router.push(Routes.userProfile(userId) as Href);
+      }}
       onRemove={(friendshipId) => {
         removeFriendMutation.mutate(friendshipId);
       }}

@@ -11,6 +11,7 @@ export const Routes = {
   jamsAll: '/jams/all',
   notifications: '/notifications',
   jamDetail: (id: string) => `/jams/${id}` as const,
+  userProfile: (id: string) => `/friends/${id}` as const,
   notFound: '/+not-found',
 } as const;
 

@@ -5,6 +5,7 @@ export default function FriendsLayout(): React.JSX.Element {
     <Stack>
       <Stack.Screen name="index" options={{ title: 'Friends' }} />
       <Stack.Screen name="search" options={{ title: 'Search musicians' }} />
+      <Stack.Screen name="[userId]" options={{ title: 'Profile' }} />
     </Stack>
   );
 }

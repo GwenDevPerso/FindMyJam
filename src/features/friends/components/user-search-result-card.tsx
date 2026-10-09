@@ -10,6 +10,7 @@ import { formatSkillLevel } from '@/utils/format';
 
 type UserSearchResultCardProps = {
   user: UserSearchResult;
+  onPress: (userId: string) => void;
   onSendRequest: (addresseeId: string) => void;
   onRemoveRequest: (friendshipId: string) => void;
   isSending: boolean;
@@ -35,6 +36,7 @@ function getRelationLabel(relation: UserSearchResult['relation']): string | null
 
 export function UserSearchResultCard({
   user,
+  onPress,
   onSendRequest,
   onRemoveRequest,
   isSending,
@@ -43,6 +45,10 @@ export function UserSearchResultCard({
   const relationLabel = getRelationLabel(user.relation);
   const canSendRequest = user.relation === 'none' || user.relation === 'rejected';
   const canCancelRequest = user.relation === 'pending_outgoing' && user.friendshipId !== null;
+
+  const handlePress = (): void => {
+    onPress(user.id);
+  };
 
   const handleSendRequest = (): void => {
     onSendRequest(user.id);
@@ -55,8 +61,14 @@ export function UserSearchResultCard({
   };
 
   return (
-    <AnimatedPressableScale scaleValue={0.98} disabled={true}>
-      <Card variant="elevated" className="mb-3">
+    <Card variant="elevated" className="mb-3">
+      {/* Only the identity area opens the profile: the action buttons stay outside the pressable. */}
+      <AnimatedPressableScale
+        accessibilityRole="button"
+        accessibilityLabel={`View ${user.username}'s profile`}
+        accessibilityHint="Opens the profile"
+        scaleValue={0.98}
+        onPress={handlePress}>
         <CardHeader className="flex-row items-center gap-3 pb-0">
           <Avatar source={user.avatarUrl} fallback={user.username} size="lg" />
           <View className="flex-1">
@@ -84,31 +96,31 @@ export function UserSearchResultCard({
             <Text className="text-xs font-medium text-accent">{relationLabel}</Text>
           ) : null}
         </CardContent>
+      </AnimatedPressableScale>
 
-        <CardFooter>
-          {canSendRequest ? (
-            <Button
-              label="Add friend"
-              variant="primary"
-              size="sm"
-              isLoading={isSending}
-              onPress={handleSendRequest}
-              className="rounded-full"
-            />
-          ) : null}
+      <CardFooter>
+        {canSendRequest ? (
+          <Button
+            label="Add friend"
+            variant="primary"
+            size="sm"
+            isLoading={isSending}
+            onPress={handleSendRequest}
+            className="rounded-full"
+          />
+        ) : null}
 
-          {canCancelRequest ? (
-            <Button
-              label="Cancel request"
-              variant="outline"
-              size="sm"
-              isLoading={isRemoving}
-              onPress={handleCancelRequest}
-              className="rounded-full"
-            />
-          ) : null}
-        </CardFooter>
-      </Card>
-    </AnimatedPressableScale>
+        {canCancelRequest ? (
+          <Button
+            label="Cancel request"
+            variant="outline"
+            size="sm"
+            isLoading={isRemoving}
+            onPress={handleCancelRequest}
+            className="rounded-full"
+          />
+        ) : null}
+      </CardFooter>
+    </Card>
   );
 }

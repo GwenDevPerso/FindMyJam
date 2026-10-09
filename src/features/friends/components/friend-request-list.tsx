@@ -1,8 +1,10 @@
+import { type Href, router } from 'expo-router';
 import { FlatList, type ListRenderItem } from 'react-native';
 
 import { EmptyState } from '@/components/layout/empty-state';
 import { ErrorState } from '@/components/layout/error-state';
 import { Loading } from '@/components/feedback/loading';
+import { Routes } from '@/constants/routes';
 import { FriendRequestCard } from '@/features/friends/components/friend-request-card';
 import { useAcceptFriendRequest } from '@/features/friends/hooks/use-accept-friend-request';
 import { useFriendRequests } from '@/features/friends/hooks/use-friend-requests';
@@ -56,6 +58,9 @@ export function FriendRequestList({ enabled }: FriendRequestListProps): React.JS
   const renderItem: ListRenderItem<FriendRequestItem> = ({ item }) => (
     <FriendRequestCard
       request={item}
+      onPress={(userId) => {
+        router.push(Routes.userProfile(userId) as Href);
+      }}
       onAccept={(friendshipId) => {
         acceptMutation.mutate(friendshipId);
       }}
