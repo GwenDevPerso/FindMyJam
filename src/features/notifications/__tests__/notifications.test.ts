@@ -1,5 +1,3 @@
-import { describe, expect, it } from 'vitest';
-
 import type { Notification } from '@/features/notifications/types';
 import { notificationDataSchema } from '@/features/notifications/schemas/notification.schema';
 import { resolveNotificationHref } from '@/features/notifications/utils/resolve-notification-href';
