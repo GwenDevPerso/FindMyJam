@@ -7,11 +7,18 @@ type JamCancelledPayload = {
   title: string;
   starts_at: string;
   creator_id: string;
+  // Collected by the BEFORE DELETE trigger: once the jam is deleted its `jam_participants` rows are gone
+  // (ON DELETE CASCADE), so they cannot be queried from here. Absent when sent by an older trigger.
+  participant_ids?: unknown;
 };
 
-type ParticipantRow = {
-  user_id: string;
-};
+function toParticipantIds(value: unknown): string[] {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return value.filter((item): item is string => typeof item === 'string' && item.length > 0);
+}
 
 Deno.serve(async (request: Request): Promise<Response> => {
   if (request.method !== 'POST') {
@@ -22,22 +29,7 @@ Deno.serve(async (request: Request): Promise<Response> => {
     const payload = (await request.json()) as JamCancelledPayload;
     const supabase = createServiceClient();
 
-    const { data: participants, error: participantsError } = await supabase
-      .from('jam_participants')
-      .select('user_id')
-      .eq('jam_id', payload.jam_id);
-
-    if (participantsError !== null) {
-      throw new Error(`Failed to fetch participants: ${participantsError.message}`);
-    }
-
-    const participantRows = (participants ?? []) as ParticipantRow[];
-    const userIds = [
-      ...new Set([
-        ...participantRows.map((row) => row.user_id),
-        payload.creator_id,
-      ]),
-    ];
+    const userIds = [...new Set([...toParticipantIds(payload.participant_ids), payload.creator_id])];
 
     if (userIds.length === 0) {
       return createJsonResponse({ success: true, created_count: 0 });
