@@ -2,8 +2,10 @@ import {
   createJamFormSchema,
   getDefaultJamDate,
   mapCreateJamFormToInput,
+  mapJamToFormValues,
   type CreateJamFormValues,
 } from '@/features/jams/schemas/create-jam-form.schema';
+import { buildJam } from '@/test-utils/jams';
 
 const INSTRUMENT_ID = '11111111-1111-4111-8111-111111111111';
 const STYLE_ID = '22222222-2222-4222-8222-222222222222';
@@ -114,6 +116,68 @@ describe('mapCreateJamFormToInput', () => {
 
     expect(() => mapCreateJamFormToInput(values)).toThrow(RangeError);
   });
+});
+
+describe('mapJamToFormValues', () => {
+  it('splits the ISO start date into a zero-padded local date and time', () => {
+    const values = mapJamToFormValues(buildJam({ startsAt: new Date(2026, 2, 4, 9, 5, 0).toISOString() }));
+
+    expect(values.date).toBe('2026-03-04');
+    expect(values.time).toBe('09:05');
+  });
+
+  it('keeps the local day when the start is just before midnight on December 31st', () => {
+    const values = mapJamToFormValues(buildJam({ startsAt: new Date(2026, 11, 31, 23, 30, 0).toISOString() }));
+
+    expect(values.date).toBe('2026-12-31');
+    expect(values.time).toBe('23:30');
+  });
+
+  it('turns a null description into an empty string', () => {
+    expect(mapJamToFormValues(buildJam({ description: null })).description).toBe('');
+  });
+
+  it('carries every other field over unchanged', () => {
+    const values = mapJamToFormValues(
+      buildJam({ skillLevel: 'advanced', instrumentIds: [INSTRUMENT_ID], styleIds: [STYLE_ID] }),
+    );
+
+    expect(values).toMatchObject({
+      title: 'Sunday jazz session',
+      description: 'Bring your own amp',
+      locationName: 'Le Caveau',
+      latitude: 48.85,
+      longitude: 2.35,
+      skillLevel: 'advanced',
+      maxParticipants: 6,
+      instrumentIds: [INSTRUMENT_ID],
+      styleIds: [STYLE_ID],
+    });
+  });
+
+  it('produces values the form schema accepts', () => {
+    expect(createJamFormSchema.safeParse(mapJamToFormValues(buildJam({}))).success).toBe(true);
+  });
+
+  it.each(['2026-08-01T18:00:00.000Z', '2026-12-31T23:30:00.000Z', '2027-01-01T00:00:00.000Z'])(
+    'round-trips a jam starting at %s through mapCreateJamFormToInput',
+    (startsAt) => {
+      const jam = buildJam({ startsAt, description: null, instrumentIds: [INSTRUMENT_ID], styleIds: [STYLE_ID] });
+
+      expect(mapCreateJamFormToInput(mapJamToFormValues(jam))).toEqual({
+        title: jam.title,
+        description: null,
+        startsAt,
+        locationName: jam.locationName,
+        latitude: jam.latitude,
+        longitude: jam.longitude,
+        skillLevel: jam.skillLevel,
+        maxParticipants: jam.maxParticipants,
+        instrumentIds: [INSTRUMENT_ID],
+        styleIds: [STYLE_ID],
+      });
+    },
+  );
 });
 
 describe('getDefaultJamDate', () => {

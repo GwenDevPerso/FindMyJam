@@ -5,6 +5,7 @@ import {
   skillLevelSchema,
   uuidArraySchema,
 } from '@/lib/validation/common-schemas';
+import type { Jam } from '@/types/domain';
 
 export const createJamFormSchema = z.object({
   title: z.string().trim().min(1, 'Title is required').max(120),
@@ -55,6 +56,25 @@ export function mapCreateJamFormToInput(values: CreateJamFormValues): {
 
 function pad(value: number): string {
   return String(value).padStart(2, '0');
+}
+
+/** Inverse of `mapCreateJamFormToInput`: the start date is shown in the device's local time. */
+export function mapJamToFormValues(jam: Jam): CreateJamFormValues {
+  const startsAt = new Date(jam.startsAt);
+
+  return {
+    title: jam.title,
+    description: jam.description ?? '',
+    date: `${startsAt.getFullYear()}-${pad(startsAt.getMonth() + 1)}-${pad(startsAt.getDate())}`,
+    time: `${pad(startsAt.getHours())}:${pad(startsAt.getMinutes())}`,
+    locationName: jam.locationName,
+    latitude: jam.latitude,
+    longitude: jam.longitude,
+    skillLevel: jam.skillLevel,
+    maxParticipants: jam.maxParticipants,
+    instrumentIds: jam.instrumentIds,
+    styleIds: jam.styleIds,
+  };
 }
 
 export function getDefaultJamDate(): string {

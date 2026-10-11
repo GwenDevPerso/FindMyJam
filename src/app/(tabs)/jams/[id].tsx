@@ -7,6 +7,7 @@ import { Screen } from '@/components/layout/screen';
 import { Button } from '@/components/ui/button';
 import { JamBadges } from '@/features/jams/components/jam-badges';
 import { JamLocationMap } from '@/features/jams/components/jam-location-map';
+import { JamOwnerActions } from '@/features/jams/components/jam-owner-actions';
 import { ParticipantList } from '@/features/jams/components/participant-list';
 import { useJamDetail } from '@/features/jams/hooks/use-jam-detail';
 import { useJoinJam } from '@/features/jams/hooks/use-join-jam';
@@ -117,6 +118,8 @@ export default function JamDetailScreen(): React.JSX.Element {
       {leaveJam.error !== null ? (
         <Text className="text-sm text-destructive">{leaveJam.error.message}</Text>
       ) : null}
+
+      {jam.isCreator ? <JamOwnerActions jamId={jam.id} jamTitle={jam.title} /> : null}
 
       <View className="gap-3">
         <Text className="text-lg font-bold text-foreground">Participants</Text>
