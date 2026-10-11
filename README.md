@@ -5,7 +5,7 @@ A mobile app (iOS, Android, web) for finding and organising jam sessions between
 ## Features
 
 - **Account**: sign up, sign in, profile with avatar, instruments, styles and skill level.
-- **Jams**: create a jam with a location picked on a map, browse a distance-sorted list, view details, join and leave.
+- **Jams**: create a jam with a location picked on a map, browse a distance-sorted list, view details, join and leave. The creator can edit or delete their jam, and registered musicians are notified.
 - **Map**: explore nearby jams, with filters.
 - **Friends**: search for musicians, send friend requests, manage your friends list, view another user's profile.
 - **Notifications**: in-app in real time and push (friend request, new jam nearby, jam updated, cancelled or about to start).
