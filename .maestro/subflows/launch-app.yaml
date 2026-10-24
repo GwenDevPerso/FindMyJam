@@ -1,0 +1,16 @@
+# Starts the development build with a clean state and loads the JS bundle from Metro (`npm start`).
+appId: com.gwenaelbihan.findmyjam
+env:
+  METRO_URL: ${METRO_URL || 'http://localhost:8081'}
+---
+- launchApp:
+    clearState: true
+    clearKeychain: true
+- openLink: exp+findmyjam://expo-development-client/?url=${METRO_URL}
+# A cleared development build always opens the dev menu over the app: an introduction, then the menu itself.
+- extendedWaitUntil:
+    visible: Continue
+    timeout: 90000
+- tapOn: Continue
+- tapOn: Close
+- waitForAnimationToEnd

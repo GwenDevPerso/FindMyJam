@@ -1,0 +1,15 @@
+# A signed-out user lands on the sign-in screen, sees validation errors and can reach registration.
+appId: com.gwenaelbihan.findmyjam
+tags:
+  - smoke
+---
+- runFlow: ../../subflows/launch-app.yaml
+- assertVisible: Find jams and connect with musicians near you.
+- tapOn:
+    text: Sign in
+    index: 1
+- assertVisible: Invalid email address
+- assertVisible: Password must be at least 8 characters
+- tapOn: Create an account
+- assertVisible: Username
+- assertVisible: your_username

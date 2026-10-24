@@ -1,0 +1,15 @@
+# Launches the app and signs in. Pass the account with: -e E2E_EMAIL=... -e E2E_PASSWORD=...
+appId: com.gwenaelbihan.findmyjam
+---
+- runFlow: launch-app.yaml
+- tapOn: you@example.com
+- inputText: ${E2E_EMAIL}
+- tapOn: Your password
+- inputText: ${E2E_PASSWORD}
+- hideKeyboard
+- tapOn:
+    text: Sign in
+    index: 1
+- extendedWaitUntil:
+    visible: Welcome back
+    timeout: 30000

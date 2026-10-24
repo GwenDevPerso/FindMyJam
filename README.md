@@ -18,7 +18,7 @@ A mobile app (iOS, Android, web) for finding and organising jam sessions between
 | UI | NativeWind v4 (Tailwind 3), Reanimated, `react-native-maps` |
 | Data | TanStack Query (server state), Zustand (client state), React Hook Form + Zod |
 | Backend | Supabase: Postgres + RLS, Auth, Realtime, Storage, Edge Functions (Deno) |
-| Quality | Jest + React Native Testing Library, ESLint (`eslint-config-expo`), `tsc` |
+| Quality | Jest + React Native Testing Library, Maestro (end-to-end), ESLint (`eslint-config-expo`), `tsc` |
 
 ## Getting started
 
@@ -49,9 +49,10 @@ The first `npm run ios` generates the `ios/` folder and takes several minutes. `
 ## Commands
 
 ```bash
-npm test                # all tests (Jest)
+npm test                # unit and component tests (Jest)
 npm run test:watch
 npx jest <file>         # a single test file
+npm run test:e2e        # end-to-end flows (Maestro)
 npx tsc --noEmit        # typecheck
 npm run lint            # ESLint
 ```
@@ -78,7 +79,8 @@ src/app (routes) → features/*/components → features/*/hooks → services →
 
 ## Tests
 
-Two kinds of tests, all run by Jest: unit tests (`*.test.ts`) for schemas, utilities and services, and component tests (`*.test.tsx`) with React Native Testing Library. They live in a `__tests__/` folder next to the code. No test talks to Supabase and there is no end-to-end suite.
+- **Unit tests** (`*.test.ts`) for schemas, utilities and services, and **component tests** (`*.test.tsx`) with React Native Testing Library. Both run with Jest, live in a `__tests__/` folder next to the code, and never talk to Supabase.
+- **End-to-end flows** in `.maestro/flows/`, run with [Maestro](https://docs.maestro.dev/) against the development build on a simulator. They need the Maestro CLI (`brew install mobile-dev-inc/tap/maestro`), the app installed (`npm run ios`) and Metro running (`npm start`). Flows that sign in take the account from `-e E2E_EMAIL=... -e E2E_PASSWORD=...`.
 
 ## Supabase backend
 
