@@ -1,5 +1,5 @@
 import { createNotificationsForUsers } from '../_shared/notification-service.ts';
-import { createServiceClient, createErrorResponse, createJsonResponse } from '../_shared/supabase.ts';
+import { createServiceClient, createErrorResponse, createJsonResponse, isServiceRoleRequest } from '../_shared/supabase.ts';
 import type { CreateNotificationInput } from '../_shared/types.ts';
 
 type JamCancelledPayload = {
@@ -23,6 +23,10 @@ function toParticipantIds(value: unknown): string[] {
 Deno.serve(async (request: Request): Promise<Response> => {
   if (request.method !== 'POST') {
     return createErrorResponse('Method not allowed', 405);
+  }
+
+  if (!isServiceRoleRequest(request)) {
+    return createErrorResponse('Forbidden', 403);
   }
 
   try {

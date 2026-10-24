@@ -1,11 +1,14 @@
 import { z } from 'zod';
 
+import { jamRecurrenceOptionSchema } from '@/features/jams/schemas/create-jam.schema';
+import type { CreateJamInput, UpdateJamInput, UpdateJamSeriesInput } from '@/features/jams/types';
 import {
   geoCoordinatesSchema,
   skillLevelSchema,
   uuidArraySchema,
 } from '@/lib/validation/common-schemas';
 import type { Jam } from '@/types/domain';
+import { toLocalDateParts } from '@/utils/date';
 
 export const createJamFormSchema = z.object({
   title: z.string().trim().min(1, 'Title is required').max(120),
@@ -22,22 +25,14 @@ export const createJamFormSchema = z.object({
   maxParticipants: z.number().int().min(2).max(100),
   instrumentIds: uuidArraySchema,
   styleIds: uuidArraySchema,
+  /** Only offered on creation; `none` everywhere else. */
+  recurrence: jamRecurrenceOptionSchema,
 });
 
 export type CreateJamFormValues = z.infer<typeof createJamFormSchema>;
 
-export function mapCreateJamFormToInput(values: CreateJamFormValues): {
-  title: string;
-  description: string | null;
-  startsAt: string;
-  locationName: string;
-  latitude: number;
-  longitude: number;
-  skillLevel: CreateJamFormValues['skillLevel'];
-  maxParticipants: number;
-  instrumentIds: string[];
-  styleIds: string[];
-} {
+/** Form → input of a single jam update (a one-off jam, or one date of a series). */
+export function mapJamFormToUpdateInput(values: CreateJamFormValues): UpdateJamInput {
   const startsAt = new Date(`${values.date}T${values.time}:00`).toISOString();
 
   return {
@@ -54,19 +49,42 @@ export function mapCreateJamFormToInput(values: CreateJamFormValues): {
   };
 }
 
+export function mapCreateJamFormToInput(values: CreateJamFormValues): CreateJamInput {
+  return {
+    ...mapJamFormToUpdateInput(values),
+    recurrence: values.recurrence,
+  };
+}
+
+/** Form → template of a series: the date is ignored (the day of a series cannot change), the time is kept. */
+export function mapJamFormToSeriesInput(values: CreateJamFormValues): UpdateJamSeriesInput {
+  return {
+    title: values.title,
+    description: values.description.length > 0 ? values.description : null,
+    localTime: values.time,
+    locationName: values.locationName,
+    latitude: values.latitude,
+    longitude: values.longitude,
+    skillLevel: values.skillLevel,
+    maxParticipants: values.maxParticipants,
+    instrumentIds: values.instrumentIds,
+    styleIds: values.styleIds,
+  };
+}
+
 function pad(value: number): string {
   return String(value).padStart(2, '0');
 }
 
-/** Inverse of `mapCreateJamFormToInput`: the start date is shown in the device's local time. */
+/** Inverse of `mapJamFormToUpdateInput`: the start date is shown in the device's local time. */
 export function mapJamToFormValues(jam: Jam): CreateJamFormValues {
-  const startsAt = new Date(jam.startsAt);
+  const { date, time } = toLocalDateParts(jam.startsAt);
 
   return {
     title: jam.title,
     description: jam.description ?? '',
-    date: `${startsAt.getFullYear()}-${pad(startsAt.getMonth() + 1)}-${pad(startsAt.getDate())}`,
-    time: `${pad(startsAt.getHours())}:${pad(startsAt.getMinutes())}`,
+    date,
+    time,
     locationName: jam.locationName,
     latitude: jam.latitude,
     longitude: jam.longitude,
@@ -74,6 +92,7 @@ export function mapJamToFormValues(jam: Jam): CreateJamFormValues {
     maxParticipants: jam.maxParticipants,
     instrumentIds: jam.instrumentIds,
     styleIds: jam.styleIds,
+    recurrence: 'none',
   };
 }
 

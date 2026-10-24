@@ -1,6 +1,9 @@
-import type { Jam, JamParticipant, SkillLevel } from '@/types/domain';
+import type { Jam, JamParticipant, JamRecurrence, SkillLevel } from '@/types/domain';
 
-export type { Jam, JamParticipant, SkillLevel };
+export type { Jam, JamParticipant, JamRecurrence, SkillLevel };
+
+/** Recurrence chosen when creating a jam; `none` is a one-off jam. */
+export type JamRecurrenceOption = 'none' | JamRecurrence;
 
 export type JamListCursor = {
   distanceMeters: number;
@@ -36,6 +39,7 @@ export type CreateJamInput = {
   maxParticipants: number;
   instrumentIds: string[];
   styleIds: string[];
+  recurrence: JamRecurrenceOption;
 };
 
 export type UpdateJamInput = {
@@ -51,7 +55,23 @@ export type UpdateJamInput = {
   styleIds: string[];
 };
 
+/** Template applied to every upcoming date of a series. `localTime` is `HH:MM` in the series' time zone. */
+export type UpdateJamSeriesInput = {
+  title: string;
+  description: string | null;
+  localTime: string;
+  locationName: string;
+  latitude: number;
+  longitude: number;
+  skillLevel: SkillLevel;
+  maxParticipants: number;
+  instrumentIds: string[];
+  styleIds: string[];
+};
+
 export type JamDetail = Jam & {
   isCreator: boolean;
   isParticipant: boolean;
+  /** Recurrence of the jam's series; null for a one-off jam. */
+  recurrence: JamRecurrence | null;
 };

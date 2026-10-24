@@ -276,22 +276,25 @@ enabled = false
 # domain = "example.clerk.accounts.dev"
 
 [functions.send-friend-request-notification]
-verify_jwt = false
+verify_jwt = true
 
 [functions.send-friend-accepted-notification]
-verify_jwt = false
+verify_jwt = true
 
 [functions.send-new-jam-notification]
-verify_jwt = false
+verify_jwt = true
 
 [functions.send-jam-updated-notification]
-verify_jwt = false
+verify_jwt = true
 
 [functions.send-jam-cancelled-notification]
-verify_jwt = false
+verify_jwt = true
 
 [functions.send-jam-starting-soon-notification]
-verify_jwt = false
+verify_jwt = true
+
+[functions.send-chat-message-notification]
+verify_jwt = true
 
 [edge_runtime]
 enabled = true

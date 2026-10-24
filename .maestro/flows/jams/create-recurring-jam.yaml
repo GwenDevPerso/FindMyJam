@@ -1,0 +1,51 @@
+# A signed-in user creates a weekly jam, sees how it repeats on its detail, then deletes all its upcoming dates.
+# Pass the account with: -e E2E_EMAIL=... -e E2E_PASSWORD=...
+# Runs against the Supabase project of .env.local and removes the series it created.
+appId: com.gwenaelbihan.findmyjam
+env:
+  JAM_TITLE: E2E Weekly jam
+---
+- runFlow: ../../subflows/sign-in.yaml
+- tapOn: Create jam
+# The create screen asks for the location on first use.
+- runFlow:
+    when:
+      visible: Allow While Using App
+    commands:
+      - tapOn: Allow While Using App
+- extendedWaitUntil:
+    visible: Sunday jazz session
+    timeout: 30000
+- tapOn: Sunday jazz session
+- inputText: ${JAM_TITLE}
+- tapOn: Search for a venue or address
+- inputText: E2E venue
+- hideKeyboard
+- scrollUntilVisible:
+    element: Every week
+    direction: DOWN
+- tapOn: Every week
+- scrollUntilVisible:
+    element:
+      text: Create jam
+      index: 1
+    direction: DOWN
+- tapOn:
+    text: Create jam
+    index: 1
+# The detail of the first date opens.
+- extendedWaitUntil:
+    visible: Repeats every week on .*
+    timeout: 30000
+- assertVisible: ${JAM_TITLE}
+# Cleanup: delete the series.
+- scrollUntilVisible:
+    element: Delete jam
+    direction: DOWN
+- tapOn: Delete jam
+- assertVisible: This date
+- tapOn: All upcoming dates
+- extendedWaitUntil:
+    notVisible: Repeats every week on .*
+    timeout: 30000
+- assertNotVisible: ${JAM_TITLE}

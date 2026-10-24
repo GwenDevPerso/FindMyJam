@@ -7,6 +7,7 @@ export type NotificationType =
   | 'JAM_UPDATED'
   | 'JAM_CANCELLED'
   | 'JAM_STARTING_SOON'
+  | 'CHAT_MESSAGE'
   | 'SYSTEM';
 
 export type NotificationData = {
@@ -28,6 +29,14 @@ export type CreateNotificationInput = {
   data?: NotificationData;
 };
 
+/** A push sent without an inbox row. Expo push data values are strings. */
+export type PushInput = {
+  userId: string;
+  title: string;
+  body: string;
+  data: Record<string, string>;
+};
+
 export type DeviceRow = {
   id: string;
   user_id: string;
@@ -45,6 +54,7 @@ export type NotificationPreferencesRow = {
   new_matching_jams: boolean;
   jam_updates: boolean;
   jam_starting: boolean;
+  chat_messages: boolean;
   marketing: boolean;
   radius_km: number;
   quiet_hours_start: string | null;
@@ -74,4 +84,18 @@ export type JamStartingRow = {
   title: string;
   starts_at: string;
   creator_id: string;
+};
+
+export type JamMessageRow = {
+  id: string;
+  jam_id: string | null;
+  series_id: string | null;
+  sender_id: string;
+  body: string;
+};
+
+export type JamSeriesRow = {
+  id: string;
+  creator_id: string;
+  title: string;
 };

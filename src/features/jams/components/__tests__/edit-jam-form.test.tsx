@@ -121,6 +121,15 @@ describe('EditJamForm', () => {
     expect(screen.getByPlaceholderText('What should musicians know?')).toHaveDisplayValue('');
   });
 
+  it('does not offer to change the recurrence', async () => {
+    mockUpdateJam({});
+    await render(<EditJamForm jam={jam} onSuccess={jest.fn()} />);
+
+    expect(screen.queryByText('Repeats')).not.toBeOnTheScreen();
+    expect(screen.queryByRole('button', { name: 'Does not repeat' })).not.toBeOnTheScreen();
+    expect(screen.getByPlaceholderText('YYYY-MM-DD')).toBeOnTheScreen();
+  });
+
   it('saves an untouched form with the values of the jam', async () => {
     const mutateAsync = mockUpdateJam({});
     const onSuccess = jest.fn();

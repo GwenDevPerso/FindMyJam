@@ -6,6 +6,7 @@ import { Routes } from '@/constants/routes';
 import { EditJamScreen } from '@/features/jams/components/edit-jam-screen';
 import { useJamDetail } from '@/features/jams/hooks/use-jam-detail';
 import { useUpdateJam } from '@/features/jams/hooks/use-update-jam';
+import { useUpdateJamSeries } from '@/features/jams/hooks/use-update-jam-series';
 import type { JamDetail } from '@/features/jams/types';
 import { useReferenceInstruments } from '@/features/profile/hooks/use-reference-instruments';
 import { useReferenceMusicStyles } from '@/features/profile/hooks/use-reference-music-styles';
@@ -16,6 +17,7 @@ jest.mock('expo-router', () => ({
 }));
 jest.mock('@/features/jams/hooks/use-jam-detail');
 jest.mock('@/features/jams/hooks/use-update-jam');
+jest.mock('@/features/jams/hooks/use-update-jam-series');
 jest.mock('@/features/profile/hooks/use-reference-instruments');
 jest.mock('@/features/profile/hooks/use-reference-music-styles');
 
@@ -29,17 +31,20 @@ jest.mock('@/features/location/components/location-picker-map', () => ({
 
 const mockedUseJamDetail = jest.mocked(useJamDetail);
 const mockedUseUpdateJam = jest.mocked(useUpdateJam);
+const mockedUseUpdateJamSeries = jest.mocked(useUpdateJamSeries);
 const mockedRouter = jest.mocked(router);
 
 type JamQuery = ReturnType<typeof useJamDetail>;
 
 const JAM_ID = '33333333-3333-4333-8333-333333333333';
+const SERIES_ID = '77777777-7777-4777-8777-777777777777';
 
 function buildJamDetail(overrides: Partial<JamDetail>): JamDetail {
   return {
     ...buildJam({ id: JAM_ID, title: 'Sunday jazz session' }),
     isCreator: true,
     isParticipant: false,
+    recurrence: null,
     ...overrides,
   };
 }
@@ -84,11 +89,24 @@ function mockUpdateJam(): jest.Mock {
   return mutateAsync;
 }
 
+function mockUpdateJamSeries(): jest.Mock {
+  const mutateAsync = jest.fn().mockResolvedValue(undefined);
+
+  mockedUseUpdateJamSeries.mockReturnValue({
+    mutateAsync,
+    isPending: false,
+    error: null,
+  } as unknown as ReturnType<typeof useUpdateJamSeries>);
+
+  return mutateAsync;
+}
+
 describe('EditJamScreen', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockedRouter.canGoBack.mockReturnValue(true);
     mockUpdateJam();
+    mockUpdateJamSeries();
     jest.mocked(useReferenceInstruments).mockReturnValue({
       isLoading: false,
       data: [],
@@ -190,5 +208,61 @@ describe('EditJamScreen', () => {
     expect(mockedRouter.replace).toHaveBeenCalledTimes(1);
     expect(mockedRouter.replace).toHaveBeenCalledWith(Routes.jamDetail(JAM_ID));
     expect(mockedRouter.back).not.toHaveBeenCalled();
+  });
+
+  it('edits a one-off jam directly, without asking which dates to edit', async () => {
+    mockJamQuery({ data: buildJamDetail({ isCreator: true }) });
+
+    await renderScreen(JAM_ID);
+
+    expect(screen.queryByText('Which dates do you want to edit?')).not.toBeOnTheScreen();
+    expect(screen.getByRole('button', { name: 'Save changes' })).toBeOnTheScreen();
+  });
+
+  describe('for a date of a series', () => {
+    const seriesJam = buildJamDetail({ isCreator: true, seriesId: SERIES_ID, recurrence: 'weekly' });
+
+    it('first asks which dates to edit', async () => {
+      mockJamQuery({ data: seriesJam });
+
+      await renderScreen(JAM_ID);
+
+      expect(screen.getByText('Which dates do you want to edit?')).toBeOnTheScreen();
+      expect(screen.getByRole('button', { name: 'This date only' })).toBeOnTheScreen();
+      expect(screen.getByRole('button', { name: 'All upcoming dates' })).toBeOnTheScreen();
+      expect(screen.queryByRole('button', { name: 'Save changes' })).not.toBeOnTheScreen();
+      expect(screen.queryByRole('button', { name: 'Save all upcoming dates' })).not.toBeOnTheScreen();
+    });
+
+    it('edits only this date, date included, after "This date only"', async () => {
+      mockJamQuery({ data: seriesJam });
+      const mutateAsync = mockUpdateJam();
+      const user = userEvent.setup();
+
+      await renderScreen(JAM_ID);
+      await user.press(screen.getByRole('button', { name: 'This date only' }));
+
+      expect(screen.queryByText('Which dates do you want to edit?')).not.toBeOnTheScreen();
+      expect(screen.getByPlaceholderText('YYYY-MM-DD')).toBeOnTheScreen();
+      await user.press(screen.getByRole('button', { name: 'Save changes' }));
+
+      expect(mutateAsync).toHaveBeenCalledWith(expect.objectContaining({ jamId: JAM_ID }));
+      expect(mockedRouter.back).toHaveBeenCalledTimes(1);
+    });
+
+    it('edits the series without its date after "All upcoming dates"', async () => {
+      mockJamQuery({ data: seriesJam });
+      const mutateAsync = mockUpdateJamSeries();
+      const user = userEvent.setup();
+
+      await renderScreen(JAM_ID);
+      await user.press(screen.getByRole('button', { name: 'All upcoming dates' }));
+
+      expect(screen.queryByPlaceholderText('YYYY-MM-DD')).not.toBeOnTheScreen();
+      await user.press(screen.getByRole('button', { name: 'Save all upcoming dates' }));
+
+      expect(mutateAsync).toHaveBeenCalledWith(expect.objectContaining({ seriesId: SERIES_ID }));
+      expect(mockedRouter.back).toHaveBeenCalledTimes(1);
+    });
   });
 });

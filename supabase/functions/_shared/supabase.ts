@@ -16,6 +16,29 @@ export function createServiceClient(): SupabaseClient {
   });
 }
 
+/**
+ * Whether the request carries a service role JWT, as sent by `invoke_notification_edge_function` and the cron jobs.
+ * Relies on `verify_jwt = true` (supabase/config.toml): the gateway has already checked the signature, so reading the
+ * role claim is enough to turn away the anon key or a user's session.
+ */
+export function isServiceRoleRequest(request: Request): boolean {
+  const token = request.headers.get('Authorization')?.match(/^Bearer (.+)$/)?.[1];
+  const payload = token?.split('.')[1];
+
+  if (payload === undefined) {
+    return false;
+  }
+
+  try {
+    const base64 = payload.replace(/-/g, '+').replace(/_/g, '/');
+    const claims = JSON.parse(atob(base64.padEnd(Math.ceil(base64.length / 4) * 4, '='))) as { role?: unknown };
+
+    return claims.role === 'service_role';
+  } catch {
+    return false;
+  }
+}
+
 export function createJsonResponse(body: Record<string, unknown>, status = 200): Response {
   return new Response(JSON.stringify(body), {
     status,

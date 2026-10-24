@@ -12,6 +12,7 @@ export const Routes = {
   notifications: '/notifications',
   jamDetail: (id: string) => `/jams/${id}` as const,
   jamEdit: (id: string) => `/jams/edit/${id}` as const,
+  jamChat: (id: string) => `/jams/chat/${id}` as const,
   userProfile: (id: string) => `/friends/${id}` as const,
   notFound: '/+not-found',
 } as const;

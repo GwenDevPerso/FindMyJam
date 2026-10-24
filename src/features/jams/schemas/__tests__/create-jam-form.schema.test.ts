@@ -2,6 +2,8 @@ import {
   createJamFormSchema,
   getDefaultJamDate,
   mapCreateJamFormToInput,
+  mapJamFormToSeriesInput,
+  mapJamFormToUpdateInput,
   mapJamToFormValues,
   type CreateJamFormValues,
 } from '@/features/jams/schemas/create-jam-form.schema';
@@ -23,6 +25,7 @@ function buildFormValues(overrides: Partial<CreateJamFormValues>): CreateJamForm
     maxParticipants: 10,
     instrumentIds: [INSTRUMENT_ID],
     styleIds: [STYLE_ID],
+    recurrence: 'none',
     ...overrides,
   };
 }
@@ -69,6 +72,7 @@ describe('createJamFormSchema', () => {
     [{ skillLevel: 'virtuoso' as CreateJamFormValues['skillLevel'] }, 'skillLevel'],
     [{ instrumentIds: ['guitar'] }, 'instrumentIds'],
     [{ styleIds: ['jazz'] }, 'styleIds'],
+    [{ recurrence: 'daily' as CreateJamFormValues['recurrence'] }, 'recurrence'],
   ])('rejects %j on %s', (overrides, field) => {
     expect(firstIssueFor(overrides)?.path[0]).toBe(field);
   });
@@ -108,7 +112,14 @@ describe('mapCreateJamFormToInput', () => {
       maxParticipants: 10,
       instrumentIds: [INSTRUMENT_ID],
       styleIds: [STYLE_ID],
+      recurrence: 'none',
     });
+  });
+
+  it('carries the chosen recurrence', () => {
+    expect(mapCreateJamFormToInput(buildFormValues({ recurrence: 'monthly_weekday' })).recurrence).toBe(
+      'monthly_weekday',
+    );
   });
 
   it('throws on a date that passed validation but is not a date (current behaviour)', () => {
@@ -137,6 +148,12 @@ describe('mapJamToFormValues', () => {
     expect(mapJamToFormValues(buildJam({ description: null })).description).toBe('');
   });
 
+  it('does not repeat: the recurrence of an existing jam is not edited through the form', () => {
+    expect(mapJamToFormValues(buildJam({ seriesId: '33333333-3333-4333-8333-333333333333' })).recurrence).toBe(
+      'none',
+    );
+  });
+
   it('carries every other field over unchanged', () => {
     const values = mapJamToFormValues(
       buildJam({ skillLevel: 'advanced', instrumentIds: [INSTRUMENT_ID], styleIds: [STYLE_ID] }),
@@ -160,11 +177,11 @@ describe('mapJamToFormValues', () => {
   });
 
   it.each(['2026-08-01T18:00:00.000Z', '2026-12-31T23:30:00.000Z', '2027-01-01T00:00:00.000Z'])(
-    'round-trips a jam starting at %s through mapCreateJamFormToInput',
+    'round-trips a jam starting at %s through mapJamFormToUpdateInput',
     (startsAt) => {
       const jam = buildJam({ startsAt, description: null, instrumentIds: [INSTRUMENT_ID], styleIds: [STYLE_ID] });
 
-      expect(mapCreateJamFormToInput(mapJamToFormValues(jam))).toEqual({
+      expect(mapJamFormToUpdateInput(mapJamToFormValues(jam))).toEqual({
         title: jam.title,
         description: null,
         startsAt,
@@ -178,6 +195,33 @@ describe('mapJamToFormValues', () => {
       });
     },
   );
+});
+
+describe('mapJamFormToUpdateInput', () => {
+  it('maps the form like a creation, without the recurrence', () => {
+    const values = buildFormValues({ recurrence: 'weekly' });
+    const input = mapJamFormToUpdateInput(values);
+
+    expect(input).not.toHaveProperty('recurrence');
+    expect({ ...input, recurrence: 'weekly' }).toEqual(mapCreateJamFormToInput(values));
+  });
+});
+
+describe('mapJamFormToSeriesInput', () => {
+  it('keeps the local time of day and drops the date and recurrence', () => {
+    expect(mapJamFormToSeriesInput(buildFormValues({ date: '2026-08-01', time: '19:30', description: '' }))).toEqual({
+      title: 'Sunday jazz session',
+      description: null,
+      localTime: '19:30',
+      locationName: 'Le Caveau',
+      latitude: 48.85,
+      longitude: 2.35,
+      skillLevel: 'all_levels',
+      maxParticipants: 10,
+      instrumentIds: [INSTRUMENT_ID],
+      styleIds: [STYLE_ID],
+    });
+  });
 });
 
 describe('getDefaultJamDate', () => {

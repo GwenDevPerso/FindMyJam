@@ -98,6 +98,7 @@ async function enrichJamRows(rows: Awaited<ReturnType<typeof jamRepository.findB
         distanceMeters: null,
         instrumentIds: instrumentIdsResult.data,
         styleIds: styleIdsResult.data,
+        seriesId: row.series_id,
         createdAt: row.created_at,
         updatedAt: row.updated_at,
       };

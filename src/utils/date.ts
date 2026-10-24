@@ -50,3 +50,17 @@ export function formatRelativeTime(isoDate: string): string {
 
   return formatJamDate(isoDate);
 }
+
+function pad(value: number): string {
+  return String(value).padStart(2, '0');
+}
+
+/** `YYYY-MM-DD` and `HH:MM` of an ISO date in the device's local time. */
+export function toLocalDateParts(isoDate: string): { date: string; time: string } {
+  const date = new Date(isoDate);
+
+  return {
+    date: `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`,
+    time: `${pad(date.getHours())}:${pad(date.getMinutes())}`,
+  };
+}

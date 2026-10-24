@@ -6,6 +6,9 @@ import {
   uuidArraySchema,
 } from '@/lib/validation/common-schemas';
 
+/** `none` creates a one-off jam; the others create a series (`jam_series`) and its first dates. */
+export const jamRecurrenceOptionSchema = z.enum(['none', 'weekly', 'biweekly', 'monthly_weekday']);
+
 export const createJamSchema = z.object({
   title: z.string().trim().min(1, 'Title is required').max(120),
   description: z
@@ -21,6 +24,7 @@ export const createJamSchema = z.object({
   maxParticipants: z.number().int().min(2).max(100),
   instrumentIds: uuidArraySchema,
   styleIds: uuidArraySchema,
+  recurrence: jamRecurrenceOptionSchema,
 });
 
 export type CreateJamFormValues = z.infer<typeof createJamSchema>;

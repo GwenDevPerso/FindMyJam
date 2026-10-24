@@ -10,7 +10,7 @@ import type {
 import { supabase } from '@/services/supabase';
 
 const JAM_COLUMNS =
-  'id, creator_id, title, description, starts_at, location_name, latitude, longitude, skill_level, max_participants, created_at, updated_at';
+  'id, creator_id, title, description, starts_at, location_name, latitude, longitude, skill_level, max_participants, series_id, occurrence_date, created_at, updated_at';
 
 export type JamRepositoryResult<T> = {
   data: T;

@@ -1,13 +1,19 @@
 import type { Href } from 'expo-router';
 
-import type { Notification, NotificationData } from '@/features/notifications/types';
+import type { Notification, NotificationData, NotificationType } from '@/features/notifications/types';
+import {
+  notificationActionSchema,
+  notificationTypeSchema,
+} from '@/features/notifications/schemas/notification.schema';
 import { Routes } from '@/constants/routes';
 
-export function resolveNotificationHref(notification: Notification): Href {
-  const data: NotificationData = notification.data;
-
+function resolveHrefFromData(type: NotificationType, data: NotificationData): Href {
   if (data.navigationTarget !== undefined && data.navigationTarget.length > 0) {
     return data.navigationTarget as Href;
+  }
+
+  if (data.action === 'open_chat' && data.jamId !== undefined) {
+    return Routes.jamChat(data.jamId) as Href;
   }
 
   if (data.jamId !== undefined) {
@@ -18,7 +24,7 @@ export function resolveNotificationHref(notification: Notification): Href {
     return Routes.friends as Href;
   }
 
-  switch (notification.type) {
+  switch (type) {
     case 'FRIEND_REQUEST':
       return Routes.friends as Href;
     case 'FRIEND_ACCEPTED':
@@ -28,10 +34,50 @@ export function resolveNotificationHref(notification: Notification): Href {
     case 'NEW_JAM_MATCH':
     case 'JAM_UPDATED':
     case 'JAM_STARTING_SOON':
-      return data.jamId !== undefined ? (Routes.jamDetail(data.jamId) as Href) : (Routes.jamsAll as Href);
+    case 'CHAT_MESSAGE':
+      return Routes.jamsAll as Href;
     case 'JAM_CANCELLED':
       return Routes.jamsAll as Href;
     default:
       return Routes.notifications as Href;
   }
+}
+
+export function resolveNotificationHref(notification: Notification): Href {
+  return resolveHrefFromData(notification.type, notification.data);
+}
+
+function readString(raw: Record<string, unknown>, key: string): string | undefined {
+  const value = raw[key];
+
+  return typeof value === 'string' && value.length > 0 ? value : undefined;
+}
+
+/**
+ * Route to open when the user taps a push notification. `raw` is the push `data` sent by the Edge Functions
+ * (every value is a string). Returns null for a push that does not come from them, so the app stays where it is.
+ * Only in-app paths are followed as a navigation target.
+ */
+export function resolvePushHref(raw: Record<string, unknown> | undefined): Href | null {
+  if (raw === undefined) {
+    return null;
+  }
+
+  const type = notificationTypeSchema.safeParse(raw.type);
+
+  if (!type.success) {
+    return null;
+  }
+
+  const action = notificationActionSchema.safeParse(raw.action);
+  const navigationTarget = readString(raw, 'navigation_target');
+
+  return resolveHrefFromData(type.data, {
+    jamId: readString(raw, 'jam_id'),
+    friendId: readString(raw, 'friend_id'),
+    profileId: readString(raw, 'profile_id'),
+    friendshipId: readString(raw, 'friendship_id'),
+    action: action.success ? action.data : undefined,
+    navigationTarget: navigationTarget?.startsWith('/') === true ? navigationTarget : undefined,
+  });
 }

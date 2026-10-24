@@ -1,4 +1,10 @@
-import { formatJamDate, formatJamDateTime, formatJamTime, formatRelativeTime } from '@/utils/date';
+import {
+  formatJamDate,
+  formatJamDateTime,
+  formatJamTime,
+  formatRelativeTime,
+  toLocalDateParts,
+} from '@/utils/date';
 
 const ISO = '2026-07-21T12:00:00.000Z';
 const NOW = new Date(ISO).getTime();
@@ -76,5 +82,18 @@ describe('jam date formatting', () => {
     jest.spyOn(Date.prototype, 'toLocaleTimeString').mockReturnValue('02:00 PM');
 
     expect(formatJamDateTime(ISO)).toBe('Tue, Jul 21, 2026 · 02:00 PM');
+  });
+});
+
+describe('toLocalDateParts', () => {
+  it('splits an ISO date into a zero-padded local date and time of day', () => {
+    expect(toLocalDateParts(new Date(2026, 2, 4, 9, 5, 0).toISOString())).toEqual({ date: '2026-03-04', time: '09:05' });
+  });
+
+  it('keeps the local day of a start just before midnight', () => {
+    expect(toLocalDateParts(new Date(2026, 11, 31, 23, 30, 0).toISOString())).toEqual({
+      date: '2026-12-31',
+      time: '23:30',
+    });
   });
 });
