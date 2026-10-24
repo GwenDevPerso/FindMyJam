@@ -196,6 +196,7 @@ export const jamService = {
       startsBefore: filters?.startsBefore ?? null,
       limit: filters?.limit ?? DEFAULT_LIST_LIMIT,
       cursor: filters?.cursor ?? null,
+      nextOccurrenceOnly: filters?.nextOccurrenceOnly ?? false,
     };
 
     const { data, error } = await jamRepository.search(resolvedFilters);

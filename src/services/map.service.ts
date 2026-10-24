@@ -31,6 +31,7 @@ export const mapService = {
       startsBefore: params.startsBefore,
       limit: MAP_JAM_PAGE_SIZE,
       cursor,
+      nextOccurrenceOnly: true,
     });
 
     return {

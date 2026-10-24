@@ -150,6 +150,7 @@ describe('jamService', () => {
         startsBefore: '2026-07-28T00:00:00.000Z',
         limit: 5,
         cursor: { distanceMeters: 900, startsAt: '2026-07-22T18:00:00.000Z', id: JAM_ID },
+        nextOccurrenceOnly: true,
       };
 
       await jamService.list(filters);
@@ -177,6 +178,7 @@ describe('jamService', () => {
         startsBefore: null,
         limit: 20,
         cursor: null,
+        nextOccurrenceOnly: false,
       });
     });
 

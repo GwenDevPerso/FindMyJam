@@ -496,6 +496,7 @@ export type Database = {
           p_cursor_distance?: number | null;
           p_cursor_starts_at?: string | null;
           p_cursor_id?: string | null;
+          p_next_occurrence_only?: boolean;
         };
         Returns: SearchJamRow[];
       };
