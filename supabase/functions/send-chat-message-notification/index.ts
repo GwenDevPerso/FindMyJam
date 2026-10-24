@@ -1,7 +1,7 @@
 import type { SupabaseClient } from 'https://esm.sh/@supabase/supabase-js@2.49.1';
 
 import { sendPushToUsers } from '../_shared/notification-service.ts';
-import { createServiceClient, createErrorResponse, createJsonResponse } from '../_shared/supabase.ts';
+import { createServiceClient, createErrorResponse, createJsonResponse, isServiceRoleRequest } from '../_shared/supabase.ts';
 import type { JamMessageRow, JamRow, JamSeriesRow, ProfileRow, PushInput } from '../_shared/types.ts';
 
 type ChatMessagePayload = {
@@ -141,6 +141,10 @@ async function loadSeriesRoom(supabase: SupabaseClient, seriesId: string): Promi
 Deno.serve(async (request: Request): Promise<Response> => {
   if (request.method !== 'POST') {
     return createErrorResponse('Method not allowed', 405);
+  }
+
+  if (!isServiceRoleRequest(request)) {
+    return createErrorResponse('Forbidden', 403);
   }
 
   try {
