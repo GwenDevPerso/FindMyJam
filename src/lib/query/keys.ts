@@ -90,4 +90,9 @@ export const queryKeys = {
       userId,
     ],
   },
+  chat: {
+    all: ['chat'] as const,
+    /** `roomKey` comes from `getChatRoomKey`: `series:<id>` or `jam:<id>`. */
+    messages: (roomKey: string): readonly ['chat', 'messages', string] => ['chat', 'messages', roomKey],
+  },
 };

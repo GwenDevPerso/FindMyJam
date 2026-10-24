@@ -25,7 +25,7 @@ const NOTIFICATION_COLUMNS =
 const DEVICE_COLUMNS = 'id, user_id, expo_push_token, platform, app_version, created_at, updated_at';
 
 const PREFERENCES_COLUMNS =
-  'user_id, friend_requests, friend_acceptance, new_jams_city, new_jams_radius, new_matching_jams, jam_updates, jam_starting, marketing, radius_km, quiet_hours_start, quiet_hours_end, created_at, updated_at';
+  'user_id, friend_requests, friend_acceptance, new_jams_city, new_jams_radius, new_matching_jams, jam_updates, jam_starting, chat_messages, marketing, radius_km, quiet_hours_start, quiet_hours_end, created_at, updated_at';
 
 export type ListNotificationsParams = {
   userId: string;

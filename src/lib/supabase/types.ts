@@ -7,6 +7,8 @@ export type SkillLevel =
 
 export type FriendshipStatus = 'pending' | 'accepted' | 'rejected' | 'blocked';
 
+export type JamRecurrence = 'weekly' | 'biweekly' | 'monthly_weekday';
+
 export type NotificationType =
   | 'FRIEND_REQUEST'
   | 'FRIEND_ACCEPTED'
@@ -16,6 +18,7 @@ export type NotificationType =
   | 'JAM_UPDATED'
   | 'JAM_CANCELLED'
   | 'JAM_STARTING_SOON'
+  | 'CHAT_MESSAGE'
   | 'SYSTEM';
 
 export type DevicePlatform = 'ios' | 'android' | 'web';
@@ -35,6 +38,8 @@ export type Database = {
           longitude: number;
           skill_level: SkillLevel;
           max_participants: number;
+          series_id: string | null;
+          occurrence_date: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -49,6 +54,8 @@ export type Database = {
           longitude: number;
           skill_level?: SkillLevel;
           max_participants?: number;
+          series_id?: string | null;
+          occurrence_date?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -63,6 +70,70 @@ export type Database = {
           longitude?: number;
           skill_level?: SkillLevel;
           max_participants?: number;
+          series_id?: string | null;
+          occurrence_date?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
+      jam_series: {
+        Row: {
+          id: string;
+          creator_id: string;
+          frequency: JamRecurrence;
+          anchor_date: string;
+          local_time: string;
+          timezone: string;
+          title: string;
+          description: string | null;
+          location_name: string;
+          latitude: number;
+          longitude: number;
+          skill_level: SkillLevel;
+          max_participants: number;
+          instrument_ids: string[];
+          style_ids: string[];
+          generated_until: string;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          creator_id: string;
+          frequency: JamRecurrence;
+          anchor_date: string;
+          local_time: string;
+          timezone: string;
+          title: string;
+          description?: string | null;
+          location_name: string;
+          latitude: number;
+          longitude: number;
+          skill_level?: SkillLevel;
+          max_participants?: number;
+          instrument_ids?: string[];
+          style_ids?: string[];
+          generated_until: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          creator_id?: string;
+          frequency?: JamRecurrence;
+          anchor_date?: string;
+          local_time?: string;
+          timezone?: string;
+          title?: string;
+          description?: string | null;
+          location_name?: string;
+          latitude?: number;
+          longitude?: number;
+          skill_level?: SkillLevel;
+          max_participants?: number;
+          instrument_ids?: string[];
+          style_ids?: string[];
+          generated_until?: string;
           created_at?: string;
           updated_at?: string;
         };
@@ -295,6 +366,7 @@ export type Database = {
           new_matching_jams: boolean;
           jam_updates: boolean;
           jam_starting: boolean;
+          chat_messages: boolean;
           marketing: boolean;
           radius_km: number;
           quiet_hours_start: string | null;
@@ -311,6 +383,7 @@ export type Database = {
           new_matching_jams?: boolean;
           jam_updates?: boolean;
           jam_starting?: boolean;
+          chat_messages?: boolean;
           marketing?: boolean;
           radius_km?: number;
           quiet_hours_start?: string | null;
@@ -327,12 +400,39 @@ export type Database = {
           new_matching_jams?: boolean;
           jam_updates?: boolean;
           jam_starting?: boolean;
+          chat_messages?: boolean;
           marketing?: boolean;
           radius_km?: number;
           quiet_hours_start?: string | null;
           quiet_hours_end?: string | null;
           created_at?: string;
           updated_at?: string;
+        };
+      };
+      jam_messages: {
+        Row: {
+          id: string;
+          jam_id: string | null;
+          series_id: string | null;
+          sender_id: string;
+          body: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          jam_id?: string | null;
+          series_id?: string | null;
+          sender_id: string;
+          body: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          jam_id?: string | null;
+          series_id?: string | null;
+          sender_id?: string;
+          body?: string;
+          created_at?: string;
         };
       };
       notifications: {
@@ -399,6 +499,20 @@ export type Database = {
         };
         Returns: SearchJamRow[];
       };
+      create_jam_series: {
+        Args: CreateJamSeriesArgs;
+        Returns: CreateJamSeriesResultRow[];
+      };
+      update_jam_series: {
+        Args: UpdateJamSeriesArgs;
+        Returns: undefined;
+      };
+      delete_jam_series: {
+        Args: {
+          p_series_id: string;
+        };
+        Returns: undefined;
+      };
       get_jam_participant_count: {
         Args: {
           p_jam_id: string;
@@ -413,6 +527,16 @@ export type Database = {
           p_cursor_id?: string | null;
         };
         Returns: NotificationRow[];
+      };
+      get_jam_messages: {
+        Args: {
+          p_jam_id: string | null;
+          p_series_id: string | null;
+          p_limit?: number;
+          p_cursor_created_at?: string | null;
+          p_cursor_id?: string | null;
+        };
+        Returns: JamMessageWithSenderRow[];
       };
       get_unread_notifications_count: {
         Args: {
@@ -431,6 +555,39 @@ export type JamUpdate = Database['public']['Tables']['jams']['Update'];
 export type SearchJamRow = JamRow & {
   participant_count: number;
   distance_meters: number;
+};
+
+export type JamSeriesRow = Database['public']['Tables']['jam_series']['Row'];
+export type JamSeriesInsert = Database['public']['Tables']['jam_series']['Insert'];
+export type JamSeriesUpdate = Database['public']['Tables']['jam_series']['Update'];
+
+/** Template fields shared by `create_jam_series` and `update_jam_series`. */
+type JamSeriesTemplateArgs = {
+  p_local_time: string;
+  p_title: string;
+  p_description: string | null;
+  p_location_name: string;
+  p_latitude: number;
+  p_longitude: number;
+  p_skill_level: SkillLevel;
+  p_max_participants: number;
+  p_instrument_ids: string[];
+  p_style_ids: string[];
+};
+
+export type CreateJamSeriesArgs = JamSeriesTemplateArgs & {
+  p_frequency: JamRecurrence;
+  p_anchor_date: string;
+  p_timezone: string;
+};
+
+export type UpdateJamSeriesArgs = JamSeriesTemplateArgs & {
+  p_series_id: string;
+};
+
+export type CreateJamSeriesResultRow = {
+  series_id: string;
+  first_jam_id: string | null;
 };
 
 export type JamParticipantRow = Database['public']['Tables']['jam_participants']['Row'];
@@ -471,3 +628,12 @@ export type NotificationPreferencesUpdate =
 export type NotificationRow = Database['public']['Tables']['notifications']['Row'];
 export type NotificationInsert = Database['public']['Tables']['notifications']['Insert'];
 export type NotificationUpdate = Database['public']['Tables']['notifications']['Update'];
+
+export type JamMessageRow = Database['public']['Tables']['jam_messages']['Row'];
+export type JamMessageInsert = Database['public']['Tables']['jam_messages']['Insert'];
+
+/** Row of `get_jam_messages`: a message with its sender's public profile. */
+export type JamMessageWithSenderRow = JamMessageRow & {
+  sender_username: string;
+  sender_avatar_url: string | null;
+};

@@ -1,7 +1,7 @@
 import { JamForm } from '@/features/jams/components/jam-form';
 import { useUpdateJam } from '@/features/jams/hooks/use-update-jam';
 import {
-  mapCreateJamFormToInput,
+  mapJamFormToUpdateInput,
   mapJamToFormValues,
   type CreateJamFormValues,
 } from '@/features/jams/schemas/create-jam-form.schema';
@@ -12,11 +12,12 @@ type EditJamFormProps = {
   onSuccess: () => void;
 };
 
+/** Edits one jam: a one-off jam, or a single date of a series. */
 export function EditJamForm({ jam, onSuccess }: EditJamFormProps): React.JSX.Element {
   const { mutateAsync: updateJam, isPending, error } = useUpdateJam();
 
   const handleSubmit = async (values: CreateJamFormValues): Promise<void> => {
-    await updateJam({ jamId: jam.id, input: mapCreateJamFormToInput(values) });
+    await updateJam({ jamId: jam.id, input: mapJamFormToUpdateInput(values) });
     onSuccess();
   };
 
@@ -26,6 +27,8 @@ export function EditJamForm({ jam, onSuccess }: EditJamFormProps): React.JSX.Ele
       submitLabel="Save changes"
       isPending={isPending}
       error={error}
+      showRecurrence={false}
+      lockDate={false}
       onSubmit={handleSubmit}
     />
   );

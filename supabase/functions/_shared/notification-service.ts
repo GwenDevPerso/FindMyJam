@@ -1,6 +1,6 @@
 import type { SupabaseClient } from 'https://esm.sh/@supabase/supabase-js@2.49.1';
 
-import type { CreateNotificationInput, DeviceRow } from './types.ts';
+import type { CreateNotificationInput, DeviceRow, PushInput } from './types.ts';
 
 type ExpoPushMessage = {
   to: string;
@@ -88,6 +88,32 @@ export async function getUserDevices(
   return data ?? [];
 }
 
+/**
+ * Sends a push to every device of each user, without storing a `notifications` row (used directly by the chat,
+ * whose messages do not go to the inbox). Users without a device are skipped.
+ */
+export async function sendPushToUsers(supabase: SupabaseClient, inputs: PushInput[]): Promise<number> {
+  const messages: ExpoPushMessage[] = [];
+
+  for (const input of inputs) {
+    const devices = await getUserDevices(supabase, input.userId);
+
+    for (const device of devices) {
+      messages.push({
+        to: device.expo_push_token,
+        title: input.title,
+        body: input.body,
+        data: input.data,
+        sound: 'default',
+      });
+    }
+  }
+
+  await sendExpoPushNotifications(messages);
+
+  return messages.length;
+}
+
 export async function createNotification(
   supabase: SupabaseClient,
   input: CreateNotificationInput,
@@ -109,25 +135,18 @@ export async function createNotification(
     throw new Error(`Failed to create notification: ${error?.message ?? 'unknown error'}`);
   }
 
-  const devices = await getUserDevices(supabase, input.userId);
-
-  if (devices.length > 0) {
-    const pushData = serializeNotificationData(input.data);
-
-    await sendExpoPushNotifications(
-      devices.map((device) => ({
-        to: device.expo_push_token,
-        title: input.title,
-        body: input.body,
-        data: {
-          ...pushData,
-          notification_id: data.id,
-          type: input.type,
-        },
-        sound: 'default',
-      })),
-    );
-  }
+  await sendPushToUsers(supabase, [
+    {
+      userId: input.userId,
+      title: input.title,
+      body: input.body,
+      data: {
+        ...serializeNotificationData(input.data),
+        notification_id: data.id,
+        type: input.type,
+      },
+    },
+  ]);
 
   return { id: data.id };
 }

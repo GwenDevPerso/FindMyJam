@@ -42,6 +42,7 @@ function buildPreferencesRow(overrides: Partial<NotificationPreferencesRow>): No
     new_matching_jams: true,
     jam_updates: true,
     jam_starting: true,
+    chat_messages: false,
     marketing: false,
     radius_km: 25,
     quiet_hours_start: '22:00',
@@ -223,6 +224,7 @@ describe('notificationService', () => {
         newMatchingJams: true,
         jamUpdates: true,
         jamStarting: true,
+        chatMessages: false,
         marketing: false,
         radiusKm: 25,
         quietHoursStart: '22:00',
@@ -262,6 +264,14 @@ describe('notificationService', () => {
         radius_km: 10,
         quiet_hours_start: null,
       });
+    });
+
+    it('sends the chat messages preference', async () => {
+      mockedPreferencesRepository.update.mockResolvedValue({ data: buildPreferencesRow({}), error: null });
+
+      await notificationService.updatePreferences(USER_ID, { chatMessages: false });
+
+      expect(mockedPreferencesRepository.update).toHaveBeenCalledWith(USER_ID, { chat_messages: false });
     });
 
     it('rejects a radius outside 1-500 km without calling the repository', async () => {

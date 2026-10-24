@@ -1,5 +1,6 @@
 import { type ReactNode } from 'react';
 
+import { useNotificationResponse } from '@/features/notifications/hooks/use-notification-response';
 import { useNotificationsRealtime } from '@/features/notifications/hooks/use-notifications-realtime';
 import { useRegisterDevice } from '@/features/notifications/hooks/use-register-device';
 import { useAuthStore } from '@/store/auth.store';
@@ -14,6 +15,7 @@ export function NotificationsProvider({ children }: NotificationsProviderProps):
 
   useRegisterDevice({ enabled: isAuthenticated });
   useNotificationsRealtime({ enabled: isAuthenticated });
+  useNotificationResponse({ enabled: isAuthenticated });
 
   return <>{children}</>;
 }

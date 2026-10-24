@@ -1,0 +1,77 @@
+# A signed-in user creates a jam, opens its chat, sends a message, sees it, then deletes it.
+# The creator is a member of the chat, so the flow does not depend on an existing jam the account has joined.
+# Pass the account with: -e E2E_EMAIL=... -e E2E_PASSWORD=...
+# Runs against the Supabase project of .env.local and removes the message and the jam it created.
+appId: com.gwenaelbihan.findmyjam
+env:
+  JAM_TITLE: E2E Chat jam
+  MESSAGE: E2E hello from Maestro
+---
+- runFlow: ../../subflows/sign-in.yaml
+- tapOn: Create jam
+# The create screen asks for the location on first use.
+- runFlow:
+    when:
+      visible: Allow While Using App
+    commands:
+      - tapOn: Allow While Using App
+- extendedWaitUntil:
+    visible: Sunday jazz session
+    timeout: 30000
+- tapOn: Sunday jazz session
+- inputText: ${JAM_TITLE}
+- tapOn: Search for a venue or address
+- inputText: E2E venue
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      text: Create jam
+      index: 1
+    direction: DOWN
+- tapOn:
+    text: Create jam
+    index: 1
+# The detail of the new jam opens.
+- extendedWaitUntil:
+    visible: ${JAM_TITLE}
+    timeout: 30000
+- scrollUntilVisible:
+    element: Open chat
+    direction: DOWN
+- tapOn: Open chat
+- extendedWaitUntil:
+    visible: No messages yet
+    timeout: 30000
+# Send a message and see it in the room.
+- tapOn: Write a message…
+- inputText: ${MESSAGE}
+- tapOn: Send
+- extendedWaitUntil:
+    visible: ${MESSAGE}
+    timeout: 30000
+- assertNotVisible: No messages yet
+# Cleanup: delete the message (long press on an own message), then the jam.
+- longPressOn: ${MESSAGE}
+- assertVisible: Delete message?
+- tapOn: Delete
+- extendedWaitUntil:
+    visible: No messages yet
+    timeout: 30000
+- runFlow:
+    when:
+      platform: Android
+    commands:
+      - back
+- runFlow:
+    when:
+      platform: iOS
+    commands:
+      - tapOn: Jam details
+- scrollUntilVisible:
+    element: Delete jam
+    direction: DOWN
+- tapOn: Delete jam
+- tapOn: Delete
+- extendedWaitUntil:
+    notVisible: ${JAM_TITLE}
+    timeout: 30000

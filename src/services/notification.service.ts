@@ -64,6 +64,7 @@ function mapPreferencesRow(row: NotificationPreferencesRow): NotificationPrefere
     newMatchingJams: row.new_matching_jams,
     jamUpdates: row.jam_updates,
     jamStarting: row.jam_starting,
+    chatMessages: row.chat_messages,
     marketing: row.marketing,
     radiusKm: row.radius_km,
     quietHoursStart: row.quiet_hours_start,
@@ -112,6 +113,9 @@ function mapPreferencesUpdate(input: UpdateNotificationPreferencesInput): Record
   }
   if (input.jamStarting !== undefined) {
     update.jam_starting = input.jamStarting;
+  }
+  if (input.chatMessages !== undefined) {
+    update.chat_messages = input.chatMessages;
   }
   if (input.marketing !== undefined) {
     update.marketing = input.marketing;

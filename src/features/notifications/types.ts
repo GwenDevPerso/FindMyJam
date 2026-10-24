@@ -7,6 +7,7 @@ export type NotificationType =
   | 'JAM_UPDATED'
   | 'JAM_CANCELLED'
   | 'JAM_STARTING_SOON'
+  | 'CHAT_MESSAGE'
   | 'SYSTEM';
 
 export type NotificationAction =
@@ -15,7 +16,8 @@ export type NotificationAction =
   | 'open_friends'
   | 'open_jams'
   | 'open_profile'
-  | 'open_notifications';
+  | 'open_notifications'
+  | 'open_chat';
 
 export type NotificationData = {
   jamId?: string;
@@ -58,6 +60,7 @@ export type NotificationPreferences = {
   newMatchingJams: boolean;
   jamUpdates: boolean;
   jamStarting: boolean;
+  chatMessages: boolean;
   marketing: boolean;
   radiusKm: number;
   quietHoursStart: string | null;
@@ -74,6 +77,7 @@ export type UpdateNotificationPreferencesInput = {
   newMatchingJams?: boolean;
   jamUpdates?: boolean;
   jamStarting?: boolean;
+  chatMessages?: boolean;
   marketing?: boolean;
   radiusKm?: number;
   quietHoursStart?: string | null;

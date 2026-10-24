@@ -13,8 +13,10 @@ import {
   createJamFormSchema,
   type CreateJamFormValues,
 } from '@/features/jams/schemas/create-jam-form.schema';
+import type { JamRecurrenceOption } from '@/features/jams/types';
 import type { SkillLevel } from '@/types/domain';
 import { formatSkillLevel } from '@/utils/format';
+import { getRecurrenceOptionLabel } from '@/utils/recurrence';
 import { Badge } from '@/components/ui/badge';
 
 const SKILL_LEVELS: SkillLevel[] = [
@@ -25,12 +27,18 @@ const SKILL_LEVELS: SkillLevel[] = [
   'all_levels',
 ];
 
+const RECURRENCE_OPTIONS: JamRecurrenceOption[] = ['none', 'weekly', 'biweekly', 'monthly_weekday'];
+
 type JamFormProps = {
   /** Initial values; the location search is biased towards their coordinates. */
   defaultValues: CreateJamFormValues;
   submitLabel: string;
   isPending: boolean;
   error: Error | null;
+  /** Offers the recurrence choice; only on creation, the recurrence of a series cannot change afterwards. */
+  showRecurrence: boolean;
+  /** Hides the date, for the edit of a whole series whose day cannot change. */
+  lockDate: boolean;
   onSubmit: (values: CreateJamFormValues) => Promise<void>;
 };
 
@@ -48,6 +56,8 @@ export function JamForm({
   submitLabel,
   isPending,
   error,
+  showRecurrence,
+  lockDate,
   onSubmit,
 }: JamFormProps): React.JSX.Element {
   const instrumentsQuery = useReferenceInstruments({ enabled: true });
@@ -69,6 +79,8 @@ export function JamForm({
   const latitude = useWatch({ control, name: 'latitude' });
   const longitude = useWatch({ control, name: 'longitude' });
   const locationName = useWatch({ control, name: 'locationName' });
+  const date = useWatch({ control, name: 'date' });
+  const recurrence = useWatch({ control, name: 'recurrence' });
 
   const proximity = { latitude: defaultValues.latitude, longitude: defaultValues.longitude };
 
@@ -113,23 +125,25 @@ export function JamForm({
       />
 
       <View className="flex-row gap-3">
-        <View className="flex-1">
-          <Controller
-            control={control}
-            name="date"
-            render={({ field: { onChange, onBlur, value } }) => (
-              <Input
-                label="Date"
-                placeholder="YYYY-MM-DD"
-                autoCapitalize="none"
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-                error={errors.date?.message}
-              />
-            )}
-          />
-        </View>
+        {lockDate ? null : (
+          <View className="flex-1">
+            <Controller
+              control={control}
+              name="date"
+              render={({ field: { onChange, onBlur, value } }) => (
+                <Input
+                  label="Date"
+                  placeholder="YYYY-MM-DD"
+                  autoCapitalize="none"
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                  error={errors.date?.message}
+                />
+              )}
+            />
+          </View>
+        )}
 
         <View className="flex-1">
           <Controller
@@ -149,6 +163,33 @@ export function JamForm({
           />
         </View>
       </View>
+
+      {showRecurrence ? (
+        <View className="gap-2">
+          <Text className="text-sm font-semibold text-foreground">Repeats</Text>
+          <View className="flex-row flex-wrap gap-2">
+            {RECURRENCE_OPTIONS.map((option) => {
+              const isSelected = recurrence === option;
+
+              return (
+                <Pressable
+                  key={option}
+                  accessibilityRole="button"
+                  accessibilityState={{ selected: isSelected }}
+                  onPress={() => {
+                    setValue('recurrence', option, { shouldValidate: true });
+                  }}>
+                  <Badge
+                    label={getRecurrenceOptionLabel(option, date)}
+                    variant={isSelected ? 'solid' : 'outline'}
+                    size="md"
+                  />
+                </Pressable>
+              );
+            })}
+          </View>
+        </View>
+      ) : null}
 
       <LocationAutocompleteInput
         label="Location"

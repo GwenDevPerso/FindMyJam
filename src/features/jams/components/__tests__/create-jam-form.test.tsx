@@ -138,8 +138,51 @@ describe('CreateJamForm', () => {
       maxParticipants: 10,
       instrumentIds: [],
       styleIds: [],
+      recurrence: 'none',
     });
     expect(onSuccess).toHaveBeenCalledWith('jam-1');
+  });
+
+  it('creates a one-off jam unless a recurrence is picked', async () => {
+    mockCreateJam({});
+    await renderForm(jest.fn());
+
+    expect(screen.getByText('Repeats')).toBeOnTheScreen();
+    expect(screen.getByRole('button', { name: 'Does not repeat' })).toBeSelected();
+  });
+
+  it('creates a recurring jam with the picked recurrence', async () => {
+    const mutateAsync = mockCreateJam({});
+    const user = userEvent.setup();
+    await renderForm(jest.fn());
+
+    await user.type(screen.getByPlaceholderText('Sunday jazz session'), 'Tuesday jazz night');
+    await user.type(screen.getByPlaceholderText('Search for a venue or address'), 'Le Caveau');
+    await user.press(screen.getByRole('button', { name: 'Every 2 weeks' }));
+    expect(screen.getByRole('button', { name: 'Every 2 weeks' })).toBeSelected();
+    expect(screen.getByRole('button', { name: 'Does not repeat' })).not.toBeSelected();
+    await user.press(screen.getByRole('button', { name: 'Create jam' }));
+
+    expect(mutateAsync).toHaveBeenCalledWith(expect.objectContaining({ recurrence: 'biweekly' }));
+  });
+
+  it('names the monthly recurrence after the weekday position of the typed date', async () => {
+    const mutateAsync = mockCreateJam({});
+    const user = userEvent.setup();
+    await renderForm(jest.fn());
+
+    await user.type(screen.getByPlaceholderText('Sunday jazz session'), 'Tuesday jazz night');
+    await user.type(screen.getByPlaceholderText('Search for a venue or address'), 'Le Caveau');
+    await user.clear(screen.getByPlaceholderText('YYYY-MM-DD'));
+    await user.type(screen.getByPlaceholderText('YYYY-MM-DD'), '2026-10-13');
+    expect(screen.getByRole('button', { name: 'Every month on the 2nd Tuesday' })).toBeOnTheScreen();
+
+    await user.clear(screen.getByPlaceholderText('YYYY-MM-DD'));
+    await user.type(screen.getByPlaceholderText('YYYY-MM-DD'), '2026-10-29');
+    await user.press(screen.getByRole('button', { name: 'Every month on the last Thursday' }));
+    await user.press(screen.getByRole('button', { name: 'Create jam' }));
+
+    expect(mutateAsync).toHaveBeenCalledWith(expect.objectContaining({ recurrence: 'monthly_weekday' }));
   });
 
   it('includes the picked place, skill level, instruments, styles and description', async () => {

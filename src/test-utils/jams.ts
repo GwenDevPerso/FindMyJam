@@ -16,6 +16,7 @@ export function buildJam(overrides: Partial<Jam>): Jam {
     distanceMeters: 1200,
     instrumentIds: [],
     styleIds: [],
+    seriesId: null,
     createdAt: '2026-07-01T10:00:00.000Z',
     updatedAt: '2026-07-02T10:00:00.000Z',
     ...overrides,

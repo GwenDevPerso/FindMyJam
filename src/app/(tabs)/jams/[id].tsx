@@ -5,9 +5,11 @@ import { ErrorState } from '@/components/layout/error-state';
 import { Loading } from '@/components/feedback/loading';
 import { Screen } from '@/components/layout/screen';
 import { Button } from '@/components/ui/button';
+import { OpenChatButton } from '@/features/chat/components/open-chat-button';
 import { JamBadges } from '@/features/jams/components/jam-badges';
 import { JamLocationMap } from '@/features/jams/components/jam-location-map';
 import { JamOwnerActions } from '@/features/jams/components/jam-owner-actions';
+import { JamRecurrenceSummary } from '@/features/jams/components/jam-recurrence-summary';
 import { ParticipantList } from '@/features/jams/components/participant-list';
 import { useJamDetail } from '@/features/jams/hooks/use-jam-detail';
 import { useJoinJam } from '@/features/jams/hooks/use-join-jam';
@@ -63,6 +65,7 @@ export default function JamDetailScreen(): React.JSX.Element {
       <View className="gap-2">
         <Text className="text-2xl font-bold text-foreground">{jam.title}</Text>
         <Text className="text-sm text-muted-foreground">{formatJamDateTime(jam.startsAt)}</Text>
+        <JamRecurrenceSummary recurrence={jam.recurrence} startsAt={jam.startsAt} />
         <Text className="text-base text-foreground">{jam.locationName}</Text>
       </View>
 
@@ -111,6 +114,8 @@ export default function JamDetailScreen(): React.JSX.Element {
         />
       ) : null}
 
+      <OpenChatButton jamId={jam.id} isCreator={jam.isCreator} isParticipant={jam.isParticipant} />
+
       {joinJam.error !== null ? (
         <Text className="text-sm text-destructive">{joinJam.error.message}</Text>
       ) : null}
@@ -119,7 +124,7 @@ export default function JamDetailScreen(): React.JSX.Element {
         <Text className="text-sm text-destructive">{leaveJam.error.message}</Text>
       ) : null}
 
-      {jam.isCreator ? <JamOwnerActions jamId={jam.id} jamTitle={jam.title} /> : null}
+      {jam.isCreator ? <JamOwnerActions jamId={jam.id} seriesId={jam.seriesId} jamTitle={jam.title} /> : null}
 
       <View className="gap-3">
         <Text className="text-lg font-bold text-foreground">Participants</Text>

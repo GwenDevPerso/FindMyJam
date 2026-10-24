@@ -16,6 +16,7 @@ function buildInput(overrides: Partial<CreateJamValues>): CreateJamValues {
     maxParticipants: 6,
     instrumentIds: ['11111111-1111-4111-8111-111111111111'],
     styleIds: [],
+    recurrence: 'none',
     ...overrides,
   };
 }
@@ -52,7 +53,12 @@ describe('createJamSchema', () => {
     [{ longitude: 180.1 }, 'longitude'],
     [{ skillLevel: 'pro' as CreateJamValues['skillLevel'] }, 'skillLevel'],
     [{ instrumentIds: ['not-a-uuid'] }, 'instrumentIds'],
+    [{ recurrence: 'daily' as CreateJamValues['recurrence'] }, 'recurrence'],
   ])('rejects %j on %s', (overrides, field) => {
     expect(firstIssueFor(overrides)?.path[0]).toBe(field);
+  });
+
+  it.each(['none', 'weekly', 'biweekly', 'monthly_weekday'] as const)('accepts the "%s" recurrence', (recurrence) => {
+    expect(createJamSchema.safeParse(buildInput({ recurrence })).success).toBe(true);
   });
 });

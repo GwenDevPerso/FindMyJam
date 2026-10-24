@@ -9,6 +9,7 @@ export const notificationTypeSchema = z.enum([
   'JAM_UPDATED',
   'JAM_CANCELLED',
   'JAM_STARTING_SOON',
+  'CHAT_MESSAGE',
   'SYSTEM',
 ]);
 
@@ -19,6 +20,7 @@ export const notificationActionSchema = z.enum([
   'open_jams',
   'open_profile',
   'open_notifications',
+  'open_chat',
 ]);
 
 export const notificationDataSchema = z.object({
@@ -61,6 +63,7 @@ export const updateNotificationPreferencesSchema = z.object({
   newMatchingJams: z.boolean().optional(),
   jamUpdates: z.boolean().optional(),
   jamStarting: z.boolean().optional(),
+  chatMessages: z.boolean().optional(),
   marketing: z.boolean().optional(),
   radiusKm: z.number().int().min(1).max(500).optional(),
   quietHoursStart: z.string().nullable().optional(),
