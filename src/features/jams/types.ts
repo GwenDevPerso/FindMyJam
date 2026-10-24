@@ -21,6 +21,8 @@ export type JamListFilters = {
   startsBefore: string | null;
   limit: number;
   cursor: JamListCursor | null;
+  /** Keeps one jam per series, its earliest date matching the filters; one-off jams are unaffected. */
+  nextOccurrenceOnly: boolean;
 };
 
 export type JamListResult = {

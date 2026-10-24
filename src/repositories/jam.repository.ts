@@ -40,6 +40,7 @@ export type SearchJamsRepositoryParams = {
   startsBefore: string | null;
   limit: number;
   cursor: JamListCursor | null;
+  nextOccurrenceOnly: boolean;
 };
 
 function mapFiltersToSearchParams(filters: JamListFilters): SearchJamsRepositoryParams {
@@ -53,6 +54,7 @@ function mapFiltersToSearchParams(filters: JamListFilters): SearchJamsRepository
     startsBefore: filters.startsBefore,
     limit: filters.limit,
     cursor: filters.cursor,
+    nextOccurrenceOnly: filters.nextOccurrenceOnly,
   };
 }
 
@@ -82,6 +84,7 @@ export const jamRepository = {
       p_cursor_distance: params.cursor?.distanceMeters ?? null,
       p_cursor_starts_at: params.cursor?.startsAt ?? null,
       p_cursor_id: params.cursor?.id ?? null,
+      p_next_occurrence_only: params.nextOccurrenceOnly,
     });
 
     return { data: data ?? [], error };
