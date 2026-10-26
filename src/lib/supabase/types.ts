@@ -19,6 +19,7 @@ export type NotificationType =
   | 'JAM_CANCELLED'
   | 'JAM_STARTING_SOON'
   | 'CHAT_MESSAGE'
+  | 'WAITLIST_PROMOTED'
   | 'SYSTEM';
 
 export type DevicePlatform = 'ios' | 'android' | 'web';
@@ -153,6 +154,27 @@ export type Database = {
           jam_id?: string;
           user_id?: string;
           joined_at?: string;
+        };
+      };
+      jam_waitlist: {
+        Row: {
+          jam_id: string;
+          user_id: string;
+          position: number;
+          created_at: string;
+        };
+        Insert: {
+          jam_id: string;
+          user_id: string;
+          /** Set by the `jam_waitlist_before_insert` trigger; any value sent is replaced. */
+          position?: number;
+          created_at?: string;
+        };
+        Update: {
+          jam_id?: string;
+          user_id?: string;
+          position?: number;
+          created_at?: string;
         };
       };
       jam_instruments: {
@@ -592,6 +614,7 @@ export type CreateJamSeriesResultRow = {
 };
 
 export type JamParticipantRow = Database['public']['Tables']['jam_participants']['Row'];
+export type JamWaitlistRow = Database['public']['Tables']['jam_waitlist']['Row'];
 
 export type JamParticipantWithProfileRow = JamParticipantRow & {
   profiles: {

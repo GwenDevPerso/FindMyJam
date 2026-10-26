@@ -35,6 +35,7 @@ function resolveHrefFromData(type: NotificationType, data: NotificationData): Hr
     case 'JAM_UPDATED':
     case 'JAM_STARTING_SOON':
     case 'CHAT_MESSAGE':
+    case 'WAITLIST_PROMOTED':
       return Routes.jamsAll as Href;
     case 'JAM_CANCELLED':
       return Routes.jamsAll as Href;

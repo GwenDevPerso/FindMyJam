@@ -21,6 +21,7 @@ export const queryKeys = {
       'participants',
       jamId,
     ],
+    waitlist: (jamId: string): readonly ['jams', 'waitlist', string] => ['jams', 'waitlist', jamId],
   },
   profiles: {
     all: ['profiles'] as const,

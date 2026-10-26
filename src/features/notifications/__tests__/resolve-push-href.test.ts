@@ -27,6 +27,21 @@ describe('resolvePushHref', () => {
     expect(href).toBe(`/jams/${JAM_ID}`);
   });
 
+  it('opens the jam of a waitlist promotion push', () => {
+    const href = resolvePushHref({
+      type: 'WAITLIST_PROMOTED',
+      jam_id: JAM_ID,
+      action: 'open_jam',
+      navigation_target: `/jams/${JAM_ID}`,
+    });
+
+    expect(href).toBe(`/jams/${JAM_ID}`);
+  });
+
+  it('opens the jams list for a waitlist promotion push without a jam', () => {
+    expect(resolvePushHref({ type: 'WAITLIST_PROMOTED' })).toBe('/jams/all');
+  });
+
   it('opens the friends list for a friend request push', () => {
     const href = resolvePushHref({ type: 'FRIEND_REQUEST' });
 

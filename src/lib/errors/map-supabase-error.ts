@@ -23,6 +23,10 @@ function mapPostgrestErrorCode(error: PostgrestError): AppErrorCode {
     return 'JAM_NOT_FOUND';
   }
 
+  if (message.includes('is not full')) {
+    return 'JAM_NOT_FULL';
+  }
+
   if (message.includes('is full')) {
     return 'JAM_FULL';
   }
@@ -33,6 +37,10 @@ function mapPostgrestErrorCode(error: PostgrestError): AppErrorCode {
 
   if (error.code === '23505' && message.includes('jam_participants')) {
     return 'ALREADY_JOINED';
+  }
+
+  if (error.code === '23505' && message.includes('jam_waitlist')) {
+    return 'ALREADY_ON_WAITLIST';
   }
 
   if (error.code === '23505' && message.includes('friendships')) {

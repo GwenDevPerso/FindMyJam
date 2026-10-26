@@ -296,6 +296,9 @@ verify_jwt = true
 [functions.send-chat-message-notification]
 verify_jwt = true
 
+[functions.send-waitlist-promoted-notification]
+verify_jwt = true
+
 [edge_runtime]
 enabled = true
 # Configure one of the supported request policies: `oneshot`, `per_worker`.

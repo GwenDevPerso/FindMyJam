@@ -8,6 +8,7 @@ export type NotificationType =
   | 'JAM_CANCELLED'
   | 'JAM_STARTING_SOON'
   | 'CHAT_MESSAGE'
+  | 'WAITLIST_PROMOTED'
   | 'SYSTEM';
 
 export type NotificationAction =

@@ -19,6 +19,8 @@ export function useLeaveJam() {
     onSuccess: (_data, jamId) => {
       void queryClient.invalidateQueries({ queryKey: queryKeys.jams.detail(jamId) });
       void queryClient.invalidateQueries({ queryKey: queryKeys.jams.participants(jamId) });
+      // The database promotes the first person waiting into the freed spot.
+      void queryClient.invalidateQueries({ queryKey: queryKeys.jams.waitlist(jamId) });
       void queryClient.invalidateQueries({ queryKey: queryKeys.jams.lists() });
       void queryClient.invalidateQueries({ queryKey: queryKeys.jams.infinites() });
     },

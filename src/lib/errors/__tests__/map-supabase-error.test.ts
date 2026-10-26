@@ -41,6 +41,11 @@ describe('mapSupabaseError', () => {
       [{ code: 'PGRST116', message: 'JSON object requested, multiple (or no) rows returned' }, 'JAM_NOT_FOUND'],
       [{ code: 'P0001', message: 'Jam is full' }, 'JAM_FULL'],
       [{ code: 'P0001', message: 'Jam creator cannot join as participant' }, 'CREATOR_CANNOT_JOIN'],
+      [{ code: 'P0001', message: 'Jam 1111 is not full' }, 'JAM_NOT_FULL'],
+      [
+        { code: '23505', message: 'duplicate key value violates unique constraint "jam_waitlist_pkey"' },
+        'ALREADY_ON_WAITLIST',
+      ],
       [
         { code: '23505', message: 'duplicate key value violates unique constraint "jam_participants_pkey"' },
         'ALREADY_JOINED',

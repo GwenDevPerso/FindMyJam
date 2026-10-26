@@ -71,6 +71,13 @@ export type UpdateJamSeriesInput = {
   styleIds: string[];
 };
 
+/** Where the current user stands on a jam's waitlist. */
+export type JamWaitlistStatus = {
+  /** 1-based rank among the people waiting; null when the user is not on the list. */
+  position: number | null;
+  size: number;
+};
+
 export type JamDetail = Jam & {
   isCreator: boolean;
   isParticipant: boolean;
