@@ -19,7 +19,9 @@ import {
 } from '@/features/jams/hooks/use-infinite-jams';
 import { LocationAutocompleteInput } from '@/features/location/components/location-autocomplete-input';
 import type { PlaceSuggestion } from '@/features/location/types';
+import { MapFilters } from '@/features/map/components/map-filters';
 import { DEFAULT_RADIUS_METERS, FALLBACK_USER_LOCATION } from '@/features/map/constants';
+import { useJamSearchFilters } from '@/features/map/hooks/use-jam-search-filters';
 import { useUserLocation } from '@/features/map/hooks/use-user-location';
 import { useTheme } from '@/hooks/use-theme';
 import type { Jam } from '@/types/domain';
@@ -45,6 +47,7 @@ export function AllJamsList(): React.JSX.Element {
   const [selectedCity, setSelectedCity] = useState<SelectedCity | null>(null);
 
   const locationQuery = useUserLocation({ enabled: selectedCity === null });
+  const { instrumentIds, styleIds, startsAfter, startsBefore } = useJamSearchFilters();
 
   const searchCenter = useMemo((): Coordinates => {
     if (selectedCity !== null) {
@@ -76,9 +79,13 @@ export function AllJamsList(): React.JSX.Element {
       latitude: searchCenter.latitude,
       longitude: searchCenter.longitude,
       radiusMeters: DEFAULT_RADIUS_METERS,
+      instrumentIds,
+      styleIds,
+      startsAfter,
+      startsBefore,
       limit: ALL_JAMS_PAGE_SIZE,
     }),
-    [searchCenter],
+    [searchCenter, instrumentIds, styleIds, startsAfter, startsBefore],
   );
 
   const jamsQuery = useInfiniteJams({
@@ -137,6 +144,7 @@ export function AllJamsList(): React.JSX.Element {
             ? `Jams near ${selectedCity.label}`
             : 'Showing jams near your location — pick a city to refine.'}
         </Text>
+        <MapFilters showDistance={false} />
       </View>
 
       {jamsQuery.isLoading ? (

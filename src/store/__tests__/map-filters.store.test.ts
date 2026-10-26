@@ -10,9 +10,9 @@ const INSTRUMENT_ID = '11111111-1111-4111-8111-111111111111';
 const STYLE_ID = '22222222-2222-4222-8222-222222222222';
 
 function currentFilters(): Record<string, unknown> {
-  const { radiusMeters, instrumentIds, styleIds, startsAfter, startsBefore } = useMapFiltersStore.getState();
+  const { radiusMeters, instrumentIds, styleIds, dateFilter } = useMapFiltersStore.getState();
 
-  return { radiusMeters, instrumentIds, styleIds, startsAfter, startsBefore };
+  return { radiusMeters, instrumentIds, styleIds, dateFilter };
 }
 
 describe('useMapFiltersStore', () => {
@@ -26,8 +26,7 @@ describe('useMapFiltersStore', () => {
       radiusMeters: 25_000,
       instrumentIds: [],
       styleIds: [],
-      startsAfter: null,
-      startsBefore: null,
+      dateFilter: 'any',
     });
   });
 
@@ -45,16 +44,24 @@ describe('useMapFiltersStore', () => {
     expect(useMapFiltersStore.getState().styleIds).toEqual([STYLE_ID]);
   });
 
-  it('sets both ends of the date range', () => {
-    useMapFiltersStore.getState().setDateRange('2026-07-21T00:00:00.000Z', null);
+  it('toggles an instrument and a style in and out of the selection', () => {
+    useMapFiltersStore.getState().toggleInstrumentId(INSTRUMENT_ID);
+    useMapFiltersStore.getState().toggleStyleId(STYLE_ID);
 
-    expect(useMapFiltersStore.getState().startsAfter).toBe('2026-07-21T00:00:00.000Z');
-    expect(useMapFiltersStore.getState().startsBefore).toBeNull();
+    expect(useMapFiltersStore.getState().instrumentIds).toEqual([INSTRUMENT_ID]);
+    expect(useMapFiltersStore.getState().styleIds).toEqual([STYLE_ID]);
 
-    useMapFiltersStore.getState().setDateRange(null, '2026-07-28T00:00:00.000Z');
+    useMapFiltersStore.getState().toggleInstrumentId(INSTRUMENT_ID);
+    useMapFiltersStore.getState().toggleStyleId(STYLE_ID);
 
-    expect(useMapFiltersStore.getState().startsAfter).toBeNull();
-    expect(useMapFiltersStore.getState().startsBefore).toBe('2026-07-28T00:00:00.000Z');
+    expect(useMapFiltersStore.getState().instrumentIds).toEqual([]);
+    expect(useMapFiltersStore.getState().styleIds).toEqual([]);
+  });
+
+  it('sets the date filter', () => {
+    useMapFiltersStore.getState().setDateFilter('weekend');
+
+    expect(useMapFiltersStore.getState().dateFilter).toBe('weekend');
   });
 
   it('resets every filter to its default', () => {
@@ -62,7 +69,7 @@ describe('useMapFiltersStore', () => {
     state.setRadiusMeters(50_000);
     state.setInstrumentIds([INSTRUMENT_ID]);
     state.setStyleIds([STYLE_ID]);
-    state.setDateRange('2026-07-21T00:00:00.000Z', '2026-07-28T00:00:00.000Z');
+    state.setDateFilter('today');
 
     useMapFiltersStore.getState().resetFilters();
 
@@ -70,8 +77,7 @@ describe('useMapFiltersStore', () => {
       radiusMeters: 25_000,
       instrumentIds: [],
       styleIds: [],
-      startsAfter: null,
-      startsBefore: null,
+      dateFilter: 'any',
     });
   });
 
@@ -82,5 +88,22 @@ describe('useMapFiltersStore', () => {
 
     expect(key).toBe('map-filters');
     expect(JSON.parse(value).state).toMatchObject({ radiusMeters: 10_000, instrumentIds: [] });
+  });
+
+  it('drops the absolute date range persisted by the previous version', () => {
+    const migrate = useMapFiltersStore.persist.getOptions().migrate;
+
+    const migrated = migrate?.(
+      {
+        radiusMeters: 10_000,
+        instrumentIds: [INSTRUMENT_ID],
+        styleIds: [],
+        startsAfter: '2026-07-21T00:00:00.000Z',
+        startsBefore: null,
+      },
+      0,
+    );
+
+    expect(migrated).toEqual({ radiusMeters: 10_000, instrumentIds: [INSTRUMENT_ID], styleIds: [], dateFilter: 'any' });
   });
 });

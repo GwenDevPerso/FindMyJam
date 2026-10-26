@@ -1,5 +1,5 @@
 import { type Href, router } from 'expo-router';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { Platform, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -10,6 +10,7 @@ import { Routes } from '@/constants/routes';
 import { JamMap } from '@/features/map/components/jam-map';
 import { MapFilters } from '@/features/map/components/map-filters';
 import { FALLBACK_USER_LOCATION } from '@/features/map/constants';
+import { useJamSearchFilters } from '@/features/map/hooks/use-jam-search-filters';
 import { useMapJams } from '@/features/map/hooks/use-map-jams';
 import { useUserLocation } from '@/features/map/hooks/use-user-location';
 import type { MapSearchParams } from '@/features/map/types';
@@ -17,13 +18,8 @@ import { useMapFiltersStore } from '@/store/map-filters.store';
 
 export function MapExploreScreen(): React.JSX.Element {
   const insets = useSafeAreaInsets();
-  const [sessionStartsAfter] = useState((): string => new Date().toISOString());
-
   const radiusMeters = useMapFiltersStore((state) => state.radiusMeters);
-  const instrumentIds = useMapFiltersStore((state) => state.instrumentIds);
-  const styleIds = useMapFiltersStore((state) => state.styleIds);
-  const startsAfter = useMapFiltersStore((state) => state.startsAfter);
-  const startsBefore = useMapFiltersStore((state) => state.startsBefore);
+  const { instrumentIds, styleIds, startsAfter, startsBefore } = useJamSearchFilters();
 
   const {
     data: userLocation,
@@ -41,10 +37,10 @@ export function MapExploreScreen(): React.JSX.Element {
       radiusMeters,
       instrumentIds,
       styleIds,
-      startsAfter: startsAfter ?? sessionStartsAfter,
+      startsAfter,
       startsBefore,
     };
-  }, [resolvedLocation, radiusMeters, instrumentIds, styleIds, startsAfter, startsBefore, sessionStartsAfter]);
+  }, [resolvedLocation, radiusMeters, instrumentIds, styleIds, startsAfter, startsBefore]);
 
   const {
     markers,
@@ -113,7 +109,7 @@ export function MapExploreScreen(): React.JSX.Element {
       <View
         className="absolute left-0 right-0 gap-2 px-4"
         style={{ top: insets.top + 8 }}>
-        <MapFilters />
+        <MapFilters showDistance={true} />
 
         <View className="self-start rounded-full bg-card/95 px-3 py-1.5">
           <Text className="text-xs font-medium text-foreground">

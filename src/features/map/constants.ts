@@ -12,6 +12,18 @@ export type DistanceFilterOption = (typeof DISTANCE_FILTER_OPTIONS)[number];
 
 export const DEFAULT_RADIUS_METERS: DistanceFilterOption = 25_000;
 
+/** Relative date windows offered by the filters; the range is computed when the search runs, never stored. */
+export const DATE_FILTER_OPTIONS = ['any', 'today', 'weekend', 'week'] as const;
+
+export type DateFilterOption = (typeof DATE_FILTER_OPTIONS)[number];
+
+export const DATE_FILTER_LABELS: Record<DateFilterOption, string> = {
+  any: 'Any date',
+  today: 'Today',
+  weekend: 'This weekend',
+  week: 'Next 7 days',
+};
+
 export const FALLBACK_USER_LOCATION: Coordinates = {
   latitude: 48.8566,
   longitude: 2.3522,
