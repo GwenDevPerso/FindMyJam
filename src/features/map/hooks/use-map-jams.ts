@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { keepPreviousData, useInfiniteQuery } from '@tanstack/react-query';
 
 import { MAP_FILTER_DEBOUNCE_MS } from '@/features/map/constants';
 import type { MapJamMarker, MapSearchParams } from '@/features/map/types';
@@ -27,14 +27,19 @@ type UseMapJamsResult = {
 };
 
 export function useMapJams({ searchParams, enabled }: UseMapJamsOptions): UseMapJamsResult {
+  // Chips are often tapped several in a row: wait for the selection to settle before searching again.
   const debouncedRadiusMeters = useDebounce(searchParams.radiusMeters, MAP_FILTER_DEBOUNCE_MS);
+  const debouncedInstrumentIds = useDebounce(searchParams.instrumentIds, MAP_FILTER_DEBOUNCE_MS);
+  const debouncedStyleIds = useDebounce(searchParams.styleIds, MAP_FILTER_DEBOUNCE_MS);
 
   const debouncedSearchParams = useMemo(
     (): MapSearchParams => ({
       ...searchParams,
       radiusMeters: debouncedRadiusMeters,
+      instrumentIds: debouncedInstrumentIds,
+      styleIds: debouncedStyleIds,
     }),
-    [searchParams, debouncedRadiusMeters],
+    [searchParams, debouncedRadiusMeters, debouncedInstrumentIds, debouncedStyleIds],
   );
 
   const query = useInfiniteQuery({
@@ -45,6 +50,8 @@ export function useMapJams({ searchParams, enabled }: UseMapJamsOptions): UseMap
     getNextPageParam: (lastPage) => lastPage.nextCursor,
     enabled,
     staleTime: DEFAULT_STALE_TIME_MS,
+    // Keep the current markers while a filter change loads, so the map and its filters stay on screen.
+    placeholderData: keepPreviousData,
   });
 
   const markers = useMemo((): MapJamMarker[] => {

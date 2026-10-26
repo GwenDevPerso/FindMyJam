@@ -4,29 +4,40 @@ import { createJSONStorage, persist } from 'zustand/middleware';
 
 import {
   DEFAULT_RADIUS_METERS,
+  type DateFilterOption,
   type DistanceFilterOption,
 } from '@/features/map/constants';
 
-type MapFiltersState = {
+type MapFilters = {
   radiusMeters: DistanceFilterOption;
   instrumentIds: string[];
   styleIds: string[];
-  startsAfter: string | null;
-  startsBefore: string | null;
+  dateFilter: DateFilterOption;
+};
+
+type MapFiltersState = MapFilters & {
   setRadiusMeters: (radiusMeters: DistanceFilterOption) => void;
   setInstrumentIds: (instrumentIds: string[]) => void;
   setStyleIds: (styleIds: string[]) => void;
-  setDateRange: (startsAfter: string | null, startsBefore: string | null) => void;
+  toggleInstrumentId: (instrumentId: string) => void;
+  toggleStyleId: (styleId: string) => void;
+  setDateFilter: (dateFilter: DateFilterOption) => void;
   resetFilters: () => void;
 };
 
-const initialFilters = {
+/** Version 1 replaced the absolute `startsAfter` / `startsBefore`, which went stale once persisted, with `dateFilter`. */
+const PERSIST_VERSION = 1;
+
+const initialFilters: MapFilters = {
   radiusMeters: DEFAULT_RADIUS_METERS,
-  instrumentIds: [] as string[],
-  styleIds: [] as string[],
-  startsAfter: null as string | null,
-  startsBefore: null as string | null,
+  instrumentIds: [],
+  styleIds: [],
+  dateFilter: 'any',
 };
+
+function toggleId(ids: string[], id: string): string[] {
+  return ids.includes(id) ? ids.filter((current) => current !== id) : [...ids, id];
+}
 
 export const useMapFiltersStore = create<MapFiltersState>()(
   persist(
@@ -41,8 +52,14 @@ export const useMapFiltersStore = create<MapFiltersState>()(
       setStyleIds: (styleIds) => {
         set({ styleIds });
       },
-      setDateRange: (startsAfter, startsBefore) => {
-        set({ startsAfter, startsBefore });
+      toggleInstrumentId: (instrumentId) => {
+        set((state) => ({ instrumentIds: toggleId(state.instrumentIds, instrumentId) }));
+      },
+      toggleStyleId: (styleId) => {
+        set((state) => ({ styleIds: toggleId(state.styleIds, styleId) }));
+      },
+      setDateFilter: (dateFilter) => {
+        set({ dateFilter });
       },
       resetFilters: () => {
         set(initialFilters);
@@ -51,6 +68,17 @@ export const useMapFiltersStore = create<MapFiltersState>()(
     {
       name: 'map-filters',
       storage: createJSONStorage(() => AsyncStorage),
+      version: PERSIST_VERSION,
+      migrate: (persistedState) => {
+        const { radiusMeters, instrumentIds, styleIds } = persistedState as Partial<MapFilters>;
+
+        return {
+          radiusMeters: radiusMeters ?? initialFilters.radiusMeters,
+          instrumentIds: instrumentIds ?? initialFilters.instrumentIds,
+          styleIds: styleIds ?? initialFilters.styleIds,
+          dateFilter: initialFilters.dateFilter,
+        } as MapFiltersState;
+      },
     },
   ),
 );
