@@ -1,5 +1,6 @@
 import type { PostgrestError } from '@supabase/supabase-js';
 
+import type { JamWaitlistRow } from '@/lib/supabase/types';
 import { supabase } from '@/services/supabase';
 import type { JamParticipant } from '@/types/domain';
 
@@ -86,6 +87,37 @@ export const participationRepository = {
   leave: async (jamId: string, userId: string): Promise<{ error: PostgrestError | null }> => {
     const { error } = await supabase
       .from('jam_participants')
+      .delete()
+      .eq('jam_id', jamId)
+      .eq('user_id', userId);
+
+    return { error };
+  },
+
+  findWaitlist: async (
+    jamId: string,
+  ): Promise<ParticipationRepositoryResult<Pick<JamWaitlistRow, 'user_id' | 'position'>[]>> => {
+    const { data, error } = await supabase
+      .from('jam_waitlist')
+      .select('user_id, position')
+      .eq('jam_id', jamId)
+      .order('position', { ascending: true });
+
+    return { data: data ?? [], error };
+  },
+
+  joinWaitlist: async (jamId: string, userId: string): Promise<{ error: PostgrestError | null }> => {
+    const { error } = await supabase.from('jam_waitlist').insert({
+      jam_id: jamId,
+      user_id: userId,
+    });
+
+    return { error };
+  },
+
+  leaveWaitlist: async (jamId: string, userId: string): Promise<{ error: PostgrestError | null }> => {
+    const { error } = await supabase
+      .from('jam_waitlist')
       .delete()
       .eq('jam_id', jamId)
       .eq('user_id', userId);

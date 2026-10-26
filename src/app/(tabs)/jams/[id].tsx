@@ -4,16 +4,14 @@ import { Text, View } from 'react-native';
 import { ErrorState } from '@/components/layout/error-state';
 import { Loading } from '@/components/feedback/loading';
 import { Screen } from '@/components/layout/screen';
-import { Button } from '@/components/ui/button';
 import { OpenChatButton } from '@/features/chat/components/open-chat-button';
 import { JamBadges } from '@/features/jams/components/jam-badges';
 import { JamLocationMap } from '@/features/jams/components/jam-location-map';
 import { JamOwnerActions } from '@/features/jams/components/jam-owner-actions';
+import { JamParticipationActions } from '@/features/jams/components/jam-participation-actions';
 import { JamRecurrenceSummary } from '@/features/jams/components/jam-recurrence-summary';
 import { ParticipantList } from '@/features/jams/components/participant-list';
 import { useJamDetail } from '@/features/jams/hooks/use-jam-detail';
-import { useJoinJam } from '@/features/jams/hooks/use-join-jam';
-import { useLeaveJam } from '@/features/jams/hooks/use-leave-jam';
 import { formatJamDateTime } from '@/utils/date';
 import { formatParticipantCount, formatSkillLevel } from '@/utils/format';
 
@@ -22,8 +20,6 @@ export default function JamDetailScreen(): React.JSX.Element {
   const jamId = id ?? '';
 
   const jamQuery = useJamDetail({ jamId, enabled: jamId.length > 0 });
-  const joinJam = useJoinJam();
-  const leaveJam = useLeaveJam();
 
   if (jamQuery.isLoading) {
     return (
@@ -57,9 +53,6 @@ export default function JamDetailScreen(): React.JSX.Element {
     );
   }
 
-  const canJoin = !jam.isCreator && !jam.isParticipant;
-  const canLeave = jam.isParticipant;
-
   return (
     <Screen scrollable={true} withTabBarInset={false} contentClassName="gap-6 pb-8">
       <View className="gap-2">
@@ -90,39 +83,9 @@ export default function JamDetailScreen(): React.JSX.Element {
 
       <JamBadges instrumentIds={jam.instrumentIds} styleIds={jam.styleIds} maxVisible={6} size="md" />
 
-      {canJoin ? (
-        <Button
-          label="Join jam"
-          variant="primary"
-          size="lg"
-          isLoading={joinJam.isPending}
-          onPress={() => {
-            joinJam.mutate(jam.id);
-          }}
-        />
-      ) : null}
-
-      {canLeave ? (
-        <Button
-          label="Leave jam"
-          variant="outline"
-          size="lg"
-          isLoading={leaveJam.isPending}
-          onPress={() => {
-            leaveJam.mutate(jam.id);
-          }}
-        />
-      ) : null}
+      <JamParticipationActions jam={jam} />
 
       <OpenChatButton jamId={jam.id} isCreator={jam.isCreator} isParticipant={jam.isParticipant} />
-
-      {joinJam.error !== null ? (
-        <Text className="text-sm text-destructive">{joinJam.error.message}</Text>
-      ) : null}
-
-      {leaveJam.error !== null ? (
-        <Text className="text-sm text-destructive">{leaveJam.error.message}</Text>
-      ) : null}
 
       {jam.isCreator ? <JamOwnerActions jamId={jam.id} seriesId={jam.seriesId} jamTitle={jam.title} /> : null}
 
