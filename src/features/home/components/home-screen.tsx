@@ -42,7 +42,7 @@ function QuickAction({ label, icon: Icon, color, onPress }: QuickActionProps): R
       scaleValue={0.95}
       onPress={onPress}
       className="flex-1">
-      <View className="flex-1 items-center justify-center gap-2 rounded-xl border border-border bg-card p-4 active:bg-surface-hover">
+      <View className="grow items-center justify-center gap-2 rounded-xl border border-border bg-card p-4 active:bg-surface-hover">
         <View className="rounded-md border border-border-strong p-2.5">
           <Icon size={22} color={color} strokeWidth={1.8} />
         </View>
