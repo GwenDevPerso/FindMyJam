@@ -33,42 +33,51 @@ const COLOR_TOKENS = [
 module.exports = {
   content: ['./src/**/*.{js,jsx,ts,tsx}'],
   presets: [require('nativewind/preset')],
-  darkMode: 'media',
   theme: {
     extend: {
       colors: Object.fromEntries(COLOR_TOKENS.map((name) => [name, token(name)])),
-      // DESIGN.md §4: radius 0 everywhere (keys kept so existing classes compile).
+      // DESIGN.md §4 radius scale: sm tags, md icon buttons, lg buttons / inputs, xl hero cards, full chips and avatars.
       borderRadius: {
         none: '0px',
-        sm: '0px',
-        DEFAULT: '0px',
-        md: '0px',
-        lg: '0px',
-        xl: '0px',
-        '2xl': '0px',
-        '3xl': '0px',
-        full: '0px',
+        sm: '6px',
+        DEFAULT: '12px',
+        md: '12px',
+        lg: '16px',
+        xl: '24px',
+        '2xl': '24px',
+        '3xl': '28px',
+        full: '9999px',
       },
-      // DESIGN.md §3: the Text primitive (src/components/ui/text.tsx) picks the exact face per weight.
+      // DESIGN.md §3: the Text primitive (src/components/ui/text.tsx) picks the exact face per size and weight.
       fontFamily: {
         sans: ['Archivo_700Bold'],
         mono: ['IBMPlexMono_400Regular'],
       },
-      // DESIGN.md §3 type scale: xs = label/caption, sm/base = body, lg/xl = heading, 2xl = title, 3xl = display.
+      // DESIGN.md §3 type scale: xs label, sm meta, base body, lg subheading, xl heading, 2xl title, 3xl display.
       fontSize: {
         xs: ['11px', { lineHeight: '16px' }],
-        sm: ['13px', { lineHeight: '20px' }],
-        base: ['13px', { lineHeight: '20px' }],
-        lg: ['18px', { lineHeight: '24px' }],
-        xl: ['18px', { lineHeight: '24px' }],
-        '2xl': ['32px', { lineHeight: '36px' }],
-        '3xl': ['40px', { lineHeight: '44px' }],
+        sm: ['13px', { lineHeight: '18px' }],
+        base: ['15px', { lineHeight: '22px' }],
+        lg: ['16px', { lineHeight: '21px' }],
+        xl: ['24px', { lineHeight: '28px' }],
+        '2xl': ['32px', { lineHeight: '34px' }],
+        '3xl': ['44px', { lineHeight: '44px' }],
       },
-      // DESIGN.md §4: no elevation; shadow-* classes compile to nothing.
-      boxShadow: { sm: 'none', DEFAULT: 'none', md: 'none', lg: 'none', xl: 'none', '2xl': 'none' },
+      // DESIGN.md §4: glow is the only shadow; grey drop shadows compile to nothing.
+      boxShadow: {
+        sm: 'none',
+        DEFAULT: 'none',
+        md: 'none',
+        lg: 'none',
+        xl: 'none',
+        '2xl': 'none',
+        glow: '0 0 22px rgba(255, 46, 136, 0.7)',
+        'glow-accent': '0 0 22px rgba(34, 227, 255, 0.6)',
+      },
       letterSpacing: {
-        label: '0.88px', // 0.08em at 11px
-        tight: '-0.5px',
+        label: '1.32px', // 0.12em at 11px
+        button: '0.9px', // 0.06em at 15px
+        display: '1.32px', // 0.03em at 44px
       },
     },
   },

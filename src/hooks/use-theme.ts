@@ -1,18 +1,8 @@
 import { Colors, type ColorScheme, type ThemeColors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
 
-function resolveColorScheme(scheme: ReturnType<typeof useColorScheme>): ColorScheme {
-  if (scheme === 'dark') {
-    return 'dark';
-  }
-
-  return 'light';
-}
-
+// DESIGN.md: dark only, whatever the system setting.
 export function useAppColorScheme(): ColorScheme {
-  const scheme = useColorScheme();
-
-  return resolveColorScheme(scheme);
+  return 'dark';
 }
 
 export function useTheme(): ThemeColors {

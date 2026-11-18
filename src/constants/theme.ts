@@ -1,89 +1,66 @@
 import { Platform } from 'react-native';
 
-// DESIGN.md §2 palette, mirrored from src/global.css for React Navigation and native props (icon `color`, …).
-// Raw values live only here and in global.css.
+// DESIGN.md §2 palette (Neon night, dark only), mirrored from src/global.css for React Navigation and native props
+// (icon `color`, …). Raw values live only here and in global.css.
 const palette = {
-  paper: '#f6f4ee',
-  white: '#ffffff',
-  paperHover: '#efece4',
-  ink: '#141410',
-  inkSoft: '#4a463d',
-  inkMuted: '#6b665a',
-  lineLight: '#dcd8cc',
-  lineStrongLight: '#857f72',
-  night: '#0e0e0c',
-  nightSurface: '#141410',
-  nightHover: '#1a1915',
-  snow: '#edeae2',
-  snowSoft: '#b4aea1',
-  snowMuted: '#9a9384',
-  lineDark: '#26251f',
-  lineStrongDark: '#6b665a',
-  green: '#1db954',
-  dangerLight: '#b23a24',
-  dangerDark: '#e8806b',
-  blueLight: '#3451c7',
-  blueDark: '#d4daff',
+  night: '#0b0716',
+  nightSurface: '#140c26',
+  nightHover: '#1d1236',
+  snow: '#f4ecff',
+  snowSoft: '#d9ccef',
+  snowMuted: '#b9a8d6',
+  line: '#2a1c44',
+  lineStrong: '#6e5c94',
+  pink: '#ff2e88',
+  ink: '#12051f',
+  cyan: '#22e3ff',
+  green: '#5dff9e',
+  orange: '#ff7a45',
 } as const;
 
-export const Colors = {
-  light: {
-    text: palette.ink,
-    textSoft: palette.inkSoft,
-    textMuted: palette.inkMuted,
-    textSecondary: palette.inkMuted,
-    background: palette.paper,
-    surface: palette.white,
-    surfaceHover: palette.paperHover,
-    backgroundElement: palette.paperHover,
-    backgroundSelected: palette.lineStrongLight,
-    primary: palette.green,
-    primaryForeground: palette.night,
-    primaryText: palette.ink,
-    card: palette.white,
-    cardElevated: palette.white,
-    cardForeground: palette.ink,
-    border: palette.lineLight,
-    borderStrong: palette.lineStrongLight,
-    destructive: palette.dangerLight,
-    destructiveForeground: palette.white,
-    muted: palette.paperHover,
-    mutedForeground: palette.inkMuted,
-    ring: palette.ink,
-    accent: palette.blueLight,
-    accentForeground: palette.white,
-    event: palette.ink,
-    tabBar: palette.paper,
-  },
-  dark: {
-    text: palette.snow,
-    textSoft: palette.snowSoft,
-    textMuted: palette.snowMuted,
-    textSecondary: palette.snowMuted,
-    background: palette.night,
-    surface: palette.nightSurface,
-    surfaceHover: palette.nightHover,
-    backgroundElement: palette.nightHover,
-    backgroundSelected: palette.lineStrongDark,
-    primary: palette.green,
-    primaryForeground: palette.night,
-    primaryText: palette.green,
-    card: palette.nightSurface,
-    cardElevated: palette.nightSurface,
-    cardForeground: palette.snow,
-    border: palette.lineDark,
-    borderStrong: palette.lineStrongDark,
-    destructive: palette.dangerDark,
-    destructiveForeground: palette.night,
-    muted: palette.nightHover,
-    mutedForeground: palette.snowMuted,
-    ring: palette.green,
-    accent: palette.blueDark,
-    accentForeground: palette.night,
-    event: palette.green,
-    tabBar: palette.night,
-  },
+const night = {
+  text: palette.snow,
+  textSoft: palette.snowSoft,
+  textMuted: palette.snowMuted,
+  textSecondary: palette.snowMuted,
+  background: palette.night,
+  surface: palette.nightSurface,
+  surfaceHover: palette.nightHover,
+  backgroundElement: palette.nightHover,
+  backgroundSelected: palette.lineStrong,
+  primary: palette.pink,
+  primaryForeground: palette.ink,
+  primaryText: palette.pink,
+  card: palette.nightSurface,
+  cardElevated: palette.nightSurface,
+  cardForeground: palette.snow,
+  border: palette.line,
+  borderStrong: palette.lineStrong,
+  destructive: palette.orange,
+  destructiveForeground: palette.ink,
+  muted: palette.nightHover,
+  mutedForeground: palette.snowMuted,
+  ring: palette.cyan,
+  accent: palette.cyan,
+  accentForeground: palette.ink,
+  event: palette.green,
+  tabBar: palette.nightSurface,
 } as const;
+
+// Dark only (DESIGN.md): both keys hold the night theme, so code reading Colors[scheme] always gets it.
+export const Colors = {
+  light: night,
+  dark: night,
+} as const;
+
+// DESIGN.md §4: glow is the only shadow (RN `boxShadow`), on the primary action, a selection or a live state.
+export const Glow = {
+  primary: '0 0 22px rgba(255, 46, 136, 0.7)',
+  accent: '0 0 22px rgba(34, 227, 255, 0.6)',
+} as const;
+
+// DESIGN.md §4 horizon gradient, used only by src/components/ui/horizon.tsx.
+export const HorizonGradient = ['#1b0830', '#4a1250', '#b8325f', '#ff7a45'] as const;
 
 export type ThemeColor = keyof typeof Colors.light & keyof typeof Colors.dark;
 export type ColorScheme = 'light' | 'dark';
@@ -127,9 +104,8 @@ export const Spacing = {
   six: 64,
 } as const;
 
-// Mirrors the native splash `backgroundColor` in app.json so the animated overlay hands off seamlessly.
-// Not a DESIGN.md token: the splash (colour + Expo icon) has not been redesigned yet.
-export const SplashBackground = '#0e0e0c';
+// Mirrors the native splash `backgroundColor` in app.json (= `background`) so the animated overlay hands off seamlessly.
+export const SplashBackground = '#0b0716';
 
 export const BottomTabInset = Platform.select({ ios: 84, android: 72 }) ?? 0;
 export const MaxContentWidth = 800;
