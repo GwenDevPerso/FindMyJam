@@ -16,12 +16,12 @@ type ProfileHeaderProps = {
 export function ProfileHeader({ profile }: ProfileHeaderProps): React.JSX.Element {
   return (
     <Animated.View entering={FadeInDown.duration(400).springify()} className="items-center gap-4 py-6">
-      <View className="border border-primary-text p-1">
+      <View className="rounded-full border-2 border-primary-text p-1">
         <Avatar source={profile.avatarUrl} fallback={profile.username} size="xl" />
       </View>
 
       <View className="items-center gap-1">
-        <Text className="text-2xl font-bold text-foreground">{profile.username}</Text>
+        <Text className="text-2xl text-foreground">{profile.username}</Text>
         {profile.skillLevel !== null ? (
           <Badge label={formatSkillLevel(profile.skillLevel)} variant="primary" size="md" />
         ) : null}

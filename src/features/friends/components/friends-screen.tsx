@@ -45,7 +45,7 @@ function FriendsTabs({ activeTab, onTabChange }: FriendsTabsProps): React.JSX.El
             }}>
             <Text
               className={cn(
-                'text-xs font-medium uppercase tracking-label',
+                'font-mono text-xs font-semibold uppercase tracking-label',
                 isActive ? 'text-primary-text' : 'text-muted-foreground',
               )}>
               {tab.label}

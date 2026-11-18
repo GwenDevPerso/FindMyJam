@@ -34,7 +34,7 @@ function ProfileJamTabButton({label, isActive, onPress}: ProfileJamTabButtonProp
       className={cn('-mb-px flex-1 items-center border-b-2 border-transparent py-3', isActive && 'border-primary-text')}>
       <Text
         className={cn(
-          'text-xs font-medium uppercase tracking-label',
+          'font-mono text-xs font-semibold uppercase tracking-label',
           isActive ? 'text-primary-text' : 'text-muted-foreground',
         )}>
         {label}

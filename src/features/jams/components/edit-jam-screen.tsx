@@ -82,7 +82,7 @@ export function EditJamScreen({ jamId }: EditJamScreenProps): React.JSX.Element 
   if (jam.seriesId !== null && scope === null) {
     return (
       <Screen scrollable={false} withTabBarInset={false} contentClassName="gap-4 pt-4">
-        <Text className="text-lg font-semibold text-foreground">Which dates do you want to edit?</Text>
+        <Text className="text-xl text-foreground">Which dates do you want to edit?</Text>
         <View className="gap-3">
           <Button
             label="This date only"

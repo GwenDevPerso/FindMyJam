@@ -43,13 +43,13 @@ export function RegisterForm() {
 
   return (
     <View className="flex-1 justify-center gap-4 bg-background p-6">
-      <Text className="text-2xl font-bold tracking-tight text-foreground">Create account</Text>
+      <Text className="text-2xl text-foreground">Create account</Text>
       <Text className="mb-2 text-sm text-muted-foreground">
         Join the community and start jamming.
       </Text>
 
       <View className="gap-2">
-        <Text className="text-xs font-medium uppercase tracking-label text-muted-foreground">Username</Text>
+        <Text className="font-mono text-xs font-semibold uppercase tracking-label text-muted-foreground">Username</Text>
         <Controller
           control={control}
           name="username"
@@ -61,7 +61,7 @@ export function RegisterForm() {
               onChangeText={onChange}
               placeholder="your_username"
               placeholderTextColor={theme.mutedForeground}
-              className="h-11 border border-input bg-card px-4 font-mono text-sm text-foreground"
+              className="h-12 rounded-lg border border-input bg-card px-4 text-base text-foreground focus:border-ring"
               value={value}
             />
           )}
@@ -70,7 +70,7 @@ export function RegisterForm() {
           <Text className="text-sm text-destructive">{errors.username.message}</Text>
         ) : null}
 
-        <Text className="mt-2 text-xs font-medium uppercase tracking-label text-muted-foreground">
+        <Text className="mt-2 font-mono text-xs font-semibold uppercase tracking-label text-muted-foreground">
           Email
         </Text>
         <Controller
@@ -85,7 +85,7 @@ export function RegisterForm() {
               onChangeText={onChange}
               placeholder="you@example.com"
               placeholderTextColor={theme.mutedForeground}
-              className="h-11 border border-input bg-card px-4 font-mono text-sm text-foreground"
+              className="h-12 rounded-lg border border-input bg-card px-4 text-base text-foreground focus:border-ring"
               value={value}
             />
           )}
@@ -94,7 +94,7 @@ export function RegisterForm() {
           <Text className="text-sm text-destructive">{errors.email.message}</Text>
         ) : null}
 
-        <Text className="mt-2 text-xs font-medium uppercase tracking-label text-muted-foreground">
+        <Text className="mt-2 font-mono text-xs font-semibold uppercase tracking-label text-muted-foreground">
           Password
         </Text>
         <Controller
@@ -109,7 +109,7 @@ export function RegisterForm() {
               placeholder="At least 8 characters"
               placeholderTextColor={theme.mutedForeground}
               secureTextEntry
-              className="h-11 border border-input bg-card px-4 font-mono text-sm text-foreground"
+              className="h-12 rounded-lg border border-input bg-card px-4 text-base text-foreground focus:border-ring"
               value={value}
             />
           )}

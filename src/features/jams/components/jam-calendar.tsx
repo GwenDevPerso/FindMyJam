@@ -40,7 +40,7 @@ function describeDay(date: string, jams: CalendarJam[]): string {
 
 // Created = primary-text (accent in dark, ink in light), participating = secondaryAccent (DESIGN.md §2).
 const ROLE_DOT_CLASSES: Record<CalendarJam['role'], string> = {
-  created: 'bg-primary-text',
+  created: 'bg-event',
   participant: 'bg-accent',
 };
 
@@ -72,7 +72,7 @@ export function JamCalendar({ onJamPress }: JamCalendarProps): React.JSX.Element
         <Pressable accessibilityRole="button" accessibilityLabel="Previous month" hitSlop={8} onPress={() => changeMonth(-1)}>
           <ChevronLeft size={22} color={theme.text} />
         </Pressable>
-        <Text className="text-lg font-semibold text-foreground">{formatMonthLabel(month)}</Text>
+        <Text className="text-xl text-foreground">{formatMonthLabel(month)}</Text>
         <Pressable accessibilityRole="button" accessibilityLabel="Next month" hitSlop={8} onPress={() => changeMonth(1)}>
           <ChevronRight size={22} color={theme.text} />
         </Pressable>
@@ -98,7 +98,7 @@ export function JamCalendar({ onJamPress }: JamCalendarProps): React.JSX.Element
           <View className="gap-1">
             <View className="flex-row">
               {WEEKDAY_LABELS.map((label, index) => (
-                <Text key={index} className="flex-1 text-center text-xs font-semibold text-muted-foreground">
+                <Text key={index} className="flex-1 text-center font-mono text-xs font-semibold text-muted-foreground">
                   {label}
                 </Text>
               ))}
@@ -125,8 +125,8 @@ export function JamCalendar({ onJamPress }: JamCalendarProps): React.JSX.Element
                       accessibilityState={{ selected: isSelected }}
                       onPress={() => setSelectedDate(date)}
                       className={cn(
-                        'h-11 flex-1 items-center justify-center gap-1 border border-transparent',
-                        isSelected && 'border-border-strong bg-secondary',
+                        'h-11 flex-1 items-center justify-center gap-1 rounded-md border border-transparent',
+                        isSelected && 'border-accent bg-secondary',
                       )}>
                       <Text
                         className={cn(
@@ -137,7 +137,7 @@ export function JamCalendar({ onJamPress }: JamCalendarProps): React.JSX.Element
                       </Text>
                       <View className="h-1.5 flex-row gap-1">
                         {roles.map((role) => (
-                          <View key={role} className={cn('h-1.5 w-1.5', ROLE_DOT_CLASSES[role])} />
+                          <View key={role} className={cn('h-1.5 w-1.5 rounded-full', ROLE_DOT_CLASSES[role])} />
                         ))}
                       </View>
                     </Pressable>
@@ -150,7 +150,7 @@ export function JamCalendar({ onJamPress }: JamCalendarProps): React.JSX.Element
           <View className="flex-row justify-center gap-4">
             {(['created', 'participant'] as const).map((role) => (
               <View key={role} className="flex-row items-center gap-1.5">
-                <View className={cn('h-2 w-2', ROLE_DOT_CLASSES[role])} />
+                <View className={cn('h-2 w-2 rounded-full', ROLE_DOT_CLASSES[role])} />
                 <Text className="text-xs text-muted-foreground">
                   {role === 'created' ? 'Created' : 'Participating'}
                 </Text>
@@ -175,9 +175,9 @@ export function JamCalendar({ onJamPress }: JamCalendarProps): React.JSX.Element
                 accessibilityRole="button"
                 accessibilityLabel={`${jam.title}, ${ROLE_LABELS[jam.role]}, ${time}`}
                 onPress={() => onJamPress(jam.id)}
-                className="flex-row items-center gap-3 border border-border bg-card px-3 py-2 active:bg-surface-hover">
-                <View className={cn('h-2.5 w-2.5', ROLE_DOT_CLASSES[jam.role])} />
-                <Text className="text-sm font-semibold text-muted-foreground">{time}</Text>
+                className="min-h-11 flex-row items-center gap-3 rounded-lg border border-border bg-card px-3 py-2 active:bg-surface-hover">
+                <View className={cn('h-2.5 w-2.5 rounded-full', ROLE_DOT_CLASSES[jam.role])} />
+                <Text className="font-mono text-xs font-semibold text-accent">{time}</Text>
                 <Text className="flex-1 text-sm text-foreground" numberOfLines={1}>
                   {jam.title}
                 </Text>

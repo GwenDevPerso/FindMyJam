@@ -19,10 +19,10 @@ export function JamCalendarModal({ visible, onClose, onJamPress }: JamCalendarMo
           onPress={onClose}
           className="absolute inset-0 bg-background/80"
         />
-        <View className="gap-4 rounded-2xl border border-border bg-card p-4">
+        <View className="gap-4 rounded-3xl border border-border-strong bg-card p-5">
           <View className="flex-row items-center justify-between">
-            <Text className="text-base font-semibold text-foreground">My jams</Text>
-            <Text accessibilityRole="button" onPress={onClose} className="text-xs font-medium uppercase tracking-label text-primary-text">
+            <Text className="text-xl text-foreground">My jams</Text>
+            <Text accessibilityRole="button" onPress={onClose} className="font-mono text-xs font-semibold uppercase tracking-label text-accent">
               Close
             </Text>
           </View>

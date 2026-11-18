@@ -59,16 +59,15 @@ function WebTabButton({ label, icon: Icon, isFocused, ...props }: WebTabButtonPr
       accessibilityLabel={label}
       className="flex-1 items-center justify-center py-2">
       <View className="items-center gap-1">
-        {isFocused === true ? <View className="mb-0.5 h-0.5 w-5 bg-primary-text" /> : null}
         <Icon
-          size={20}
+          size={22}
           color={isFocused === true ? theme.primaryText : theme.mutedForeground}
-          strokeWidth={2}
+          strokeWidth={1.8}
         />
         <Text
           className={cn(
-            'text-xs font-medium uppercase tracking-label',
-            isFocused === true ? 'text-primary-text' : 'text-muted-foreground',
+            'text-xs',
+            isFocused === true ? 'font-bold text-primary-text' : 'font-medium text-muted-foreground',
           )}>
           {label}
         </Text>

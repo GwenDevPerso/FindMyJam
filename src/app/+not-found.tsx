@@ -12,7 +12,7 @@ export default function NotFoundScreen(): React.JSX.Element {
       <View className="flex-1 items-center justify-center gap-6">
         <View className="items-center gap-2">
           <Text className="text-6xl font-bold text-foreground">404</Text>
-          <Text className="text-lg font-semibold text-foreground">Page introuvable</Text>
+          <Text className="text-xl text-foreground">Page introuvable</Text>
           <Text className="text-center text-sm text-muted-foreground">
             Cette page n&apos;existe pas ou a été déplacée.
           </Text>

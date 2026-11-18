@@ -71,7 +71,7 @@ export function LocationPickerMap({
   if (Platform.OS === 'web') {
     return (
       <View
-        className="items-center justify-center border border-border bg-secondary"
+        className="items-center justify-center overflow-hidden rounded-xl border border-border bg-secondary"
         style={styles.mapContainer}>
         <Text className="px-4 text-center text-sm text-muted-foreground">
           Map preview is available on iOS and Android.
@@ -84,11 +84,11 @@ export function LocationPickerMap({
 
   return (
     <View className="gap-2">
-      <Text className="text-xs font-medium uppercase tracking-label text-muted-foreground">Map preview</Text>
+      <Text className="font-mono text-xs font-semibold uppercase tracking-label text-muted-foreground">Map preview</Text>
       <Text className="text-xs text-muted-foreground">Drag the pin to adjust the exact location.</Text>
 
       <View
-        className="overflow-hidden border border-border"
+        className="overflow-hidden rounded-xl border border-border"
         style={styles.mapContainer}>
         <MapView
           ref={mapRef}

@@ -64,7 +64,7 @@ export function UserProfileScreen({ userId }: UserProfileScreenProps): React.JSX
     <Screen scrollable={true} contentClassName="pb-8" withTabBarInset={true}>
       <ProfileHeader profile={profile} />
 
-      <Text className="mb-2 text-lg font-semibold text-foreground">Jams</Text>
+      <Text className="mb-2 text-xl text-foreground">Jams</Text>
 
       <ProfileJamTabs
         activeTab={activeTab}

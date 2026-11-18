@@ -21,7 +21,7 @@ type SkillLevelPickerProps = {
 export function SkillLevelPicker({ value, onChange }: SkillLevelPickerProps): React.JSX.Element {
   return (
     <View className="gap-2">
-      <Text className="text-xs font-medium uppercase tracking-label text-muted-foreground">Skill level</Text>
+      <Text className="font-mono text-xs font-semibold uppercase tracking-label text-muted-foreground">Skill level</Text>
 
       <View className="flex-row flex-wrap gap-2">
         <Pressable

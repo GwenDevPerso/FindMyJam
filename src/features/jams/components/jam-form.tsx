@@ -172,7 +172,7 @@ export function JamForm({
 
       {showRecurrence ? (
         <View className="gap-2">
-          <Text className="text-xs font-medium uppercase tracking-label text-muted-foreground">Repeats</Text>
+          <Text className="font-mono text-xs font-semibold uppercase tracking-label text-muted-foreground">Repeats</Text>
           <View className="flex-row flex-wrap gap-2">
             {RECURRENCE_OPTIONS.map((option) => {
               const isSelected = recurrence === option;
@@ -246,7 +246,7 @@ export function JamForm({
       />
 
       <View className="gap-2">
-        <Text className="text-xs font-medium uppercase tracking-label text-muted-foreground">Skill level</Text>
+        <Text className="font-mono text-xs font-semibold uppercase tracking-label text-muted-foreground">Skill level</Text>
         <View className="flex-row flex-wrap gap-2">
           {SKILL_LEVELS.map((level) => {
             const isSelected = skillLevel === level;

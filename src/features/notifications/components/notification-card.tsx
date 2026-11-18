@@ -34,11 +34,7 @@ export function NotificationCard({
       <Card
         variant="elevated"
         className={cn('mb-3 overflow-hidden', !notification.isRead && 'border-primary-text')}>
-        {!notification.isRead ? (
-          <View className="absolute left-0 top-0 h-full w-1 bg-primary" accessibilityElementsHidden />
-        ) : null}
-
-        <CardHeader className="flex-row items-start gap-3 pb-0 pl-2">
+        <CardHeader className="flex-row items-start gap-3 pb-0">
           <Avatar
             source={notification.imageUrl}
             fallback={notification.title}
@@ -48,8 +44,8 @@ export function NotificationCard({
             <CardTitle className={cn(!notification.isRead && 'text-primary-text')}>
               {notification.title}
             </CardTitle>
-            <Text className="mt-1 text-sm text-muted-foreground">{notification.body}</Text>
-            <Text className="mt-2 text-xs text-muted-foreground">
+            <Text className="mt-1 text-sm text-text-soft">{notification.body}</Text>
+            <Text className="mt-2 font-mono text-xs text-muted-foreground">
               {formatRelativeTime(notification.createdAt)}
             </Text>
           </View>

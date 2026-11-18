@@ -29,7 +29,7 @@ export function MultiSelectChips({
 }: MultiSelectChipsProps): React.JSX.Element {
   return (
     <View className="gap-2">
-      <Text className="text-xs font-medium uppercase tracking-label text-muted-foreground">{label}</Text>
+      <Text className="font-mono text-xs font-semibold uppercase tracking-label text-muted-foreground">{label}</Text>
 
       <View className="flex-row flex-wrap gap-2">
         {options.map((option) => {
@@ -84,14 +84,14 @@ function SelectableChip({
             name={option.name}
             slug={option.slug ?? 'default'}
             size="md"
-            className={cn(isSelected && 'border-primary-text bg-secondary')}
+            className={cn(isSelected && 'border-primary-text bg-primary/15')}
           />
         ) : (
           <StyleBadge
             name={option.name}
             slug={option.slug ?? 'default'}
             size="md"
-            className={cn(isSelected && 'border-primary-text bg-secondary')}
+            className={cn(isSelected && 'border-primary-text bg-primary/15')}
           />
         )}
       </Pressable>

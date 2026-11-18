@@ -82,7 +82,7 @@ export function NotificationsScreen(): React.JSX.Element {
       <View className="mb-4 flex-row items-center justify-between">
         <View className="flex-row items-center gap-2">
           <Bell size={22} color={theme.primaryText} />
-          <Text className="text-2xl font-bold text-foreground">Notifications</Text>
+          <Text className="text-2xl text-foreground">Notifications</Text>
         </View>
 
         {notifications.length > 0 ? (

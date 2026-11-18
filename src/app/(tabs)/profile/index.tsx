@@ -103,7 +103,7 @@ export default function ProfileScreen(): React.JSX.Element {
         />
       </View>
 
-      <Text className="mb-2 text-lg font-semibold text-foreground">My jams</Text>
+      <Text className="mb-2 text-xl text-foreground">My jams</Text>
 
       <ProfileJamTabs
         activeTab={activeTab}
