@@ -1,7 +1,8 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm, useWatch } from 'react-hook-form';
-import { Pressable, Text, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 
+import { Text } from '@/components/ui/text';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { LocationAutocompleteInput } from '@/features/location/components/location-autocomplete-input';
@@ -171,7 +172,7 @@ export function JamForm({
 
       {showRecurrence ? (
         <View className="gap-2">
-          <Text className="text-sm font-semibold text-foreground">Repeats</Text>
+          <Text className="text-xs font-medium uppercase tracking-label text-muted-foreground">Repeats</Text>
           <View className="flex-row flex-wrap gap-2">
             {RECURRENCE_OPTIONS.map((option) => {
               const isSelected = recurrence === option;
@@ -245,7 +246,7 @@ export function JamForm({
       />
 
       <View className="gap-2">
-        <Text className="text-sm font-semibold text-foreground">Skill level</Text>
+        <Text className="text-xs font-medium uppercase tracking-label text-muted-foreground">Skill level</Text>
         <View className="flex-row flex-wrap gap-2">
           {SKILL_LEVELS.map((level) => {
             const isSelected = skillLevel === level;

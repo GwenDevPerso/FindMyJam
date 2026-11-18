@@ -27,7 +27,10 @@ type UseMapJamsResult = {
 };
 
 export function useMapJams({ searchParams, enabled }: UseMapJamsOptions): UseMapJamsResult {
-  // Chips are often tapped several in a row: wait for the selection to settle before searching again.
+  // Chips are often tapped several in a row: wait for the selection to settle before searching again. The centre is
+  // debounced with the radius so a new area never runs once with the old radius.
+  const debouncedLatitude = useDebounce(searchParams.latitude, MAP_FILTER_DEBOUNCE_MS);
+  const debouncedLongitude = useDebounce(searchParams.longitude, MAP_FILTER_DEBOUNCE_MS);
   const debouncedRadiusMeters = useDebounce(searchParams.radiusMeters, MAP_FILTER_DEBOUNCE_MS);
   const debouncedInstrumentIds = useDebounce(searchParams.instrumentIds, MAP_FILTER_DEBOUNCE_MS);
   const debouncedStyleIds = useDebounce(searchParams.styleIds, MAP_FILTER_DEBOUNCE_MS);
@@ -35,11 +38,13 @@ export function useMapJams({ searchParams, enabled }: UseMapJamsOptions): UseMap
   const debouncedSearchParams = useMemo(
     (): MapSearchParams => ({
       ...searchParams,
+      latitude: debouncedLatitude,
+      longitude: debouncedLongitude,
       radiusMeters: debouncedRadiusMeters,
       instrumentIds: debouncedInstrumentIds,
       styleIds: debouncedStyleIds,
     }),
-    [searchParams, debouncedRadiusMeters, debouncedInstrumentIds, debouncedStyleIds],
+    [searchParams, debouncedLatitude, debouncedLongitude, debouncedRadiusMeters, debouncedInstrumentIds, debouncedStyleIds],
   );
 
   const query = useInfiniteQuery({

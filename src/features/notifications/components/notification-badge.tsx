@@ -1,5 +1,6 @@
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 
+import { Text } from '@/components/ui/text';
 import { cn } from '@/utils/cn';
 
 type NotificationBadgeProps = {
@@ -21,7 +22,7 @@ export function NotificationBadge({ count, className }: NotificationBadgeProps):
         'absolute -right-1 -top-1 min-h-5 min-w-5 items-center justify-center rounded-full bg-destructive px-1',
         className,
       )}>
-      <Text className="text-[10px] font-bold text-destructive-foreground">{displayCount}</Text>
+      <Text className="text-xs font-bold text-destructive-foreground">{displayCount}</Text>
     </View>
   );
 }

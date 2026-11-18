@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { Pressable, ScrollView, Text, View } from 'react-native';
+import { Pressable, ScrollView, View } from 'react-native';
 
+import { Text } from '@/components/ui/text';
 import {
   DATE_FILTER_LABELS,
   DATE_FILTER_OPTIONS,
@@ -43,11 +44,11 @@ function FilterChip({ label, isSelected, onPress }: FilterChipProps): React.JSX.
       accessibilityRole="button"
       accessibilityState={{ selected: isSelected }}
       onPress={onPress}
-      className={cn('rounded-full px-4 py-2', isSelected ? 'bg-primary' : 'bg-secondary')}>
+      className={cn('border px-4 py-2', isSelected ? 'border-primary bg-primary' : 'border-border-strong bg-transparent')}>
       <Text
         className={cn(
-          'text-sm font-semibold',
-          isSelected ? 'text-primary-foreground' : 'text-secondary-foreground',
+          'text-xs font-medium uppercase tracking-label',
+          isSelected ? 'text-primary-foreground' : 'text-text-soft',
         )}>
         {label}
       </Text>
@@ -57,7 +58,7 @@ function FilterChip({ label, isSelected, onPress }: FilterChipProps): React.JSX.
 
 function SectionTitle({ title }: { title: string }): React.JSX.Element {
   return (
-    <Text className="mb-2 text-xs font-bold uppercase tracking-wider text-muted-foreground">{title}</Text>
+    <Text className="mb-2 text-xs font-medium uppercase tracking-label text-muted-foreground">{title}</Text>
   );
 }
 
@@ -84,8 +85,8 @@ function InstrumentAndStyleFilters(): React.JSX.Element {
             void instrumentsQuery.refetch();
             void musicStylesQuery.refetch();
           }}
-          className="rounded-full bg-secondary px-3 py-1.5">
-          <Text className="text-sm font-semibold text-secondary-foreground">Retry</Text>
+          className="border border-border-strong px-3 py-1.5">
+          <Text className="text-xs font-medium uppercase tracking-label text-text-soft">Retry</Text>
         </Pressable>
       </View>
     );
@@ -135,9 +136,9 @@ export function MapFilters({ showDistance }: MapFiltersProps): React.JSX.Element
   );
 
   return (
-    <View className="gap-3 rounded-2xl border border-border/50 bg-card/95 px-3 py-3">
+    <View className="gap-3 border border-border bg-card/95 px-3 py-3">
       <View className="flex-row items-center gap-2">
-        <Text className="text-sm font-bold text-foreground">Filters</Text>
+        <Text className="text-xs font-medium uppercase tracking-label text-foreground">Filters</Text>
 
         {activeFilterCount > 0 ? (
           <View
@@ -152,7 +153,7 @@ export function MapFilters({ showDistance }: MapFiltersProps): React.JSX.Element
 
         {activeFilterCount > 0 ? (
           <Pressable accessibilityRole="button" onPress={resetFilters} className="px-2 py-1">
-            <Text className="text-sm font-semibold text-primary">Reset</Text>
+            <Text className="text-xs font-medium uppercase tracking-label text-primary-text">Reset</Text>
           </Pressable>
         ) : null}
 
@@ -163,7 +164,7 @@ export function MapFilters({ showDistance }: MapFiltersProps): React.JSX.Element
             setIsExpanded((current) => !current);
           }}
           className="px-2 py-1">
-          <Text className="text-sm font-semibold text-foreground">
+          <Text className="text-xs font-medium uppercase tracking-label text-foreground">
             {isExpanded ? 'Fewer filters' : 'More filters'}
           </Text>
         </Pressable>

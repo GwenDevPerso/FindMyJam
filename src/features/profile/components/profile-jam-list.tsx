@@ -1,5 +1,6 @@
-import {Pressable, Text, View} from 'react-native';
+import { Pressable, View } from 'react-native';
 
+import { Text } from '@/components/ui/text';
 import {Loading} from '@/components/feedback/loading';
 import {EmptyState} from '@/components/layout/empty-state';
 import {ErrorState} from '@/components/layout/error-state';
@@ -30,11 +31,11 @@ function ProfileJamTabButton({label, isActive, onPress}: ProfileJamTabButtonProp
       accessibilityRole="tab"
       accessibilityState={{selected: isActive}}
       onPress={onPress}
-      className={cn('flex-1 items-center rounded-lg py-2.5', isActive && 'bg-card-elevated')}>
+      className={cn('-mb-px flex-1 items-center border-b-2 border-transparent py-3', isActive && 'border-primary-text')}>
       <Text
         className={cn(
-          'text-sm font-semibold',
-          isActive ? 'text-primary' : 'text-muted-foreground',
+          'text-xs font-medium uppercase tracking-label',
+          isActive ? 'text-primary-text' : 'text-muted-foreground',
         )}>
         {label}
       </Text>
@@ -117,7 +118,7 @@ export function ProfileJamTabs({
   onTabChange: (tab: ProfileJamTab) => void;
 }): React.JSX.Element {
   return (
-    <View className="mb-4 flex-row rounded-xl bg-secondary p-1">
+    <View className="mb-4 flex-row border-b border-border">
       <ProfileJamTabButton
         label="Created"
         isActive={activeTab === 'created'}

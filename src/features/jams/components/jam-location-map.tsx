@@ -1,7 +1,8 @@
-import { Platform, StyleSheet, Text, View } from 'react-native';
+import { Platform, StyleSheet, View } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import { Music } from 'lucide-react-native';
 
+import { Text } from '@/components/ui/text';
 import { useMarkerTracksViewChanges } from '@/features/map/hooks/use-marker-tracks-view-changes';
 import { DEFAULT_MAP_REGION_DELTA, MAP_PREVIEW_HEIGHT } from '@/features/map/constants';
 import { useTheme } from '@/hooks/use-theme';
@@ -30,8 +31,8 @@ export function JamLocationMap({
   if (Platform.OS === 'web') {
     return (
       <View
-        className="items-center justify-center rounded-lg border border-border"
-        style={{ height: MAP_PREVIEW_HEIGHT, backgroundColor: theme.backgroundElement }}>
+        className="items-center justify-center border border-border bg-secondary"
+        style={styles.mapContainer}>
         <Text className="px-4 text-center text-sm text-muted-foreground">
           Map preview is available on iOS and Android.
         </Text>
@@ -40,7 +41,7 @@ export function JamLocationMap({
   }
 
   return (
-    <View className="overflow-hidden rounded-lg border border-border" style={styles.mapContainer}>
+    <View className="overflow-hidden border border-border" style={styles.mapContainer}>
       <MapView
         style={styles.map}
         initialRegion={coordinatesToRegion(coordinates, DEFAULT_MAP_REGION_DELTA)}
@@ -59,7 +60,7 @@ export function JamLocationMap({
           <View
             collapsable={false}
             style={[styles.marker, { backgroundColor: theme.primary, borderColor: theme.background }]}>
-            <Music size={14} color="#ffffff" strokeWidth={2.5} />
+            <Music size={14} color={theme.primaryForeground} strokeWidth={2.5} />
           </View>
         </Marker>
       </MapView>
@@ -79,14 +80,8 @@ const styles = StyleSheet.create({
   marker: {
     width: 32,
     height: 32,
-    borderRadius: 16,
     borderWidth: 2,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
-    elevation: 4,
   },
 });

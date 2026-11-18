@@ -1,6 +1,7 @@
 import * as ImagePicker from 'expo-image-picker';
-import { Pressable, Text, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 
+import { Text } from '@/components/ui/text';
 import { Avatar } from '@/components/ui/avatar';
 import { useUploadAvatar } from '@/features/profile/hooks/use-upload-avatar';
 import { cn } from '@/utils/cn';
@@ -76,7 +77,7 @@ export function AvatarPicker({
         <Avatar source={avatarUrl} fallback={username} size={size} />
       </Pressable>
 
-      <Text className="text-sm text-primary">
+      <Text className="text-sm text-primary-text">
         {isPending ? 'Uploading…' : 'Change photo'}
       </Text>
 

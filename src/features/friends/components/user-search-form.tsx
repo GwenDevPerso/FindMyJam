@@ -1,7 +1,8 @@
 import { type Href, router } from 'expo-router';
 import { useMemo, useState } from 'react';
-import { FlatList, Text, View, type ListRenderItem } from 'react-native';
+import { FlatList, View, type ListRenderItem } from 'react-native';
 
+import { Text } from '@/components/ui/text';
 import { EmptyState } from '@/components/layout/empty-state';
 import { ErrorState } from '@/components/layout/error-state';
 import { Loading } from '@/components/feedback/loading';

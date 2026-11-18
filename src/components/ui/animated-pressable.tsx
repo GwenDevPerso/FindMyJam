@@ -40,6 +40,7 @@ export function AnimatedPressableScale({
 
   return (
     <AnimatedPressable
+      accessibilityRole="button"
       className={className}
       style={animatedStyle}
       onPressIn={handlePressIn}

@@ -34,14 +34,20 @@ export function regionToBounds(region: MapRegion): GeoBounds {
   const halfLatDelta = region.latitudeDelta / 2;
   const halfLonDelta = region.longitudeDelta / 2;
 
+  // Clamped to the globe: a region zoomed far out, near a pole or the antimeridian, would give invalid corners.
   return {
     northEast: {
-      latitude: region.latitude + halfLatDelta,
-      longitude: region.longitude + halfLonDelta,
+      latitude: Math.min(region.latitude + halfLatDelta, 90),
+      longitude: Math.min(region.longitude + halfLonDelta, 180),
     },
     southWest: {
-      latitude: region.latitude - halfLatDelta,
-      longitude: region.longitude - halfLonDelta,
+      latitude: Math.max(region.latitude - halfLatDelta, -90),
+      longitude: Math.max(region.longitude - halfLonDelta, -180),
     },
   };
+}
+
+/** Distance from the region's centre to its corners, so a search of that radius covers the whole visible map. */
+export function regionRadiusMeters(region: MapRegion): number {
+  return calculateDistanceMeters(region, regionToBounds(region).northEast);
 }

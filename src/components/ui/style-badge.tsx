@@ -1,6 +1,6 @@
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 
-import { getStyleColors } from '@/utils/style-colors';
+import { Text } from '@/components/ui/text';
 import { cn } from '@/utils/cn';
 
 type StyleBadgeProps = {
@@ -15,23 +15,14 @@ const sizeClasses = {
   md: 'px-2.5 py-1',
 } as const;
 
-const textSizes = {
-  sm: 'text-xs',
-  md: 'text-sm',
-} as const;
-
-export function StyleBadge({ name, slug, size, className }: StyleBadgeProps): React.JSX.Element {
-  const colors = getStyleColors(slug);
-
+// DESIGN.md §1: one accent colour — styles are neutral tags (text + 1px line), not one colour per style.
+export function StyleBadge({ name, size, className }: StyleBadgeProps): React.JSX.Element {
   return (
     <View
       accessibilityRole="text"
       accessibilityLabel={`Style: ${name}`}
-      className={cn('rounded-full border', sizeClasses[size], className)}
-      style={{ backgroundColor: colors.background, borderColor: colors.border }}>
-      <Text className={cn('font-medium', textSizes[size])} style={{ color: colors.text }}>
-        {name}
-      </Text>
+      className={cn('border border-border-strong', sizeClasses[size], className)}>
+      <Text className="text-xs font-medium uppercase tracking-label text-text-soft">{name}</Text>
     </View>
   );
 }

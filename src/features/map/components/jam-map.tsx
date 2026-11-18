@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { Platform, Pressable, StyleSheet, View } from 'react-native';
 import MapView, { type Region } from 'react-native-maps';
 import { LocateFixed } from 'lucide-react-native';
@@ -13,24 +13,29 @@ import { coordinatesToRegion } from '@/utils/geo';
 
 type JamMapProps = {
   markers: MapJamMarker[];
+  /** Where the map opens; kept by the screen so a remount (after an error) comes back to the same place. */
+  initialRegion: Region;
   userLocation: Coordinates;
+  /** The map flies here whenever it changes, e.g. after picking a city. */
+  focusedPlace: Coordinates | null;
   selectedMarkerId: string | null;
   onMarkerPress: (markerId: string) => void;
+  onRegionChangeComplete: (region: Region) => void;
+  onRecenter: () => void;
 };
 
 export function JamMap({
   markers,
+  initialRegion,
   userLocation,
+  focusedPlace,
   selectedMarkerId,
   onMarkerPress,
+  onRegionChangeComplete,
+  onRecenter,
 }: JamMapProps): React.JSX.Element {
   const theme = useTheme();
   const mapRef = useRef<MapView>(null);
-
-  const initialRegion = useMemo(
-    (): Region => coordinatesToRegion(userLocation, DEFAULT_MAP_REGION_DELTA),
-    [userLocation],
-  );
 
   const renderableMarkers = useMemo((): MapJamMarker[] => {
     if (shouldEnableClustering(markers.length)) {
@@ -40,9 +45,16 @@ export function JamMap({
     return markers;
   }, [markers]);
 
+  useEffect(() => {
+    if (focusedPlace !== null) {
+      mapRef.current?.animateToRegion(coordinatesToRegion(focusedPlace, DEFAULT_MAP_REGION_DELTA), 400);
+    }
+  }, [focusedPlace]);
+
   const handleRecenter = useCallback((): void => {
     mapRef.current?.animateToRegion(coordinatesToRegion(userLocation, DEFAULT_MAP_REGION_DELTA), 400);
-  }, [userLocation]);
+    onRecenter();
+  }, [userLocation, onRecenter]);
 
   if (Platform.OS === 'web') {
     return <View style={[styles.map, { backgroundColor: theme.backgroundElement }]} />;
@@ -58,7 +70,8 @@ export function JamMap({
         showsMyLocationButton={false}
         showsCompass={false}
         toolbarEnabled={false}
-        moveOnMarkerPress={false}>
+        moveOnMarkerPress={false}
+        onRegionChangeComplete={onRegionChangeComplete}>
         {renderableMarkers.map((marker) => (
           <JamMarker
             key={marker.id}
@@ -71,13 +84,13 @@ export function JamMap({
 
       <Pressable
         accessibilityRole="button"
-        accessibilityLabel="Center map on my location"
+        accessibilityLabel="Back to my location"
         onPress={handleRecenter}
         style={[
           styles.recenterButton,
           { backgroundColor: theme.card, borderColor: theme.border },
         ]}>
-        <LocateFixed size={20} color={theme.primary} strokeWidth={2.5} />
+        <LocateFixed size={20} color={theme.primaryText} strokeWidth={2.5} />
       </Pressable>
     </View>
   );
@@ -96,14 +109,8 @@ const styles = StyleSheet.create({
     bottom: 24,
     width: 44,
     height: 44,
-    borderRadius: 22,
     borderWidth: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 4,
-    elevation: 4,
   },
 });

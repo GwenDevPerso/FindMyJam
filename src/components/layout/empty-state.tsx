@@ -1,6 +1,7 @@
 import { type ReactNode } from 'react';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 
+import { Text } from '@/components/ui/text';
 import { cn } from '@/utils/cn';
 
 type EmptyStateProps = {

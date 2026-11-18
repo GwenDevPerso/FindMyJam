@@ -1,7 +1,8 @@
 import { type Href, router } from 'expo-router';
 import { useState } from 'react';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 
+import { Text } from '@/components/ui/text';
 import { Loading } from '@/components/feedback/loading';
 import { ErrorState } from '@/components/layout/error-state';
 import { Screen } from '@/components/layout/screen';

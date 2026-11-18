@@ -1,6 +1,7 @@
 import { MapPin, Navigation, Users } from 'lucide-react-native';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 
+import { Text } from '@/components/ui/text';
 import { AnimatedPressableScale } from '@/components/ui/animated-pressable';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';

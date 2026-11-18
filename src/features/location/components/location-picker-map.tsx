@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useRef } from 'react';
-import { Platform, StyleSheet, Text, View } from 'react-native';
+import { Platform, StyleSheet, View } from 'react-native';
 import MapView, { Marker, type MapMarkerProps, type Region } from 'react-native-maps';
 import { MapPin } from 'lucide-react-native';
 
+import { Text } from '@/components/ui/text';
 import { useMarkerTracksViewChanges } from '@/features/map/hooks/use-marker-tracks-view-changes';
 import { DEFAULT_MAP_REGION_DELTA, MAP_PREVIEW_HEIGHT } from '@/features/map/constants';
 import { useTheme } from '@/hooks/use-theme';
@@ -70,8 +71,8 @@ export function LocationPickerMap({
   if (Platform.OS === 'web') {
     return (
       <View
-        className="items-center justify-center rounded-lg border border-border bg-secondary"
-        style={{ height: MAP_PREVIEW_HEIGHT, backgroundColor: theme.backgroundElement }}>
+        className="items-center justify-center border border-border bg-secondary"
+        style={styles.mapContainer}>
         <Text className="px-4 text-center text-sm text-muted-foreground">
           Map preview is available on iOS and Android.
         </Text>
@@ -83,11 +84,11 @@ export function LocationPickerMap({
 
   return (
     <View className="gap-2">
-      <Text className="text-sm font-medium text-foreground">Map preview</Text>
+      <Text className="text-xs font-medium uppercase tracking-label text-muted-foreground">Map preview</Text>
       <Text className="text-xs text-muted-foreground">Drag the pin to adjust the exact location.</Text>
 
       <View
-        className="overflow-hidden rounded-lg border border-border"
+        className="overflow-hidden border border-border"
         style={styles.mapContainer}>
         <MapView
           ref={mapRef}
@@ -129,14 +130,8 @@ const styles = StyleSheet.create({
   marker: {
     width: 36,
     height: 36,
-    borderRadius: 18,
     borderWidth: 2,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
-    elevation: 4,
   },
 });

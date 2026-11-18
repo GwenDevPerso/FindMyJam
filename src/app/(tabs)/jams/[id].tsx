@@ -1,6 +1,7 @@
 import { useLocalSearchParams } from 'expo-router';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 
+import { Text } from '@/components/ui/text';
 import { ErrorState } from '@/components/layout/error-state';
 import { Loading } from '@/components/feedback/loading';
 import { Screen } from '@/components/layout/screen';
@@ -56,7 +57,7 @@ export default function JamDetailScreen(): React.JSX.Element {
   return (
     <Screen scrollable={true} withTabBarInset={false} contentClassName="gap-6 pb-8">
       <View className="gap-2">
-        <Text className="text-2xl font-bold text-foreground">{jam.title}</Text>
+        <Text className="text-2xl font-bold tracking-tight text-foreground">{jam.title}</Text>
         <Text className="text-sm text-muted-foreground">{formatJamDateTime(jam.startsAt)}</Text>
         <JamRecurrenceSummary recurrence={jam.recurrence} startsAt={jam.startsAt} />
         <Text className="text-base text-foreground">{jam.locationName}</Text>
@@ -73,10 +74,10 @@ export default function JamDetailScreen(): React.JSX.Element {
       ) : null}
 
       <View className="flex-row flex-wrap gap-2">
-        <Text className="rounded-full bg-secondary px-3 py-1 text-sm text-secondary-foreground">
+        <Text className="border border-border-strong px-3 py-1 text-xs uppercase tracking-label text-text-soft">
           {formatSkillLevel(jam.skillLevel)}
         </Text>
-        <Text className="rounded-full bg-secondary px-3 py-1 text-sm text-secondary-foreground">
+        <Text className="border border-border-strong px-3 py-1 text-xs uppercase tracking-label text-text-soft">
           {formatParticipantCount(jam.participantCount, jam.maxParticipants)} participants
         </Text>
       </View>
@@ -90,7 +91,7 @@ export default function JamDetailScreen(): React.JSX.Element {
       {jam.isCreator ? <JamOwnerActions jamId={jam.id} seriesId={jam.seriesId} jamTitle={jam.title} /> : null}
 
       <View className="gap-3">
-        <Text className="text-lg font-bold text-foreground">Participants</Text>
+        <Text className="text-lg font-semibold text-foreground">Participants</Text>
         <ParticipantList jamId={jam.id} enabled={true} />
       </View>
     </Screen>

@@ -1,5 +1,6 @@
-import { Modal, Pressable, Text, View } from 'react-native';
+import { Modal, Pressable, View } from 'react-native';
 
+import { Text } from '@/components/ui/text';
 import { JamCalendar } from '@/features/jams/components/jam-calendar';
 
 type JamCalendarModalProps = {
@@ -21,7 +22,7 @@ export function JamCalendarModal({ visible, onClose, onJamPress }: JamCalendarMo
         <View className="gap-4 rounded-2xl border border-border bg-card p-4">
           <View className="flex-row items-center justify-between">
             <Text className="text-base font-semibold text-foreground">My jams</Text>
-            <Text accessibilityRole="button" onPress={onClose} className="text-sm font-semibold text-primary">
+            <Text accessibilityRole="button" onPress={onClose} className="text-xs font-medium uppercase tracking-label text-primary-text">
               Close
             </Text>
           </View>

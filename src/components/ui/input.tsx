@@ -1,5 +1,6 @@
-import { Text, TextInput, View, type TextInputProps } from 'react-native';
+import { TextInput, View, type TextInputProps } from 'react-native';
 
+import { Text } from '@/components/ui/text';
 import { cn } from '@/utils/cn';
 
 type InputProps = TextInputProps & {
@@ -23,14 +24,14 @@ export function Input({
   return (
     <View className={cn('gap-1.5', containerClassName)}>
       {label !== undefined ? (
-        <Text className="text-sm font-medium text-foreground">{label}</Text>
+        <Text className="text-xs font-medium uppercase tracking-label text-muted-foreground">{label}</Text>
       ) : null}
 
       <TextInput
         editable={isEditable}
         placeholderClassName="text-muted-foreground"
         className={cn(
-          'h-11 rounded-md border border-input bg-background px-3 text-base text-foreground',
+          'h-11 border border-input bg-card px-3 font-mono text-sm text-foreground focus:border-primary-text',
           !isEditable && 'opacity-50',
           hasError && 'border-destructive',
           inputClassName,

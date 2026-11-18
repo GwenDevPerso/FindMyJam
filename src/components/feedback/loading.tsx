@@ -1,5 +1,6 @@
-import { ActivityIndicator, Text, View } from 'react-native';
+import { ActivityIndicator, View } from 'react-native';
 
+import { Text } from '@/components/ui/text';
 import { useTheme } from '@/hooks/use-theme';
 import { cn } from '@/utils/cn';
 
@@ -20,9 +21,9 @@ export function Loading({ message, size, fullScreen, className }: LoadingProps):
         fullScreen && 'flex-1 bg-background',
         className,
       )}>
-      <ActivityIndicator size={size} color={theme.primary} />
+      <ActivityIndicator size={size} color={theme.primaryText} />
       {message !== undefined ? (
-        <Text className="text-sm text-muted-foreground">{message}</Text>
+        <Text className="text-xs text-muted-foreground">{message}</Text>
       ) : null}
     </View>
   );

@@ -1,9 +1,10 @@
 import { type Href, router } from 'expo-router';
 import { Bell, CalendarDays, Map, Plus, Search } from 'lucide-react-native';
 import { useState } from 'react';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 
+import { Text } from '@/components/ui/text';
 import { Loading } from '@/components/feedback/loading';
 import { EmptyState } from '@/components/layout/empty-state';
 import { ErrorState } from '@/components/layout/error-state';
@@ -40,11 +41,11 @@ function QuickAction({ label, icon: Icon, color, onPress }: QuickActionProps): R
       scaleValue={0.95}
       onPress={onPress}
       className="flex-1">
-      <View className="items-center gap-2 rounded-xl border border-border/50 bg-card-elevated p-4">
-        <View className="rounded-full p-2.5" style={{ backgroundColor: `${color}20` }}>
-          <Icon size={22} color={color} strokeWidth={2.5} />
+      <View className="items-center gap-2 border border-border bg-card p-4 active:bg-surface-hover">
+        <View className="border border-border p-2.5">
+          <Icon size={22} color={color} strokeWidth={2} />
         </View>
-        <Text className="text-xs font-semibold text-foreground">{label}</Text>
+        <Text className="text-center text-xs font-medium uppercase tracking-label text-foreground">{label}</Text>
       </View>
     </AnimatedPressableScale>
   );
@@ -109,8 +110,8 @@ export function HomeScreen(): React.JSX.Element {
     <Screen scrollable={true} contentClassName="pb-8" withTabBarInset={true}>
       <Animated.View entering={FadeInDown.duration(400).springify()} className="mb-6 flex-row items-start justify-between pt-2">
         <View className="flex-1">
-          <Text className="text-sm font-medium text-muted-foreground">Welcome back</Text>
-          <Text className="text-3xl font-bold text-foreground">
+          <Text className="text-xs font-medium uppercase tracking-label text-muted-foreground">Welcome back</Text>
+          <Text className="text-3xl font-extrabold tracking-tight text-foreground">
             {profile?.username ?? 'Musician'}
           </Text>
         </View>
@@ -121,8 +122,8 @@ export function HomeScreen(): React.JSX.Element {
             accessibilityLabel="Open my calendar"
             scaleValue={0.92}
             onPress={() => setIsCalendarOpen(true)}
-            className="rounded-full border border-border bg-card-elevated p-3">
-            <CalendarDays size={20} color={theme.primary} />
+            className="border border-border bg-card p-3">
+            <CalendarDays size={20} color={theme.primaryText} />
           </AnimatedPressableScale>
 
           <AnimatedPressableScale
@@ -130,9 +131,9 @@ export function HomeScreen(): React.JSX.Element {
             accessibilityLabel="Open notifications"
             scaleValue={0.92}
             onPress={handleNotificationsPress}
-            className="rounded-full border border-border bg-card-elevated p-3">
+            className="border border-border bg-card p-3">
             <View>
-              <Bell size={20} color={theme.primary} />
+              <Bell size={20} color={theme.primaryText} />
               <NotificationBadge count={unreadCountQuery.data ?? 0} />
             </View>
           </AnimatedPressableScale>
@@ -170,7 +171,7 @@ export function HomeScreen(): React.JSX.Element {
         <QuickAction
           label="Explore map"
           icon={Map}
-          color={theme.primary}
+          color={theme.primaryText}
           onPress={handleExplorePress}
         />
         <QuickAction
@@ -188,11 +189,11 @@ export function HomeScreen(): React.JSX.Element {
       </Animated.View>
 
       <View className="mb-4 flex-row items-center justify-between">
-        <Text className="text-lg font-bold text-foreground">Nearby jams</Text>
+        <Text className="text-lg font-semibold text-foreground">Nearby jams</Text>
         <Text
           accessibilityRole="button"
           onPress={handleSeeAllJamsPress}
-          className="text-sm font-semibold text-primary">
+          className="text-xs font-medium uppercase tracking-label text-primary-text">
           See all
         </Text>
       </View>

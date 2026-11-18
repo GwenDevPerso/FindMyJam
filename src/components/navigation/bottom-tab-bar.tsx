@@ -1,9 +1,11 @@
 import { type BottomTabBarProps } from 'expo-router/build/react-navigation/bottom-tabs';
 import { Home, Map, User, Users } from 'lucide-react-native';
-import { Pressable, Text, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import Animated, { useAnimatedStyle, withSpring } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { Text } from '@/components/ui/text';
+import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { cn } from '@/utils/cn';
 
@@ -32,7 +34,7 @@ function TabItem({ routeName, label, isFocused, onPress, onLongPress }: TabItemP
   const theme = useTheme();
   const config = TAB_CONFIG.find((tab) => tab.name === routeName);
   const Icon = config?.icon ?? Home;
-  const iconColor = isFocused ? theme.primary : theme.mutedForeground;
+  const iconColor = isFocused ? theme.primaryText : theme.mutedForeground;
 
   const indicatorStyle = useAnimatedStyle(() => ({
     opacity: withSpring(isFocused ? 1 : 0, { damping: 18, stiffness: 280 }),
@@ -49,14 +51,14 @@ function TabItem({ routeName, label, isFocused, onPress, onLongPress }: TabItemP
       className="flex-1 items-center justify-center py-2">
       <View className="relative items-center gap-1">
         <Animated.View
-          className="absolute -top-1 h-1 w-5 rounded-full bg-primary"
+          className="absolute -top-1 h-0.5 w-5 bg-primary-text"
           style={indicatorStyle}
         />
-        <Icon size={22} color={iconColor} strokeWidth={isFocused ? 2.5 : 2} />
+        <Icon size={20} color={iconColor} strokeWidth={2} />
         <Text
           className={cn(
-            'text-[10px] font-semibold',
-            isFocused ? 'text-primary' : 'text-muted-foreground',
+            'text-xs font-medium uppercase tracking-label',
+            isFocused ? 'text-primary-text' : 'text-muted-foreground',
           )}>
           {label}
         </Text>
@@ -67,11 +69,12 @@ function TabItem({ routeName, label, isFocused, onPress, onLongPress }: TabItemP
 
 export function BottomTabBar({ state, descriptors, navigation }: BottomTabBarProps): React.JSX.Element {
   const insets = useSafeAreaInsets();
+  const safeAreaStyle = { paddingBottom: Math.max(insets.bottom, Spacing.two) };
 
   return (
     <View
       className="border-t border-border bg-tab-bar"
-      style={{ paddingBottom: Math.max(insets.bottom, 8) }}>
+      style={safeAreaStyle}>
       <View className="flex-row px-2 pt-1">
         {state.routes
           .filter((route) => TAB_CONFIG.some((tab) => tab.name === route.name))

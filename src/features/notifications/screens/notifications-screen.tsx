@@ -1,7 +1,8 @@
 import { type Href, router } from 'expo-router';
 import { Bell } from 'lucide-react-native';
-import { FlatList, Text, View } from 'react-native';
+import { FlatList, View } from 'react-native';
 
+import { Text } from '@/components/ui/text';
 import { Loading } from '@/components/feedback/loading';
 import { EmptyState } from '@/components/layout/empty-state';
 import { ErrorState } from '@/components/layout/error-state';
@@ -80,7 +81,7 @@ export function NotificationsScreen(): React.JSX.Element {
     <Screen scrollable={false} withTabBarInset={true}>
       <View className="mb-4 flex-row items-center justify-between">
         <View className="flex-row items-center gap-2">
-          <Bell size={22} color={theme.primary} />
+          <Bell size={22} color={theme.primaryText} />
           <Text className="text-2xl font-bold text-foreground">Notifications</Text>
         </View>
 
@@ -121,7 +122,7 @@ export function NotificationsScreen(): React.JSX.Element {
               </View>
             ) : null
           }
-          contentContainerStyle={{ paddingBottom: 24 }}
+          contentContainerClassName="pb-6"
           showsVerticalScrollIndicator={false}
         />
       )}

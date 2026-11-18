@@ -1,7 +1,8 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react-native';
 import { useState } from 'react';
-import { Pressable, Text, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 
+import { Text } from '@/components/ui/text';
 import { Loading } from '@/components/feedback/loading';
 import { ErrorState } from '@/components/layout/error-state';
 import { useMyJamCalendar } from '@/features/jams/hooks/use-my-jam-calendar';
@@ -37,6 +38,12 @@ function describeDay(date: string, jams: CalendarJam[]): string {
   return parts.join(', ');
 }
 
+// Created = primary-text (accent in dark, ink in light), participating = secondaryAccent (DESIGN.md §2).
+const ROLE_DOT_CLASSES: Record<CalendarJam['role'], string> = {
+  created: 'bg-primary-text',
+  participant: 'bg-accent',
+};
+
 /** Month view of the jams the user created and joined; pressing a day lists its jams. */
 export function JamCalendar({ onJamPress }: JamCalendarProps): React.JSX.Element {
   const theme = useTheme();
@@ -45,7 +52,6 @@ export function JamCalendar({ onJamPress }: JamCalendarProps): React.JSX.Element
   const calendarQuery = useMyJamCalendar({ month, enabled: true });
 
   const today = toLocalDateParts(new Date().toISOString()).date;
-  const roleColors: Record<CalendarJam['role'], string> = { created: theme.primary, participant: theme.accent };
 
   const jamsByDate = new Map<string, CalendarJam[]>();
   for (const jam of calendarQuery.data ?? []) {
@@ -66,7 +72,7 @@ export function JamCalendar({ onJamPress }: JamCalendarProps): React.JSX.Element
         <Pressable accessibilityRole="button" accessibilityLabel="Previous month" hitSlop={8} onPress={() => changeMonth(-1)}>
           <ChevronLeft size={22} color={theme.text} />
         </Pressable>
-        <Text className="text-lg font-bold text-foreground">{formatMonthLabel(month)}</Text>
+        <Text className="text-lg font-semibold text-foreground">{formatMonthLabel(month)}</Text>
         <Pressable accessibilityRole="button" accessibilityLabel="Next month" hitSlop={8} onPress={() => changeMonth(1)}>
           <ChevronRight size={22} color={theme.text} />
         </Pressable>
@@ -119,23 +125,19 @@ export function JamCalendar({ onJamPress }: JamCalendarProps): React.JSX.Element
                       accessibilityState={{ selected: isSelected }}
                       onPress={() => setSelectedDate(date)}
                       className={cn(
-                        'h-11 flex-1 items-center justify-center gap-1 rounded-lg',
-                        isSelected && 'bg-secondary',
+                        'h-11 flex-1 items-center justify-center gap-1 border border-transparent',
+                        isSelected && 'border-border-strong bg-secondary',
                       )}>
                       <Text
                         className={cn(
                           'text-sm text-foreground',
-                          date === today && 'font-bold text-primary',
+                          date === today && 'font-bold text-primary-text',
                         )}>
                         {Number(date.slice(8))}
                       </Text>
                       <View className="h-1.5 flex-row gap-1">
                         {roles.map((role) => (
-                          <View
-                            key={role}
-                            className="h-1.5 w-1.5 rounded-full"
-                            style={{ backgroundColor: roleColors[role] }}
-                          />
+                          <View key={role} className={cn('h-1.5 w-1.5', ROLE_DOT_CLASSES[role])} />
                         ))}
                       </View>
                     </Pressable>
@@ -148,7 +150,7 @@ export function JamCalendar({ onJamPress }: JamCalendarProps): React.JSX.Element
           <View className="flex-row justify-center gap-4">
             {(['created', 'participant'] as const).map((role) => (
               <View key={role} className="flex-row items-center gap-1.5">
-                <View className="h-2 w-2 rounded-full" style={{ backgroundColor: roleColors[role] }} />
+                <View className={cn('h-2 w-2', ROLE_DOT_CLASSES[role])} />
                 <Text className="text-xs text-muted-foreground">
                   {role === 'created' ? 'Created' : 'Participating'}
                 </Text>
@@ -173,8 +175,8 @@ export function JamCalendar({ onJamPress }: JamCalendarProps): React.JSX.Element
                 accessibilityRole="button"
                 accessibilityLabel={`${jam.title}, ${ROLE_LABELS[jam.role]}, ${time}`}
                 onPress={() => onJamPress(jam.id)}
-                className="flex-row items-center gap-3 rounded-lg border border-border bg-card-elevated px-3 py-2">
-                <View className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: roleColors[jam.role] }} />
+                className="flex-row items-center gap-3 border border-border bg-card px-3 py-2 active:bg-surface-hover">
+                <View className={cn('h-2.5 w-2.5', ROLE_DOT_CLASSES[jam.role])} />
                 <Text className="text-sm font-semibold text-muted-foreground">{time}</Text>
                 <Text className="flex-1 text-sm text-foreground" numberOfLines={1}>
                   {jam.title}

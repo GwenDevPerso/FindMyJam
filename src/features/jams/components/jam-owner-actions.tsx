@@ -1,6 +1,7 @@
 import { type Href, router } from 'expo-router';
-import { Alert, type AlertButton, Text, View } from 'react-native';
+import { Alert, type AlertButton, View } from 'react-native';
 
+import { Text } from '@/components/ui/text';
 import { Button } from '@/components/ui/button';
 import { Routes } from '@/constants/routes';
 import { useDeleteJam } from '@/features/jams/hooks/use-delete-jam';

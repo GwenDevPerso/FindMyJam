@@ -5,6 +5,10 @@ export const MAP_FILTER_DEBOUNCE_MS = 300;
 export const DEFAULT_MAP_REGION_DELTA = 0.08;
 export const MAP_PREVIEW_HEIGHT = 192;
 export const CLUSTERING_THRESHOLD = 100;
+/** Caps "Search this area" when zoomed out: the map loads every page of results. */
+export const MAX_AREA_SEARCH_RADIUS_METERS = 50_000;
+/** Share of the visible radius the map centre must move before offering a new area search. */
+export const AREA_SEARCH_MOVE_RATIO = 0.3;
 
 export const DISTANCE_FILTER_OPTIONS = [5_000, 10_000, 25_000, 50_000] as const;
 

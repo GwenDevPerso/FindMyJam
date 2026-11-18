@@ -1,6 +1,7 @@
 import { createElement } from 'react';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 
+import { Text } from '@/components/ui/text';
 import { useTheme } from '@/hooks/use-theme';
 import { getInstrumentIcon } from '@/utils/instrument-icons';
 import { cn } from '@/utils/cn';
@@ -24,7 +25,7 @@ const iconSizes = {
 
 const textSizes = {
   sm: 'text-xs',
-  md: 'text-sm',
+  md: 'text-xs',
 } as const;
 
 export function InstrumentBadge({
@@ -40,14 +41,14 @@ export function InstrumentBadge({
       accessibilityRole="text"
       accessibilityLabel={`Instrument: ${name}`}
       className={cn(
-        'flex-row items-center rounded-full bg-accent/15 border border-accent/25',
+        'flex-row items-center border border-accent bg-transparent',
         sizeClasses[size],
         className,
       )}>
       {createElement(getInstrumentIcon(slug), {
         size: iconSizes[size],
         color: theme.accent,
-        strokeWidth: 2.5,
+        strokeWidth: 2,
       })}
       <Text className={cn('font-medium text-accent', textSizes[size])}>{name}</Text>
     </View>

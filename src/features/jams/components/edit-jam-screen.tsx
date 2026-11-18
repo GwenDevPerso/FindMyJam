@@ -1,7 +1,8 @@
 import { type Href, router } from 'expo-router';
 import { useState } from 'react';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 
+import { Text } from '@/components/ui/text';
 import { Loading } from '@/components/feedback/loading';
 import { ErrorState } from '@/components/layout/error-state';
 import { Screen } from '@/components/layout/screen';
@@ -81,7 +82,7 @@ export function EditJamScreen({ jamId }: EditJamScreenProps): React.JSX.Element 
   if (jam.seriesId !== null && scope === null) {
     return (
       <Screen scrollable={false} withTabBarInset={false} contentClassName="gap-4 pt-4">
-        <Text className="text-lg font-bold text-foreground">Which dates do you want to edit?</Text>
+        <Text className="text-lg font-semibold text-foreground">Which dates do you want to edit?</Text>
         <View className="gap-3">
           <Button
             label="This date only"

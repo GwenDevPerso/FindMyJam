@@ -1,5 +1,5 @@
-import { Text } from 'react-native';
 
+import { Text } from '@/components/ui/text';
 import type { JamRecurrence } from '@/types/domain';
 import { formatRecurrenceSummary } from '@/utils/recurrence';
 

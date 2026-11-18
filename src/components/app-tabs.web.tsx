@@ -6,22 +6,25 @@ import {
   TabTriggerSlotProps,
 } from 'expo-router/ui';
 import { Home, Map, User, Users } from 'lucide-react-native';
-import { Pressable, Text, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { Text } from '@/components/ui/text';
+import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { cn } from '@/utils/cn';
 
 export default function AppTabs(): React.JSX.Element {
   const insets = useSafeAreaInsets();
+  const safeAreaStyle = { paddingBottom: Math.max(insets.bottom, Spacing.two) };
 
   return (
     <Tabs>
-      <TabSlot style={{ flex: 1 }} />
+      <TabSlot style={styles.slot} />
       <TabList asChild>
         <View
           className="flex-row border-t border-border bg-tab-bar px-2 pt-1"
-          style={{ paddingBottom: Math.max(insets.bottom, 8) }}>
+          style={safeAreaStyle}>
           <TabTrigger name="index" href="/" asChild>
             <WebTabButton label="Home" icon={Home} />
           </TabTrigger>
@@ -56,16 +59,16 @@ function WebTabButton({ label, icon: Icon, isFocused, ...props }: WebTabButtonPr
       accessibilityLabel={label}
       className="flex-1 items-center justify-center py-2">
       <View className="items-center gap-1">
-        {isFocused === true ? <View className="mb-0.5 h-1 w-5 rounded-full bg-primary" /> : null}
+        {isFocused === true ? <View className="mb-0.5 h-0.5 w-5 bg-primary-text" /> : null}
         <Icon
-          size={22}
-          color={isFocused === true ? theme.primary : theme.mutedForeground}
-          strokeWidth={isFocused === true ? 2.5 : 2}
+          size={20}
+          color={isFocused === true ? theme.primaryText : theme.mutedForeground}
+          strokeWidth={2}
         />
         <Text
           className={cn(
-            'text-[10px] font-semibold',
-            isFocused === true ? 'text-primary' : 'text-muted-foreground',
+            'text-xs font-medium uppercase tracking-label',
+            isFocused === true ? 'text-primary-text' : 'text-muted-foreground',
           )}>
           {label}
         </Text>
@@ -73,3 +76,7 @@ function WebTabButton({ label, icon: Icon, isFocused, ...props }: WebTabButtonPr
     </Pressable>
   );
 }
+
+const styles = StyleSheet.create({
+  slot: { flex: 1 },
+});

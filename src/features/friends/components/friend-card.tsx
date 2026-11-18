@@ -1,5 +1,6 @@
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 
+import { Text } from '@/components/ui/text';
 import { AnimatedPressableScale } from '@/components/ui/animated-pressable';
 import { Avatar } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';

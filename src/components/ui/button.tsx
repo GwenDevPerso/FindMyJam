@@ -1,5 +1,6 @@
-import { ActivityIndicator, Pressable, Text, type PressableProps } from 'react-native';
+import { ActivityIndicator, Pressable, type PressableProps } from 'react-native';
 
+import { Text } from '@/components/ui/text';
 import { useTheme } from '@/hooks/use-theme';
 import { cn } from '@/utils/cn';
 
@@ -15,32 +16,29 @@ type ButtonProps = PressableProps & {
   textClassName?: string;
 };
 
+// DESIGN.md §4: primary = accent fill + onPrimary text; secondary / outline = transparent, 1px borderStrong,
+// textSoft; ghost = text only; destructive = danger outline. Labels use the `label` variant (mono, uppercase).
 const variantClasses: Record<ButtonVariant, string> = {
-  primary: 'bg-primary active:opacity-90',
-  secondary: 'bg-secondary active:opacity-90',
-  outline: 'border border-border bg-transparent active:bg-secondary',
-  ghost: 'bg-transparent active:bg-secondary',
-  destructive: 'bg-destructive active:opacity-90',
+  primary: 'border border-primary bg-primary active:opacity-80',
+  secondary: 'border border-border-strong bg-transparent active:bg-surface-hover',
+  outline: 'border border-border-strong bg-transparent active:bg-surface-hover',
+  ghost: 'bg-transparent active:bg-surface-hover',
+  destructive: 'border border-destructive bg-transparent active:bg-surface-hover',
 };
 
 const variantTextClasses: Record<ButtonVariant, string> = {
   primary: 'text-primary-foreground',
-  secondary: 'text-secondary-foreground',
-  outline: 'text-foreground',
+  secondary: 'text-text-soft',
+  outline: 'text-text-soft',
   ghost: 'text-foreground',
-  destructive: 'text-destructive-foreground',
+  destructive: 'text-destructive',
 };
 
+// Every size keeps the 44 pt touch target (DESIGN.md §4).
 const sizeClasses: Record<ButtonSize, string> = {
-  sm: 'h-9 px-4 rounded-full',
-  md: 'h-11 px-5 rounded-full',
-  lg: 'h-12 px-6 rounded-full',
-};
-
-const sizeTextClasses: Record<ButtonSize, string> = {
-  sm: 'text-sm',
-  md: 'text-base',
-  lg: 'text-base',
+  sm: 'h-11 px-3',
+  md: 'h-11 px-5',
+  lg: 'h-12 px-6',
 };
 
 export function Button({
@@ -59,6 +57,8 @@ export function Button({
   return (
     <Pressable
       accessibilityRole="button"
+      // The label is shown uppercase; the accessible name stays the label as written.
+      accessibilityLabel={label}
       accessibilityState={{ disabled: isDisabled, busy: isLoading }}
       disabled={isDisabled}
       className={cn(
@@ -70,11 +70,9 @@ export function Button({
       )}
       {...pressableProps}>
       {isLoading ? (
-        <ActivityIndicator
-          color={variant === 'primary' || variant === 'destructive' ? theme.primaryForeground : theme.text}
-        />
+        <ActivityIndicator color={variant === 'primary' ? theme.primaryForeground : theme.text} />
       ) : (
-        <Text className={cn('font-semibold', variantTextClasses[variant], sizeTextClasses[size], textClassName)}>
+        <Text className={cn('text-xs font-medium uppercase tracking-label', variantTextClasses[variant], textClassName)}>
           {label}
         </Text>
       )}

@@ -1,49 +1,87 @@
 import { Platform } from 'react-native';
 
+// DESIGN.md §2 palette, mirrored from src/global.css for React Navigation and native props (icon `color`, …).
+// Raw values live only here and in global.css.
+const palette = {
+  paper: '#f6f4ee',
+  white: '#ffffff',
+  paperHover: '#efece4',
+  ink: '#141410',
+  inkSoft: '#4a463d',
+  inkMuted: '#6b665a',
+  lineLight: '#dcd8cc',
+  lineStrongLight: '#857f72',
+  night: '#0e0e0c',
+  nightSurface: '#141410',
+  nightHover: '#1a1915',
+  snow: '#edeae2',
+  snowSoft: '#b4aea1',
+  snowMuted: '#9a9384',
+  lineDark: '#26251f',
+  lineStrongDark: '#6b665a',
+  green: '#1db954',
+  dangerLight: '#b23a24',
+  dangerDark: '#e8806b',
+  blueLight: '#3451c7',
+  blueDark: '#d4daff',
+} as const;
+
 export const Colors = {
   light: {
-    text: '#0c0c12',
-    background: '#fafafc',
-    backgroundElement: '#f0f0f5',
-    backgroundSelected: '#e6e6ee',
-    textSecondary: '#646478',
-    primary: '#1db954',
-    primaryForeground: '#000000',
-    card: '#ffffff',
-    cardElevated: '#f5f5f8',
-    cardForeground: '#0c0c12',
-    border: '#dcdce6',
-    destructive: '#f65858',
-    destructiveForeground: '#ffffff',
-    muted: '#e6e6ee',
-    mutedForeground: '#646478',
-    ring: '#1db954',
-    accent: '#5865f2',
-    accentForeground: '#ffffff',
-    event: '#f65858',
-    tabBar: '#ffffff',
+    text: palette.ink,
+    textSoft: palette.inkSoft,
+    textMuted: palette.inkMuted,
+    textSecondary: palette.inkMuted,
+    background: palette.paper,
+    surface: palette.white,
+    surfaceHover: palette.paperHover,
+    backgroundElement: palette.paperHover,
+    backgroundSelected: palette.lineStrongLight,
+    primary: palette.green,
+    primaryForeground: palette.night,
+    primaryText: palette.ink,
+    card: palette.white,
+    cardElevated: palette.white,
+    cardForeground: palette.ink,
+    border: palette.lineLight,
+    borderStrong: palette.lineStrongLight,
+    destructive: palette.dangerLight,
+    destructiveForeground: palette.white,
+    muted: palette.paperHover,
+    mutedForeground: palette.inkMuted,
+    ring: palette.ink,
+    accent: palette.blueLight,
+    accentForeground: palette.white,
+    event: palette.ink,
+    tabBar: palette.paper,
   },
   dark: {
-    text: '#f5f5fa',
-    background: '#0a0a0f',
-    backgroundElement: '#252530',
-    backgroundSelected: '#2a2a35',
-    textSecondary: '#8c8ca0',
-    primary: '#1ed760',
-    primaryForeground: '#000000',
-    card: '#16161d',
-    cardElevated: '#1c1c26',
-    cardForeground: '#f5f5fa',
-    border: '#2a2a35',
-    destructive: '#f87171',
-    destructiveForeground: '#450a0a',
-    muted: '#2a2a35',
-    mutedForeground: '#8c8ca0',
-    ring: '#1ed760',
-    accent: '#5865f2',
-    accentForeground: '#ffffff',
-    event: '#f65858',
-    tabBar: '#101016',
+    text: palette.snow,
+    textSoft: palette.snowSoft,
+    textMuted: palette.snowMuted,
+    textSecondary: palette.snowMuted,
+    background: palette.night,
+    surface: palette.nightSurface,
+    surfaceHover: palette.nightHover,
+    backgroundElement: palette.nightHover,
+    backgroundSelected: palette.lineStrongDark,
+    primary: palette.green,
+    primaryForeground: palette.night,
+    primaryText: palette.green,
+    card: palette.nightSurface,
+    cardElevated: palette.nightSurface,
+    cardForeground: palette.snow,
+    border: palette.lineDark,
+    borderStrong: palette.lineStrongDark,
+    destructive: palette.dangerDark,
+    destructiveForeground: palette.night,
+    muted: palette.nightHover,
+    mutedForeground: palette.snowMuted,
+    ring: palette.green,
+    accent: palette.blueDark,
+    accentForeground: palette.night,
+    event: palette.green,
+    tabBar: palette.night,
   },
 } as const;
 
@@ -51,27 +89,34 @@ export type ThemeColor = keyof typeof Colors.light & keyof typeof Colors.dark;
 export type ColorScheme = 'light' | 'dark';
 export type ThemeColors = (typeof Colors)[ColorScheme];
 
-export const Fonts = Platform.select({
-  ios: {
-    sans: 'system-ui',
-    serif: 'ui-serif',
-    rounded: 'ui-rounded',
-    mono: 'ui-monospace',
+// DESIGN.md §3 — font faces loaded with expo-font in AuthProvider. One family name per weight: custom fonts do not
+// pick a face from fontWeight on native.
+export const FontFaces = {
+  sans: {
+    normal: 'Archivo_400Regular',
+    medium: 'Archivo_500Medium',
+    semibold: 'Archivo_600SemiBold',
+    bold: 'Archivo_700Bold',
+    extrabold: 'Archivo_800ExtraBold',
   },
-  default: {
-    sans: 'normal',
-    serif: 'serif',
-    rounded: 'normal',
-    mono: 'monospace',
+  mono: {
+    normal: 'IBMPlexMono_400Regular',
+    medium: 'IBMPlexMono_500Medium',
+    semibold: 'IBMPlexMono_600SemiBold',
+    bold: 'IBMPlexMono_700Bold',
+    extrabold: 'IBMPlexMono_700Bold',
   },
-  web: {
-    sans: 'var(--font-display)',
-    serif: 'var(--font-serif)',
-    rounded: 'var(--font-rounded)',
-    mono: 'var(--font-mono)',
-  },
-});
+} as const;
 
+export type FontFamily = keyof typeof FontFaces;
+export type FontWeight = keyof (typeof FontFaces)['sans'];
+
+export const Fonts = {
+  sans: FontFaces.sans.bold,
+  mono: FontFaces.mono.normal,
+} as const;
+
+// DESIGN.md §4 spacing scale (4-pt base).
 export const Spacing = {
   half: 2,
   one: 4,
@@ -82,6 +127,10 @@ export const Spacing = {
   six: 64,
 } as const;
 
+// Mirrors the native splash `backgroundColor` in app.json so the animated overlay hands off seamlessly.
+// Not a DESIGN.md token: the splash (colour + Expo icon) has not been redesigned yet.
+export const SplashBackground = '#0e0e0c';
+
 export const BottomTabInset = Platform.select({ ios: 84, android: 72 }) ?? 0;
 export const MaxContentWidth = 800;
 
@@ -90,14 +139,14 @@ export const NavigationTheme = {
     background: Colors.light.background,
     card: Colors.light.card,
     border: Colors.light.border,
-    primary: Colors.light.primary,
+    primary: Colors.light.primaryText,
     text: Colors.light.text,
   },
   dark: {
     background: Colors.dark.background,
     card: Colors.dark.card,
     border: Colors.dark.border,
-    primary: Colors.dark.primary,
+    primary: Colors.dark.primaryText,
     text: Colors.dark.text,
   },
 } as const;

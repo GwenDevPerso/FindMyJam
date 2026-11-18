@@ -24,16 +24,14 @@ export function Screen({
 }: ScreenProps): React.JSX.Element {
   const insets = useSafeAreaInsets();
   const bottomPadding = insets.bottom + (withTabBarInset ? BottomTabInset : 0);
+  const insetStyle = { paddingTop: insets.top, paddingBottom: bottomPadding };
 
   if (scrollable) {
     return (
       <ScrollView
         className={cn('flex-1 bg-background', className)}
         contentContainerClassName={cn('grow px-4', contentClassName)}
-        contentContainerStyle={{
-          paddingTop: insets.top,
-          paddingBottom: bottomPadding,
-        }}
+        contentContainerStyle={insetStyle}
         {...scrollViewProps}>
         {children}
       </ScrollView>
@@ -43,7 +41,7 @@ export function Screen({
   return (
     <View
       className={cn('flex-1 bg-background px-4', className)}
-      style={{ paddingTop: insets.top, paddingBottom: bottomPadding }}>
+      style={insetStyle}>
       <View className={cn('flex-1', contentClassName)}>{children}</View>
     </View>
   );

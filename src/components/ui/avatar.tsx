@@ -1,6 +1,7 @@
 import { Image } from 'expo-image';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 
+import { Text } from '@/components/ui/text';
 import { cn } from '@/utils/cn';
 
 export type AvatarSize = 'sm' | 'md' | 'lg' | 'xl';
@@ -42,7 +43,7 @@ export function Avatar({ source, fallback, size, className }: AvatarProps): Reac
   return (
     <View
       className={cn(
-        'items-center justify-center overflow-hidden rounded-full bg-secondary',
+        'items-center justify-center overflow-hidden border border-border bg-secondary',
         sizeClasses[size],
         className,
       )}>
@@ -54,7 +55,7 @@ export function Avatar({ source, fallback, size, className }: AvatarProps): Reac
           className="h-full w-full"
         />
       ) : (
-        <Text className={cn('font-semibold text-secondary-foreground', textSizeClasses[size])}>
+        <Text className={cn('font-mono font-semibold text-secondary-foreground', textSizeClasses[size])}>
           {getFallbackLabel(fallback)}
         </Text>
       )}

@@ -1,5 +1,6 @@
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 
+import { Text } from '@/components/ui/text';
 import { Avatar } from '@/components/ui/avatar';
 import { AnimatedPressableScale } from '@/components/ui/animated-pressable';
 import { Card, CardHeader, CardTitle } from '@/components/ui/card';
@@ -32,7 +33,7 @@ export function NotificationCard({
     <AnimatedPressableScale scaleValue={0.98} onPress={handlePress} onLongPress={handleLongPress}>
       <Card
         variant="elevated"
-        className={cn('mb-3 overflow-hidden', !notification.isRead && 'border-primary/30')}>
+        className={cn('mb-3 overflow-hidden', !notification.isRead && 'border-primary-text')}>
         {!notification.isRead ? (
           <View className="absolute left-0 top-0 h-full w-1 bg-primary" accessibilityElementsHidden />
         ) : null}
@@ -44,7 +45,7 @@ export function NotificationCard({
             size="md"
           />
           <View className="flex-1">
-            <CardTitle className={cn(!notification.isRead && 'text-primary')}>
+            <CardTitle className={cn(!notification.isRead && 'text-primary-text')}>
               {notification.title}
             </CardTitle>
             <Text className="mt-1 text-sm text-muted-foreground">{notification.body}</Text>

@@ -1,13 +1,8 @@
 import { useMemo, useState } from 'react';
-import {
-  ActivityIndicator,
-  FlatList,
-  Text,
-  View,
-  type ListRenderItem,
-} from 'react-native';
+import { ActivityIndicator, FlatList, View, type ListRenderItem } from 'react-native';
 import { type Href, router } from 'expo-router';
 
+import { Text } from '@/components/ui/text';
 import { EmptyState } from '@/components/layout/empty-state';
 import { ErrorState } from '@/components/layout/error-state';
 import { Loading } from '@/components/feedback/loading';
@@ -179,7 +174,7 @@ export function AllJamsList(): React.JSX.Element {
           ListFooterComponent={
             jamsQuery.isFetchingNextPage ? (
               <View className="items-center py-4">
-                <ActivityIndicator color={theme.primary} />
+                <ActivityIndicator color={theme.primaryText} />
               </View>
             ) : null
           }

@@ -1,5 +1,6 @@
-import { Pressable, Text, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 
+import { Text } from '@/components/ui/text';
 import { Avatar } from '@/components/ui/avatar';
 import type { ChatMessage } from '@/features/chat/types';
 import { cn } from '@/utils/cn';
@@ -20,17 +21,18 @@ export function MessageBubble({ message, isOwn, onLongPress }: MessageBubbleProp
       ) : null}
 
       <Pressable
+        accessibilityRole={onLongPress !== undefined ? 'button' : 'text'}
         onLongPress={onLongPress}
         disabled={onLongPress === undefined}
         accessibilityHint={onLongPress !== undefined ? 'Long press to delete' : undefined}
         className={cn(
-          'max-w-[80%] gap-1 rounded-2xl px-3 py-2',
-          isOwn ? 'rounded-br-sm bg-primary' : 'rounded-bl-sm bg-secondary',
+          'max-w-[80%] gap-1 border px-3 py-2',
+          isOwn ? 'border-primary bg-primary' : 'border-border bg-card',
         )}>
         {!isOwn ? (
           <Text className="text-xs font-semibold text-secondary-foreground">{message.senderUsername}</Text>
         ) : null}
-        <Text className={cn('text-base', isOwn ? 'text-primary-foreground' : 'text-secondary-foreground')}>
+        <Text className={cn('text-sm', isOwn ? 'text-primary-foreground' : 'text-secondary-foreground')}>
           {message.body}
         </Text>
         <Text

@@ -1,73 +1,33 @@
-import { Platform, StyleSheet, Text, type TextProps } from 'react-native';
+import { type TextProps } from 'react-native';
 
-import { Fonts, ThemeColor } from '@/constants/theme';
+import { Text } from '@/components/ui/text';
+import { type ThemeColor } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
+import { cn } from '@/utils/cn';
+
+type ThemedTextType = 'default' | 'title' | 'small' | 'smallBold' | 'subtitle' | 'link' | 'linkPrimary' | 'code';
 
 export type ThemedTextProps = TextProps & {
-  type?: 'default' | 'title' | 'small' | 'smallBold' | 'subtitle' | 'link' | 'linkPrimary' | 'code';
+  type?: ThemedTextType;
   themeColor?: ThemeColor;
+  className?: string;
 };
 
-export function ThemedText({ style, type = 'default', themeColor, ...rest }: ThemedTextProps) {
+// DESIGN.md §3 variants.
+const typeClasses: Record<ThemedTextType, string> = {
+  default: 'text-sm',
+  title: 'text-3xl font-extrabold tracking-tight',
+  small: 'text-sm font-medium',
+  smallBold: 'text-sm font-bold',
+  subtitle: 'text-2xl font-bold',
+  link: 'text-sm',
+  linkPrimary: 'text-sm font-medium text-primary-text',
+  code: 'text-xs font-mono font-medium',
+};
+
+export function ThemedText({ style, type = 'default', themeColor, className, ...rest }: ThemedTextProps) {
   const theme = useTheme();
+  const colorStyle = type === 'linkPrimary' && themeColor === undefined ? null : { color: theme[themeColor ?? 'text'] };
 
-  return (
-    <Text
-      style={[
-        { color: theme[themeColor ?? 'text'] },
-        type === 'default' && styles.default,
-        type === 'title' && styles.title,
-        type === 'small' && styles.small,
-        type === 'smallBold' && styles.smallBold,
-        type === 'subtitle' && styles.subtitle,
-        type === 'link' && styles.link,
-        type === 'linkPrimary' && styles.linkPrimary,
-        type === 'code' && styles.code,
-        style,
-      ]}
-      {...rest}
-    />
-  );
+  return <Text className={cn(typeClasses[type], className)} style={[colorStyle, style]} {...rest} />;
 }
-
-const styles = StyleSheet.create({
-  small: {
-    fontSize: 14,
-    lineHeight: 20,
-    fontWeight: 500,
-  },
-  smallBold: {
-    fontSize: 14,
-    lineHeight: 20,
-    fontWeight: 700,
-  },
-  default: {
-    fontSize: 16,
-    lineHeight: 24,
-    fontWeight: 500,
-  },
-  title: {
-    fontSize: 48,
-    fontWeight: 600,
-    lineHeight: 52,
-  },
-  subtitle: {
-    fontSize: 32,
-    lineHeight: 44,
-    fontWeight: 600,
-  },
-  link: {
-    lineHeight: 30,
-    fontSize: 14,
-  },
-  linkPrimary: {
-    lineHeight: 30,
-    fontSize: 14,
-    color: '#3c87f7',
-  },
-  code: {
-    fontFamily: Fonts.mono,
-    fontWeight: Platform.select({ android: 700 }) ?? 500,
-    fontSize: 12,
-  },
-});

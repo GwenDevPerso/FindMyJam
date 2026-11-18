@@ -1,6 +1,7 @@
-import { Pressable, Text, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import Animated, { useAnimatedStyle, withSpring } from 'react-native-reanimated';
 
+import { Text } from '@/components/ui/text';
 import { InstrumentBadge } from '@/components/ui/instrument-badge';
 import { StyleBadge } from '@/components/ui/style-badge';
 import { cn } from '@/utils/cn';
@@ -28,7 +29,7 @@ export function MultiSelectChips({
 }: MultiSelectChipsProps): React.JSX.Element {
   return (
     <View className="gap-2">
-      <Text className="text-sm font-semibold text-foreground">{label}</Text>
+      <Text className="text-xs font-medium uppercase tracking-label text-muted-foreground">{label}</Text>
 
       <View className="flex-row flex-wrap gap-2">
         {options.map((option) => {
@@ -83,14 +84,14 @@ function SelectableChip({
             name={option.name}
             slug={option.slug ?? 'default'}
             size="md"
-            className={cn(isSelected && 'border-primary bg-primary/20')}
+            className={cn(isSelected && 'border-primary-text bg-secondary')}
           />
         ) : (
           <StyleBadge
             name={option.name}
             slug={option.slug ?? 'default'}
             size="md"
-            className={cn(isSelected && 'border-2 border-primary')}
+            className={cn(isSelected && 'border-primary-text bg-secondary')}
           />
         )}
       </Pressable>

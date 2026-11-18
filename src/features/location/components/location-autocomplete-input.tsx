@@ -1,11 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import {
-  ActivityIndicator,
-  Pressable,
-  Text,
-  View
-} from 'react-native';
+import { ActivityIndicator, Pressable, View } from 'react-native';
 
+import { Text } from '@/components/ui/text';
 import { Input } from '@/components/ui/input';
 import { usePlaceSearch } from '@/features/location/hooks/use-place-search';
 import type { PlaceSuggestion } from '@/features/location/types';
@@ -103,10 +99,10 @@ export function LocationAutocompleteInput({
       />
 
       {showSuggestions ? (
-        <View className="absolute left-0 right-0 top-full z-20 mt-1 overflow-hidden rounded-md border border-border bg-card shadow-md">
+        <View className="absolute left-0 right-0 top-full z-20 mt-1 overflow-hidden border border-border-strong bg-card">
           {placeSearchQuery.isFetching ? (
             <View className="items-center py-4">
-              <ActivityIndicator color={theme.primary} />
+              <ActivityIndicator color={theme.primaryText} />
             </View>
           ) : null}
 
@@ -121,7 +117,7 @@ export function LocationAutocompleteInput({
           ) : null}
 
           {!placeSearchQuery.isFetching && suggestions.length > 0 ? (
-            <View style={{ maxHeight: 220 }}>
+            <View className="max-h-56">
               {suggestions.map((item) => (
                 <Pressable
                   key={item.id}

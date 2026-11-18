@@ -1,5 +1,6 @@
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 
+import { Text } from '@/components/ui/text';
 import { JamForm } from '@/features/jams/components/jam-form';
 import { useUpdateJamSeries } from '@/features/jams/hooks/use-update-jam-series';
 import {

@@ -1,5 +1,6 @@
-import { Pressable, Text, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 
+import { Text } from '@/components/ui/text';
 import { Badge } from '@/components/ui/badge';
 import type { SkillLevel } from '@/types/domain';
 import { formatSkillLevel } from '@/utils/format';
@@ -20,7 +21,7 @@ type SkillLevelPickerProps = {
 export function SkillLevelPicker({ value, onChange }: SkillLevelPickerProps): React.JSX.Element {
   return (
     <View className="gap-2">
-      <Text className="text-sm font-semibold text-foreground">Skill level</Text>
+      <Text className="text-xs font-medium uppercase tracking-label text-muted-foreground">Skill level</Text>
 
       <View className="flex-row flex-wrap gap-2">
         <Pressable

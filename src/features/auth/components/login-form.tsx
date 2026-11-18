@@ -1,16 +1,15 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Link } from 'expo-router';
 import { Controller, useForm } from 'react-hook-form';
-import { ActivityIndicator, Pressable, StyleSheet, TextInput, View } from 'react-native';
+import { TextInput, View } from 'react-native';
 
 import { useAuth } from '@/features/auth/hooks/use-auth';
 import {
   loginSchema,
   type LoginFormValues,
 } from '@/features/auth/schemas/login.schema';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Spacing } from '@/constants/theme';
+import { Button } from '@/components/ui/button';
+import { Text } from '@/components/ui/text';
 import { useTheme } from '@/hooks/use-theme';
 
 function getErrorMessage(error: Error | null): string | null {
@@ -42,14 +41,14 @@ export function LoginForm() {
   });
 
   return (
-    <ThemedView style={styles.container}>
-      <ThemedText type="subtitle">Sign in</ThemedText>
-      <ThemedText themeColor="textSecondary" style={styles.subtitle}>
+    <View className="flex-1 justify-center gap-4 bg-background p-6">
+      <Text className="text-2xl font-bold tracking-tight text-foreground">Sign in</Text>
+      <Text className="mb-2 text-sm text-muted-foreground">
         Find jams and connect with musicians near you.
-      </ThemedText>
+      </Text>
 
-      <View style={styles.form}>
-        <ThemedText type="smallBold">Email</ThemedText>
+      <View className="gap-2">
+        <Text className="text-xs font-medium uppercase tracking-label text-muted-foreground">Email</Text>
         <Controller
           control={control}
           name="email"
@@ -61,19 +60,19 @@ export function LoginForm() {
               onBlur={onBlur}
               onChangeText={onChange}
               placeholder="you@example.com"
-              placeholderTextColor={theme.textSecondary}
-              style={[styles.input, { color: theme.text, borderColor: theme.backgroundSelected }]}
+              placeholderTextColor={theme.mutedForeground}
+              className="h-11 border border-input bg-card px-4 font-mono text-sm text-foreground"
               value={value}
             />
           )}
         />
         {errors.email !== undefined ? (
-          <ThemedText style={styles.fieldError}>{errors.email.message}</ThemedText>
+          <Text className="text-sm text-destructive">{errors.email.message}</Text>
         ) : null}
 
-        <ThemedText type="smallBold" style={styles.fieldLabel}>
+        <Text className="mt-2 text-xs font-medium uppercase tracking-label text-muted-foreground">
           Password
-        </ThemedText>
+        </Text>
         <Controller
           control={control}
           name="password"
@@ -84,72 +83,35 @@ export function LoginForm() {
               onBlur={onBlur}
               onChangeText={onChange}
               placeholder="Your password"
-              placeholderTextColor={theme.textSecondary}
+              placeholderTextColor={theme.mutedForeground}
               secureTextEntry
-              style={[styles.input, { color: theme.text, borderColor: theme.backgroundSelected }]}
+              className="h-11 border border-input bg-card px-4 font-mono text-sm text-foreground"
               value={value}
             />
           )}
         />
         {errors.password !== undefined ? (
-          <ThemedText style={styles.fieldError}>{errors.password.message}</ThemedText>
+          <Text className="text-sm text-destructive">{errors.password.message}</Text>
         ) : null}
 
         {getErrorMessage(loginError) !== null ? (
-          <ThemedText style={styles.fieldError}>{getErrorMessage(loginError)}</ThemedText>
+          <Text className="text-sm text-destructive">{getErrorMessage(loginError)}</Text>
         ) : null}
 
-        <Pressable
-          accessibilityRole="button"
-          disabled={isLoggingIn}
+        <Button
+          label="Sign in"
+          variant="primary"
+          size="lg"
+          isLoading={isLoggingIn}
           onPress={onSubmit}
-          style={[styles.button, { backgroundColor: theme.backgroundSelected }]}>
-          {isLoggingIn ? (
-            <ActivityIndicator color={theme.text} />
-          ) : (
-            <ThemedText type="smallBold">Sign in</ThemedText>
-          )}
-        </Pressable>
+          className="mt-4"
+        />
       </View>
 
       <Link href="/register">
-        <ThemedText type="linkPrimary">Create an account</ThemedText>
+        <Text className="text-sm font-medium text-primary-text">Create an account</Text>
       </Link>
-    </ThemedView>
+    </View>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    padding: Spacing.four,
-    gap: Spacing.three,
-  },
-  subtitle: {
-    marginBottom: Spacing.two,
-  },
-  form: {
-    gap: Spacing.two,
-  },
-  fieldLabel: {
-    marginTop: Spacing.two,
-  },
-  input: {
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.two,
-    fontSize: 16,
-  },
-  fieldError: {
-    color: '#e5484d',
-    fontSize: 14,
-  },
-  button: {
-    marginTop: Spacing.three,
-    borderRadius: 8,
-    paddingVertical: Spacing.three,
-    alignItems: 'center',
-  },
-});

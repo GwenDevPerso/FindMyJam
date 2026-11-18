@@ -1,8 +1,9 @@
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { Pressable, Text, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 
+import { Text } from '@/components/ui/text';
 import { Button } from '@/components/ui/button';
 import { FriendList } from '@/features/friends/components/friend-list';
 import { FriendRequestList } from '@/features/friends/components/friend-request-list';
@@ -26,7 +27,7 @@ function FriendsTabs({ activeTab, onTabChange }: FriendsTabsProps): React.JSX.El
   ];
 
   return (
-    <View className="mb-4 flex-row rounded-xl bg-secondary p-1">
+    <View className="mb-4 flex-row border-b border-border">
       {tabs.map((tab) => {
         const isActive = tab.id === activeTab;
 
@@ -36,16 +37,16 @@ function FriendsTabs({ activeTab, onTabChange }: FriendsTabsProps): React.JSX.El
             accessibilityRole="tab"
             accessibilityState={{ selected: isActive }}
             className={cn(
-              'flex-1 items-center rounded-lg py-2.5',
-              isActive && 'bg-card-elevated',
+              '-mb-px flex-1 items-center border-b-2 border-transparent py-3',
+              isActive && 'border-primary-text',
             )}
             onPress={() => {
               onTabChange(tab.id);
             }}>
             <Text
               className={cn(
-                'text-sm font-semibold',
-                isActive ? 'text-primary' : 'text-muted-foreground',
+                'text-xs font-medium uppercase tracking-label',
+                isActive ? 'text-primary-text' : 'text-muted-foreground',
               )}>
               {tab.label}
             </Text>
