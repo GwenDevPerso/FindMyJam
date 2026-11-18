@@ -30,7 +30,7 @@ export function Screen({
     return (
       <ScrollView
         className={cn('flex-1 bg-background', className)}
-        contentContainerClassName={cn('grow px-4', contentClassName)}
+        contentContainerClassName={cn('grow px-5', contentClassName)}
         contentContainerStyle={insetStyle}
         {...scrollViewProps}>
         {children}
@@ -40,7 +40,7 @@ export function Screen({
 
   return (
     <View
-      className={cn('flex-1 bg-background px-4', className)}
+      className={cn('flex-1 bg-background px-5', className)}
       style={insetStyle}>
       <View className={cn('flex-1', contentClassName)}>{children}</View>
     </View>

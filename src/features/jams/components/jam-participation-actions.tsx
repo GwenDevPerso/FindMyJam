@@ -57,10 +57,12 @@ function WaitlistActions({ jamId }: WaitlistActionsProps): React.JSX.Element {
     <View className="gap-2">
       {status.position !== null ? (
         <>
-          <Text className="text-base font-semibold text-foreground">{`You're #${status.position} on the waitlist`}</Text>
-          <Text className="text-sm text-muted-foreground">
-            You will join automatically when a spot opens up, and get a notification.
-          </Text>
+          <View className="gap-1 rounded-lg border border-accent bg-accent/10 p-4">
+            <Text className="text-xl text-accent">{`You're #${status.position} on the waitlist`}</Text>
+            <Text className="text-sm text-text-soft">
+              You will join automatically when a spot opens up, and get a notification.
+            </Text>
+          </View>
           <Button
             label="Leave waitlist"
             variant="outline"
@@ -73,7 +75,7 @@ function WaitlistActions({ jamId }: WaitlistActionsProps): React.JSX.Element {
         </>
       ) : (
         <>
-          <Text className="text-sm text-muted-foreground">{formatWaitlistSize(status.size)}</Text>
+          <Text className="text-sm text-text-soft">{formatWaitlistSize(status.size)}</Text>
           <Button
             label="Join waitlist"
             variant="primary"

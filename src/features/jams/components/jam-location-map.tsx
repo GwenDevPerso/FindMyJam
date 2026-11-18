@@ -31,7 +31,7 @@ export function JamLocationMap({
   if (Platform.OS === 'web') {
     return (
       <View
-        className="items-center justify-center border border-border bg-secondary"
+        className="items-center justify-center overflow-hidden rounded-xl border border-border bg-secondary"
         style={styles.mapContainer}>
         <Text className="px-4 text-center text-sm text-muted-foreground">
           Map preview is available on iOS and Android.
@@ -41,7 +41,7 @@ export function JamLocationMap({
   }
 
   return (
-    <View className="overflow-hidden border border-border" style={styles.mapContainer}>
+    <View className="overflow-hidden rounded-xl border border-border" style={styles.mapContainer}>
       <MapView
         style={styles.map}
         initialRegion={coordinatesToRegion(coordinates, DEFAULT_MAP_REGION_DELTA)}

@@ -27,8 +27,8 @@ function ParticipantRow({ participant }: { participant: JamParticipant }): React
     <View className="flex-row items-center gap-3 border-b border-border py-3">
       <Avatar source={participant.avatarUrl} fallback={participant.username} size="md" />
       <View className="flex-1 gap-0.5">
-        <Text className="text-base font-medium text-foreground">{participant.username}</Text>
-        <Text className="text-xs text-muted-foreground">
+        <Text className="text-lg font-bold text-foreground">{participant.username}</Text>
+        <Text className="font-mono text-xs text-muted-foreground">
           Joined {formatJamDateTime(participant.joinedAt)}
         </Text>
       </View>
