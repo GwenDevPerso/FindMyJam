@@ -9,7 +9,7 @@ import type {
 import { supabase } from '@/services/supabase';
 
 const JAM_SERIES_COLUMNS =
-  'id, creator_id, frequency, anchor_date, local_time, timezone, title, description, location_name, latitude, longitude, skill_level, max_participants, instrument_ids, style_ids, generated_until, created_at, updated_at';
+  'id, creator_id, frequency, anchor_date, local_time, timezone, title, description, location_name, latitude, longitude, skill_level, max_participants, instrument_ids, style_ids, ends_on, generated_until, created_at, updated_at';
 
 export type JamSeriesRepositoryResult<T> = {
   data: T;

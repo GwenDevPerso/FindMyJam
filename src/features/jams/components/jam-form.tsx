@@ -37,6 +37,8 @@ type JamFormProps = {
   error: Error | null;
   /** Offers the recurrence choice; only on creation, the recurrence of a series cannot change afterwards. */
   showRecurrence: boolean;
+  /** Offers the end date of a series; on creation, only once a recurrence is picked. */
+  showEndsOn: boolean;
   /** Hides the date, for the edit of a whole series whose day cannot change. */
   lockDate: boolean;
   onSubmit: (values: CreateJamFormValues) => Promise<void>;
@@ -57,6 +59,7 @@ export function JamForm({
   isPending,
   error,
   showRecurrence,
+  showEndsOn,
   lockDate,
   onSubmit,
 }: JamFormProps): React.JSX.Element {
@@ -81,6 +84,8 @@ export function JamForm({
   const locationName = useWatch({ control, name: 'locationName' });
   const date = useWatch({ control, name: 'date' });
   const recurrence = useWatch({ control, name: 'recurrence' });
+
+  const isEndsOnVisible = showEndsOn && (!showRecurrence || recurrence !== 'none');
 
   const proximity = { latitude: defaultValues.latitude, longitude: defaultValues.longitude };
 
@@ -178,6 +183,9 @@ export function JamForm({
                   accessibilityState={{ selected: isSelected }}
                   onPress={() => {
                     setValue('recurrence', option, { shouldValidate: true });
+                    if (option === 'none') {
+                      setValue('endsOn', '', { shouldValidate: true });
+                    }
                   }}>
                   <Badge
                     label={getRecurrenceOptionLabel(option, date)}
@@ -189,6 +197,24 @@ export function JamForm({
             })}
           </View>
         </View>
+      ) : null}
+
+      {isEndsOnVisible ? (
+        <Controller
+          control={control}
+          name="endsOn"
+          render={({ field: { onChange, onBlur, value } }) => (
+            <Input
+              label="Ends on"
+              placeholder="YYYY-MM-DD, empty = never"
+              autoCapitalize="none"
+              onBlur={onBlur}
+              onChangeText={onChange}
+              value={value}
+              error={errors.endsOn?.message}
+            />
+          )}
+        />
       ) : null}
 
       <LocationAutocompleteInput

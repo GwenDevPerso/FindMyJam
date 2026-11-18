@@ -16,6 +16,7 @@ function buildInput(overrides: Partial<UpdateJamSeriesValues>): UpdateJamSeriesV
     maxParticipants: 6,
     instrumentIds: ['11111111-1111-4111-8111-111111111111'],
     styleIds: [],
+    endsOn: null,
     ...overrides,
   };
 }

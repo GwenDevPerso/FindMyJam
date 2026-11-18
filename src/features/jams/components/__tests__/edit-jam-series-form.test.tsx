@@ -57,8 +57,8 @@ const jam: Jam = buildJam({
   styleIds: [JAZZ_ID],
 });
 
-async function renderForm(onSuccess: () => void): Promise<void> {
-  await render(<EditJamSeriesForm jam={jam} seriesId={SERIES_ID} onSuccess={onSuccess} />);
+async function renderForm(onSuccess: () => void, endsOn: string | null): Promise<void> {
+  await render(<EditJamSeriesForm jam={jam} seriesId={SERIES_ID} endsOn={endsOn} onSuccess={onSuccess} />);
 }
 
 describe('EditJamSeriesForm', () => {
@@ -75,7 +75,7 @@ describe('EditJamSeriesForm', () => {
 
   it('hides the date and explains how to move the series to another day', async () => {
     mockUpdateJamSeries({});
-    await renderForm(jest.fn());
+    await renderForm(jest.fn(), null);
 
     expect(screen.queryByPlaceholderText('YYYY-MM-DD')).not.toBeOnTheScreen();
     expect(screen.queryByText('Repeats')).not.toBeOnTheScreen();
@@ -89,7 +89,7 @@ describe('EditJamSeriesForm', () => {
     const mutateAsync = mockUpdateJamSeries({});
     const onSuccess = jest.fn();
     const user = userEvent.setup();
-    await renderForm(onSuccess);
+    await renderForm(onSuccess, null);
 
     await user.clear(screen.getByDisplayValue('Tuesday jazz night'));
     await user.type(screen.getByPlaceholderText('Sunday jazz session'), 'Wednesday blues');
@@ -111,15 +111,57 @@ describe('EditJamSeriesForm', () => {
         maxParticipants: 6,
         instrumentIds: [GUITAR_ID],
         styleIds: [JAZZ_ID],
+        endsOn: null,
       },
     });
     expect(onSuccess).toHaveBeenCalledTimes(1);
   });
 
+  it('prefills the end date of the series and saves a new one', async () => {
+    const mutateAsync = mockUpdateJamSeries({});
+    const user = userEvent.setup();
+    await renderForm(jest.fn(), '2026-12-22');
+
+    await user.clear(screen.getByDisplayValue('2026-12-22'));
+    await user.type(screen.getByPlaceholderText('YYYY-MM-DD, empty = never'), '2027-01-05');
+    await user.press(screen.getByRole('button', { name: 'Save all upcoming dates' }));
+
+    expect(mutateAsync).toHaveBeenCalledWith({
+      seriesId: SERIES_ID,
+      input: expect.objectContaining({ endsOn: '2027-01-05' }),
+    });
+  });
+
+  it('removes the end date when the field is cleared', async () => {
+    const mutateAsync = mockUpdateJamSeries({});
+    const user = userEvent.setup();
+    await renderForm(jest.fn(), '2026-12-22');
+
+    await user.clear(screen.getByDisplayValue('2026-12-22'));
+    await user.press(screen.getByRole('button', { name: 'Save all upcoming dates' }));
+
+    expect(mutateAsync).toHaveBeenCalledWith({
+      seriesId: SERIES_ID,
+      input: expect.objectContaining({ endsOn: null }),
+    });
+  });
+
+  it('rejects an end date that is not a date', async () => {
+    const mutateAsync = mockUpdateJamSeries({});
+    const user = userEvent.setup();
+    await renderForm(jest.fn(), null);
+
+    await user.type(screen.getByPlaceholderText('YYYY-MM-DD, empty = never'), 'next year');
+    await user.press(screen.getByRole('button', { name: 'Save all upcoming dates' }));
+
+    expect(await screen.findByText('Use YYYY-MM-DD format')).toBeOnTheScreen();
+    expect(mutateAsync).not.toHaveBeenCalled();
+  });
+
   it('shows the validation message and saves nothing when the time is invalid', async () => {
     const mutateAsync = mockUpdateJamSeries({});
     const user = userEvent.setup();
-    await renderForm(jest.fn());
+    await renderForm(jest.fn(), null);
 
     await user.clear(screen.getByDisplayValue('20:30'));
     await user.type(screen.getByPlaceholderText('20:00'), '8pm');
@@ -131,7 +173,7 @@ describe('EditJamSeriesForm', () => {
 
   it('shows the error returned by the update attempt', async () => {
     mockUpdateJamSeries({ error: new Error('Only the jam creator can perform this action') });
-    await renderForm(jest.fn());
+    await renderForm(jest.fn(), null);
 
     expect(screen.getByText('Only the jam creator can perform this action')).toBeOnTheScreen();
   });

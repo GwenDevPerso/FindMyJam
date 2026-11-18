@@ -26,6 +26,7 @@ function buildFormValues(overrides: Partial<CreateJamFormValues>): CreateJamForm
     instrumentIds: [INSTRUMENT_ID],
     styleIds: [STYLE_ID],
     recurrence: 'none',
+    endsOn: '',
     ...overrides,
   };
 }
@@ -58,6 +59,8 @@ describe('createJamFormSchema', () => {
     [{ time: '24:00' }, 'time', 'Use HH:MM format (e.g. 20:00)'],
     [{ time: '9:30' }, 'time', 'Use HH:MM format (e.g. 20:00)'],
     [{ locationName: '' }, 'locationName', 'Location is required'],
+    [{ endsOn: 'next year' }, 'endsOn', 'Use YYYY-MM-DD format'],
+    [{ endsOn: '2026-07-31' }, 'endsOn', 'The end date must be on or after the first date'],
   ] as const)('rejects %j on %s with "%s"', (overrides, field, message) => {
     expect(firstIssueFor(overrides)).toMatchObject({ path: [field], message });
   });
@@ -75,6 +78,10 @@ describe('createJamFormSchema', () => {
     [{ recurrence: 'daily' as CreateJamFormValues['recurrence'] }, 'recurrence'],
   ])('rejects %j on %s', (overrides, field) => {
     expect(firstIssueFor(overrides)?.path[0]).toBe(field);
+  });
+
+  it.each(['', '2026-08-01', '2027-01-05'])('accepts the end date "%s"', (endsOn) => {
+    expect(createJamFormSchema.safeParse(buildFormValues({ endsOn })).success).toBe(true);
   });
 
   it.each([2, 100])('accepts %d participants', (maxParticipants) => {
@@ -114,6 +121,11 @@ describe('mapCreateJamFormToInput', () => {
       styleIds: [STYLE_ID],
       recurrence: 'none',
     });
+  });
+
+  it('sends the end date, or null when the field is empty', () => {
+    expect(mapCreateJamFormToInput(buildFormValues({ endsOn: '2026-12-22' })).endsOn).toBe('2026-12-22');
+    expect(mapCreateJamFormToInput(buildFormValues({ endsOn: '' })).endsOn).toBeNull();
   });
 
   it('carries the chosen recurrence', () => {
@@ -203,7 +215,8 @@ describe('mapJamFormToUpdateInput', () => {
     const input = mapJamFormToUpdateInput(values);
 
     expect(input).not.toHaveProperty('recurrence');
-    expect({ ...input, recurrence: 'weekly' }).toEqual(mapCreateJamFormToInput(values));
+    expect(input).not.toHaveProperty('endsOn');
+    expect({ ...input, recurrence: 'weekly', endsOn: null }).toEqual(mapCreateJamFormToInput(values));
   });
 });
 
@@ -220,6 +233,7 @@ describe('mapJamFormToSeriesInput', () => {
       maxParticipants: 10,
       instrumentIds: [INSTRUMENT_ID],
       styleIds: [STYLE_ID],
+      endsOn: null,
     });
   });
 });

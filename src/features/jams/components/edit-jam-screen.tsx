@@ -109,7 +109,12 @@ export function EditJamScreen({ jamId }: EditJamScreenProps): React.JSX.Element 
   return (
     <Screen scrollable={true} withTabBarInset={false}>
       {jam.seriesId !== null && scope === 'series' ? (
-        <EditJamSeriesForm jam={jam} seriesId={jam.seriesId} onSuccess={handleSuccess} />
+        <EditJamSeriesForm
+          jam={jam}
+          seriesId={jam.seriesId}
+          endsOn={jam.recurrenceEndsOn}
+          onSuccess={handleSuccess}
+        />
       ) : (
         <EditJamForm jam={jam} onSuccess={handleSuccess} />
       )}

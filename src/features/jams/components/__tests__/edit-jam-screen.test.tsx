@@ -45,6 +45,7 @@ function buildJamDetail(overrides: Partial<JamDetail>): JamDetail {
     isCreator: true,
     isParticipant: false,
     recurrence: null,
+    recurrenceEndsOn: null,
     ...overrides,
   };
 }
@@ -220,7 +221,23 @@ describe('EditJamScreen', () => {
   });
 
   describe('for a date of a series', () => {
-    const seriesJam = buildJamDetail({ isCreator: true, seriesId: SERIES_ID, recurrence: 'weekly' });
+    const seriesJam = buildJamDetail({
+      isCreator: true,
+      seriesId: SERIES_ID,
+      recurrence: 'weekly',
+      recurrenceEndsOn: '2026-12-22',
+    });
+
+    it('prefills the end date of the series after "All upcoming dates"', async () => {
+      mockJamQuery({ data: seriesJam });
+      mockUpdateJamSeries();
+      const user = userEvent.setup();
+
+      await renderScreen(JAM_ID);
+      await user.press(screen.getByRole('button', { name: 'All upcoming dates' }));
+
+      expect(screen.getByDisplayValue('2026-12-22')).toBeOnTheScreen();
+    });
 
     it('first asks which dates to edit', async () => {
       mockJamQuery({ data: seriesJam });

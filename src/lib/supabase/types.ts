@@ -94,6 +94,7 @@ export type Database = {
           max_participants: number;
           instrument_ids: string[];
           style_ids: string[];
+          ends_on: string | null;
           generated_until: string;
           created_at: string;
           updated_at: string;
@@ -114,6 +115,7 @@ export type Database = {
           max_participants?: number;
           instrument_ids?: string[];
           style_ids?: string[];
+          ends_on?: string | null;
           generated_until: string;
           created_at?: string;
           updated_at?: string;
@@ -134,6 +136,7 @@ export type Database = {
           max_participants?: number;
           instrument_ids?: string[];
           style_ids?: string[];
+          ends_on?: string | null;
           generated_until?: string;
           created_at?: string;
           updated_at?: string;
@@ -596,6 +599,7 @@ type JamSeriesTemplateArgs = {
   p_max_participants: number;
   p_instrument_ids: string[];
   p_style_ids: string[];
+  p_ends_on: string | null;
 };
 
 export type CreateJamSeriesArgs = JamSeriesTemplateArgs & {

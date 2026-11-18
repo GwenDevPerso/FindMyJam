@@ -40,11 +40,13 @@ export function CreateJamForm({
         instrumentIds: [],
         styleIds: [],
         recurrence: 'none',
+        endsOn: '',
       }}
       submitLabel="Create jam"
       isPending={isPending}
       error={error}
       showRecurrence={true}
+      showEndsOn={true}
       lockDate={false}
       onSubmit={handleSubmit}
     />

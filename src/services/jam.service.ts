@@ -118,15 +118,17 @@ function assertCreator(owned: { creator_id: string }, userId: string): void {
   }
 }
 
-async function getRecurrence(seriesId: string | null): Promise<JamRecurrence | null> {
+async function getRecurrence(
+  seriesId: string | null,
+): Promise<Pick<JamDetail, 'recurrence' | 'recurrenceEndsOn'>> {
   if (seriesId === null) {
-    return null;
+    return { recurrence: null, recurrenceEndsOn: null };
   }
 
   const { data, error } = await jamSeriesRepository.findById(seriesId);
   assertNoError(error);
 
-  return data?.frequency ?? null;
+  return { recurrence: data?.frequency ?? null, recurrenceEndsOn: data?.ends_on ?? null };
 }
 
 async function getOwnedSeries(userId: string, seriesId: string): Promise<JamSeriesRow> {
@@ -167,6 +169,7 @@ async function createSeries(
     p_max_participants: validated.maxParticipants,
     p_instrument_ids: validated.instrumentIds,
     p_style_ids: validated.styleIds,
+    p_ends_on: validated.endsOn,
   });
   assertNoError(error);
 
@@ -232,7 +235,7 @@ export const jamService = {
         ...jam,
         isCreator: false,
         isParticipant: false,
-        recurrence,
+        ...recurrence,
       };
     }
 
@@ -246,7 +249,7 @@ export const jamService = {
       ...jam,
       isCreator: jam.creatorId === userId,
       isParticipant,
-      recurrence,
+      ...recurrence,
     };
   },
 
@@ -344,6 +347,7 @@ export const jamService = {
       p_max_participants: validated.maxParticipants,
       p_instrument_ids: validated.instrumentIds,
       p_style_ids: validated.styleIds,
+      p_ends_on: validated.endsOn,
     });
     assertNoError(error);
   },

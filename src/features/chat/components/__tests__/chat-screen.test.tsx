@@ -37,6 +37,7 @@ function buildJamDetail(overrides: Partial<JamDetail>): JamDetail {
     isCreator: false,
     isParticipant: true,
     recurrence: null,
+    recurrenceEndsOn: null,
     ...overrides,
   };
 }
