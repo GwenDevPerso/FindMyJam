@@ -119,7 +119,8 @@ Dynamic type stays on: titles may wrap to two lines, never truncate a jam title 
   the Home "Your next jam" card and the Jam detail header; text over it sits on a solid or 85 % `background` backing.
   One component (`src/components/ui/horizon.tsx`, `expo-linear-gradient` + `react-native-svg`), never redrawn per
   screen.
-- Map: custom dark map style (violet streets at low contrast, blue water, dark green parks); jam markers are pink
+- Map: custom dark map style (`NightMapStyle` in `theme.ts`: geometry `#0e0a1c`, streets `#2a1f45` / highways `#3a2a5c`,
+  water `#12306a`, parks `#13261f`; Android only, iOS Apple Maps uses its dark appearance); jam markers are pink
   pins (outline, `surface` fill), the selected one filled pink with glow and larger (44 vs 36); the user location is
   a cyan dot with a pulse; the search radius is a dashed cyan circle.
 - Motion: `fast` 150 ms, `normal` 250 ms, ease-out. Only the user-location pulse loops. Everything is off with
@@ -200,18 +201,28 @@ Screens without a mockup apply the same tokens and primitives; no new decor.
 
 ## 10. Moving the app to this design
 
-To do (visual change only: no copy, label, role, data or navigation change). It replaces the Terminal design applied
-earlier on 2026-11-18 (`git log -- DESIGN.md`).
+Done on 2026-11-18, one commit per step (`git log --oneline -- DESIGN.md src`); visual change only, no copy, label,
+role, data or navigation change. Replaces the Terminal design.
 
-1. Tokens: §2 values in `src/global.css` (`:root` only, no light/dark split), `tailwind.config.js` (§4 radius scale,
-   `shadow-glow` / `shadow-glow-accent`, §3 font families and size scale, `tracking-label` 0.12em) and
-   `src/constants/theme.ts`; `app.json` `userInterfaceStyle: "dark"` and splash background `#0b0716`.
-2. Fonts: replace Archivo / IBM Plex Mono by Anton, Space Grotesk and JetBrains Mono (§3), then the `Text` primitive
-   mapping.
-3. Primitives: restyle the §5 components; add `Chip`, `CountBadge`, `AvatarStack`, `Horizon`, `IconButton`,
-   `Skeleton` where missing.
-4. Screens, in this order, each checked against its mockup: Home, Explore, Jam detail, Chat, then the screens
-   without a mockup.
-5. Map style and markers (§4), user-location pulse with reduce motion.
-6. Run `.claude/skills/ui-design/check-design.sh` (0 blocking), and look at each screen on a simulator, smallest
-   device and largest text size.
+1. Tokens: §2 in `src/global.css` (`:root` only), `tailwind.config.js` (§4 radius, `shadow-glow` /
+   `shadow-glow-accent`, §3 sizes, `tracking-label` / `tracking-button` / `tracking-display`) and
+   `src/constants/theme.ts` (`Colors.light` = `Colors.dark` = the night theme, `Glow`, `Radius`, horizon and map
+   values); `useAppColorScheme` always returns `dark`; `app.json` `userInterfaceStyle: "dark"`, splash `#0b0716`.
+2. Fonts: Anton, Space Grotesk, JetBrains Mono replace Archivo / IBM Plex Mono; `Text` maps `text-xl`+ to Anton
+   (uppercase by style), smaller to Space Grotesk, `font-mono` to JetBrains Mono.
+3. Primitives: the §5 components restyled; `Chip`, `CountBadge`, `IconButton`, `AvatarStack`, `Skeleton`, `Horizon`
+   added (`expo-linear-gradient`, `react-native-svg`). Glow is an RN `boxShadow` from `Glow` in `StyleSheet`s.
+4. Screens: Home, Explore, Jam detail, Chat against their mockups, then every other screen. Screen padding 20.
+5. Map: `NightMapStyle`, pink pin markers (selected: filled, 44, glow), a cyan user-location dot with a pulse (off
+   with reduce motion) instead of the platform dot, the dashed cyan search circle.
+6. `check-design.sh`: 0 blocking, 0 major, 16 minor (`FlatList` → `FlashList`, needs a dependency).
+
+Not done, on purpose or for later:
+
+- Mockup content that does not exist in the app (it would be new text or data): the Home "Your next jam" hero
+  (so `Horizon` is only on Jam detail today), the Explore selected-jam sheet, the Jam detail info grid labels and
+  avatar stack (`AvatarStack` is ready), the Chat room header and day divider, the mockups' "FINDMYJAM" logotype.
+- The raised "Create" tab button (§6: not adopted).
+- Not checked on a device: smallest screen, largest text size, the glow (`boxShadow`) and the pin markers on
+  Android, the dashed circle (`lineDashPattern` is iOS only), the pulse inside a map marker.
+- `FlatList` → `FlashList`; a `Skeleton` is available but screens still use `Loading`.

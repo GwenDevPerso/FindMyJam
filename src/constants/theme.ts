@@ -1,4 +1,5 @@
 import { Platform } from 'react-native';
+import type { MapStyleElement } from 'react-native-maps';
 
 // DESIGN.md §2 palette (Neon night, dark only), mirrored from src/global.css for React Navigation and native props
 // (icon `color`, …). Raw values live only here and in global.css.
@@ -64,6 +65,27 @@ export const Glow = {
 export const HorizonGradient = ['#1b0830', '#4a1250', '#b8325f', '#ff7a45', '#120821', palette.night] as const;
 export const HorizonSun = ['#ffd36b', '#ff5f8f', '#ff3d8b'] as const;
 
+// DESIGN.md §4 map: the search radius is a dashed cyan line over a faint cyan fill.
+export const MapSearchCircle = {
+  stroke: palette.cyan,
+  fill: 'rgba(34, 227, 255, 0.06)',
+  dash: [6, 6],
+} as const;
+
+// DESIGN.md §4 custom dark map style (Google Maps JSON, used on Android; iOS Apple Maps uses its dark appearance):
+// violet streets at low contrast, blue water, dark green parks.
+export const NightMapStyle: MapStyleElement[] = [
+  { elementType: 'geometry', stylers: [{ color: '#0e0a1c' }] },
+  { elementType: 'labels.text.fill', stylers: [{ color: palette.snowMuted }] },
+  { elementType: 'labels.text.stroke', stylers: [{ color: palette.night }] },
+  { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#2a1f45' }] },
+  { featureType: 'road.highway', elementType: 'geometry', stylers: [{ color: '#3a2a5c' }] },
+  { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#12306a' }] },
+  { featureType: 'poi.park', elementType: 'geometry', stylers: [{ color: '#13261f' }] },
+  { featureType: 'poi', elementType: 'labels', stylers: [{ visibility: 'off' }] },
+  { featureType: 'transit', stylers: [{ visibility: 'off' }] },
+];
+
 export type ThemeColor = keyof typeof Colors.light & keyof typeof Colors.dark;
 export type ColorScheme = 'light' | 'dark';
 export type ThemeColors = (typeof Colors)[ColorScheme];
@@ -101,6 +123,15 @@ export const Fonts = {
   display: FontFaces.display.normal,
   sans: FontFaces.sans.normal,
   mono: FontFaces.mono.normal,
+} as const;
+
+// DESIGN.md §4 radius scale, for native props that cannot take a class (map markers, overlays).
+export const Radius = {
+  sm: 6,
+  md: 12,
+  lg: 16,
+  xl: 24,
+  full: 9999,
 } as const;
 
 // DESIGN.md §4 spacing scale (4-pt base).

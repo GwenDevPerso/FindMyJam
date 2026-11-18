@@ -180,6 +180,7 @@ export function MapExploreScreen(): React.JSX.Element {
         markers={markers}
         initialRegion={initialRegion}
         userLocation={resolvedLocation}
+        searchCircle={{ center: searchCenter, radiusMeters: searchedRadius }}
         focusedPlace={focusedPlace}
         selectedMarkerId={null}
         onMarkerPress={handleMarkerPress}

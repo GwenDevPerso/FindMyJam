@@ -1,8 +1,9 @@
+import { Music } from 'lucide-react-native';
 import { memo, useCallback } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Marker, type MapMarkerProps } from 'react-native-maps';
-import { Music } from 'lucide-react-native';
 
+import { Glow, Spacing } from '@/constants/theme';
 import { useMarkerTracksViewChanges } from '@/features/map/hooks/use-marker-tracks-view-changes';
 import type { MapJamMarker } from '@/features/map/types';
 import { useTheme } from '@/hooks/use-theme';
@@ -22,9 +23,10 @@ function JamMarkerComponent({ marker, isSelected, onPress }: JamMarkerProps): Re
     onPress(marker.id);
   }, [marker.id, onPress]);
 
-  // DESIGN.md §1: one accent — the selected jam is the accent, the others are ink (text colour).
-  const markerColor = isSelected ? theme.primary : theme.text;
-  const iconColor = isSelected ? theme.primaryForeground : theme.background;
+  // DESIGN.md §4: pink pins — outline on `surface`, the selected one filled pink, larger and glowing.
+  const pinColors = isSelected
+    ? { backgroundColor: theme.primary, borderColor: theme.primary }
+    : { backgroundColor: theme.surface, borderColor: theme.primary };
 
   return (
     <Marker
@@ -35,13 +37,13 @@ function JamMarkerComponent({ marker, isSelected, onPress }: JamMarkerProps): Re
       }}
       title={marker.title}
       description={marker.locationName}
-      anchor={{ x: 0.5, y: 0.5 }}
+      anchor={{ x: 0.5, y: 1 }}
       onPress={handlePress}
       tracksViewChanges={tracksViewChanges}>
-      <View
-        collapsable={false}
-        style={[styles.marker, { backgroundColor: markerColor, borderColor: theme.background }]}>
-        <Music size={14} color={iconColor} strokeWidth={2.5} />
+      <View collapsable={false} style={[styles.pin, isSelected ? styles.pinSelected : null, pinColors]}>
+        <View style={styles.icon}>
+          <Music size={isSelected ? 18 : 15} color={isSelected ? theme.primaryForeground : theme.primary} strokeWidth={2} />
+        </View>
       </View>
     </Marker>
   );
@@ -49,12 +51,30 @@ function JamMarkerComponent({ marker, isSelected, onPress }: JamMarkerProps): Re
 
 export const JamMarker = memo(JamMarkerComponent);
 
+// A teardrop: three round corners and a sharp one, turned so the point faces down.
 const styles = StyleSheet.create({
-  marker: {
-    width: 32,
-    height: 32,
+  pin: {
+    width: 36,
+    height: 36,
+    margin: Spacing.three,
     borderWidth: 2,
+    borderTopLeftRadius: 18,
+    borderTopRightRadius: 18,
+    borderBottomRightRadius: 18,
+    borderBottomLeftRadius: 4,
+    transform: [{ rotate: '-45deg' }],
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  pinSelected: {
+    width: 44,
+    height: 44,
+    borderTopLeftRadius: 22,
+    borderTopRightRadius: 22,
+    borderBottomRightRadius: 22,
+    boxShadow: Glow.primary,
+  },
+  icon: {
+    transform: [{ rotate: '45deg' }],
   },
 });
