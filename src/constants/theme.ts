@@ -67,21 +67,28 @@ export type ColorScheme = 'light' | 'dark';
 export type ThemeColors = (typeof Colors)[ColorScheme];
 
 // DESIGN.md §3 — font faces loaded with expo-font in AuthProvider. One family name per weight: custom fonts do not
-// pick a face from fontWeight on native.
+// pick a face from fontWeight on native. Missing weights map to the nearest loaded face.
 export const FontFaces = {
+  display: {
+    normal: 'Anton_400Regular',
+    medium: 'Anton_400Regular',
+    semibold: 'Anton_400Regular',
+    bold: 'Anton_400Regular',
+    extrabold: 'Anton_400Regular',
+  },
   sans: {
-    normal: 'Archivo_400Regular',
-    medium: 'Archivo_500Medium',
-    semibold: 'Archivo_600SemiBold',
-    bold: 'Archivo_700Bold',
-    extrabold: 'Archivo_800ExtraBold',
+    normal: 'SpaceGrotesk_400Regular',
+    medium: 'SpaceGrotesk_500Medium',
+    semibold: 'SpaceGrotesk_700Bold',
+    bold: 'SpaceGrotesk_700Bold',
+    extrabold: 'SpaceGrotesk_700Bold',
   },
   mono: {
-    normal: 'IBMPlexMono_400Regular',
-    medium: 'IBMPlexMono_500Medium',
-    semibold: 'IBMPlexMono_600SemiBold',
-    bold: 'IBMPlexMono_700Bold',
-    extrabold: 'IBMPlexMono_700Bold',
+    normal: 'JetBrainsMono_400Regular',
+    medium: 'JetBrainsMono_400Regular',
+    semibold: 'JetBrainsMono_600SemiBold',
+    bold: 'JetBrainsMono_600SemiBold',
+    extrabold: 'JetBrainsMono_600SemiBold',
   },
 } as const;
 
@@ -89,7 +96,8 @@ export type FontFamily = keyof typeof FontFaces;
 export type FontWeight = keyof (typeof FontFaces)['sans'];
 
 export const Fonts = {
-  sans: FontFaces.sans.bold,
+  display: FontFaces.display.normal,
+  sans: FontFaces.sans.normal,
   mono: FontFaces.mono.normal,
 } as const;
 

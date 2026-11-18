@@ -50,8 +50,9 @@ module.exports = {
       },
       // DESIGN.md §3: the Text primitive (src/components/ui/text.tsx) picks the exact face per size and weight.
       fontFamily: {
-        sans: ['Archivo_700Bold'],
-        mono: ['IBMPlexMono_400Regular'],
+        display: ['Anton_400Regular'],
+        sans: ['SpaceGrotesk_400Regular'],
+        mono: ['JetBrainsMono_400Regular'],
       },
       // DESIGN.md §3 type scale: xs label, sm meta, base body, lg subheading, xl heading, 2xl title, 3xl display.
       fontSize: {

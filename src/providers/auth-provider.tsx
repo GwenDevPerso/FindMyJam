@@ -1,12 +1,9 @@
-import { Archivo_400Regular } from '@expo-google-fonts/archivo/400Regular';
-import { Archivo_500Medium } from '@expo-google-fonts/archivo/500Medium';
-import { Archivo_600SemiBold } from '@expo-google-fonts/archivo/600SemiBold';
-import { Archivo_700Bold } from '@expo-google-fonts/archivo/700Bold';
-import { Archivo_800ExtraBold } from '@expo-google-fonts/archivo/800ExtraBold';
-import { IBMPlexMono_400Regular } from '@expo-google-fonts/ibm-plex-mono/400Regular';
-import { IBMPlexMono_500Medium } from '@expo-google-fonts/ibm-plex-mono/500Medium';
-import { IBMPlexMono_600SemiBold } from '@expo-google-fonts/ibm-plex-mono/600SemiBold';
-import { IBMPlexMono_700Bold } from '@expo-google-fonts/ibm-plex-mono/700Bold';
+import { Anton_400Regular } from '@expo-google-fonts/anton/400Regular';
+import { JetBrainsMono_400Regular } from '@expo-google-fonts/jetbrains-mono/400Regular';
+import { JetBrainsMono_600SemiBold } from '@expo-google-fonts/jetbrains-mono/600SemiBold';
+import { SpaceGrotesk_400Regular } from '@expo-google-fonts/space-grotesk/400Regular';
+import { SpaceGrotesk_500Medium } from '@expo-google-fonts/space-grotesk/500Medium';
+import { SpaceGrotesk_700Bold } from '@expo-google-fonts/space-grotesk/700Bold';
 import { useFonts } from 'expo-font';
 import { useEffect, type ReactNode } from 'react';
 import { View } from 'react-native';
@@ -27,15 +24,12 @@ function AuthLoadingScreen(): React.JSX.Element {
 
 // DESIGN.md §3 faces; the keys are the family names used by FontFaces in src/constants/theme.ts.
 const APP_FONTS = {
-  Archivo_400Regular,
-  Archivo_500Medium,
-  Archivo_600SemiBold,
-  Archivo_700Bold,
-  Archivo_800ExtraBold,
-  IBMPlexMono_400Regular,
-  IBMPlexMono_500Medium,
-  IBMPlexMono_600SemiBold,
-  IBMPlexMono_700Bold,
+  Anton_400Regular,
+  SpaceGrotesk_400Regular,
+  SpaceGrotesk_500Medium,
+  SpaceGrotesk_700Bold,
+  JetBrainsMono_400Regular,
+  JetBrainsMono_600SemiBold,
 };
 
 export function AuthProvider({ children }: AuthProviderProps) {
