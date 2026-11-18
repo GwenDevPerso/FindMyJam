@@ -117,7 +117,7 @@ Dynamic type stays on: titles may wrap to two lines, never truncate a jam title 
 - Signature decor — the **horizon**: a sunset gradient (`#1b0830` → `#4a1250` → `#b8325f` → `#ff7a45`, then a hard
   line to `background`), a striped sun (`#ffd36b` → `#ff5f8f` → `#ff3d8b`) and a perspective grid in `secondaryAccent` at 45 % opacity. Used only on
   the Home "Your next jam" card and the Jam detail header; text over it sits on a solid or 85 % `background` backing.
-  One component (`src/components/ui/horizon.tsx`, `expo-linear-gradient` + `react-native-svg`), never redrawn per
+  One component (`src/components/ui/horizon.tsx`, drawn with `react-native-svg` only, no extra native module), never redrawn per
   screen.
 - Map: custom dark map style (`NightMapStyle` in `theme.ts`: geometry `#0e0a1c`, streets `#2a1f45` / highways `#3a2a5c`,
   water `#12306a`, parks `#13261f`; Android only, iOS Apple Maps uses its dark appearance); jam markers are pink
@@ -211,7 +211,7 @@ role, data or navigation change. Replaces the Terminal design.
 2. Fonts: Anton, Space Grotesk, JetBrains Mono replace Archivo / IBM Plex Mono; `Text` maps `text-xl`+ to Anton
    (uppercase by style), smaller to Space Grotesk, `font-mono` to JetBrains Mono.
 3. Primitives: the §5 components restyled; `Chip`, `CountBadge`, `IconButton`, `AvatarStack`, `Skeleton`, `Horizon`
-   added (`expo-linear-gradient`, `react-native-svg`). Glow is an RN `boxShadow` from `Glow` in `StyleSheet`s.
+   added (`Horizon` with `react-native-svg`, already in the build through `lucide-react-native`). Glow is an RN `boxShadow` from `Glow` in `StyleSheet`s.
 4. Screens: Home, Explore, Jam detail, Chat against their mockups, then every other screen. Screen padding 20.
 5. Map: `NightMapStyle`, pink pin markers (selected: filled, 44, glow), a cyan user-location dot with a pulse (off
    with reduce motion) instead of the platform dot, the dashed cyan search circle.

@@ -3,6 +3,7 @@ import { render, screen, userEvent } from '@testing-library/react-native';
 import { AvatarStack } from '@/components/ui/avatar-stack';
 import { Chip } from '@/components/ui/chip';
 import { CountBadge } from '@/components/ui/count-badge';
+import { Horizon } from '@/components/ui/horizon';
 import { IconButton } from '@/components/ui/icon-button';
 
 describe('Chip', () => {
@@ -52,5 +53,14 @@ describe('IconButton', () => {
     await userEvent.setup().press(screen.getByRole('button', { name: 'Open my calendar' }));
 
     expect(onPress).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('Horizon', () => {
+  it('renders as decoration hidden from screen readers', async () => {
+    await render(<Horizon variant="header" />);
+
+    expect(screen.toJSON()).not.toBeNull();
+    expect(screen.queryByRole('image')).not.toBeOnTheScreen();
   });
 });

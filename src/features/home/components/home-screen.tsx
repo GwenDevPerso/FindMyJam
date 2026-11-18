@@ -42,7 +42,7 @@ function QuickAction({ label, icon: Icon, color, onPress }: QuickActionProps): R
       scaleValue={0.95}
       onPress={onPress}
       className="flex-1">
-      <View className="items-center gap-2 rounded-xl border border-border bg-card p-4 active:bg-surface-hover">
+      <View className="flex-1 items-center justify-center gap-2 rounded-xl border border-border bg-card p-4 active:bg-surface-hover">
         <View className="rounded-md border border-border-strong p-2.5">
           <Icon size={22} color={color} strokeWidth={1.8} />
         </View>
@@ -112,7 +112,7 @@ export function HomeScreen(): React.JSX.Element {
       <Animated.View entering={FadeInDown.duration(400).springify()} className="mb-6 flex-row items-start justify-between pt-2">
         <View className="flex-1">
           <Text className="font-mono text-xs font-semibold uppercase tracking-label text-accent">Welcome back</Text>
-          <Text className="text-3xl tracking-display text-foreground">
+          <Text className="text-2xl text-foreground">
             {profile?.username ?? 'Musician'}
           </Text>
         </View>
