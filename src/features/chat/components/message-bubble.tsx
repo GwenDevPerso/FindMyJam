@@ -26,19 +26,19 @@ export function MessageBubble({ message, isOwn, onLongPress }: MessageBubbleProp
         disabled={onLongPress === undefined}
         accessibilityHint={onLongPress !== undefined ? 'Long press to delete' : undefined}
         className={cn(
-          'max-w-[80%] gap-1 border px-3 py-2',
-          isOwn ? 'border-primary bg-primary' : 'border-border bg-card',
+          'max-w-[80%] gap-1 rounded-xl px-3.5 py-2.5',
+          isOwn ? 'rounded-br-sm bg-primary active:opacity-80' : 'rounded-bl-sm border border-border bg-card active:bg-surface-hover',
         )}>
         {!isOwn ? (
-          <Text className="text-xs font-semibold text-secondary-foreground">{message.senderUsername}</Text>
+          <Text className="font-mono text-xs text-muted-foreground">{message.senderUsername}</Text>
         ) : null}
-        <Text className={cn('text-sm', isOwn ? 'text-primary-foreground' : 'text-secondary-foreground')}>
+        <Text className={cn('text-base', isOwn ? 'text-primary-foreground' : 'text-foreground')}>
           {message.body}
         </Text>
         <Text
           className={cn(
-            'text-xs',
-            isOwn ? 'text-primary-foreground opacity-80' : 'text-muted-foreground',
+            'font-mono text-xs',
+            isOwn ? 'text-primary-foreground' : 'text-muted-foreground',
           )}>
           {formatRelativeTime(message.createdAt)}
         </Text>

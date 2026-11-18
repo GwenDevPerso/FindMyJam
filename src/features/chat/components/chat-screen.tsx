@@ -1,3 +1,4 @@
+import { CircleAlert } from 'lucide-react-native';
 import { useMemo } from 'react';
 import { KeyboardAvoidingView, Platform, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -16,6 +17,7 @@ import { useSendChatMessage } from '@/features/chat/hooks/use-send-chat-message'
 import type { ChatRoom } from '@/features/chat/types';
 import { getChatRoomForJam } from '@/features/chat/utils/chat-room';
 import { useJamDetail } from '@/features/jams/hooks/use-jam-detail';
+import { useTheme } from '@/hooks/use-theme';
 import { useAuthStore } from '@/store/auth.store';
 
 /** Height of the iOS navigation bar above the screen, below the status bar. */
@@ -85,6 +87,7 @@ type ChatRoomViewProps = {
 
 function ChatRoomView({ jamId, seriesId }: ChatRoomViewProps): React.JSX.Element {
   const insets = useSafeAreaInsets();
+  const theme = useTheme();
   const userId = useAuthStore((state) => state.userId);
   const room = useMemo((): ChatRoom => getChatRoomForJam({ id: jamId, seriesId }), [jamId, seriesId]);
 
@@ -136,7 +139,12 @@ function ChatRoomView({ jamId, seriesId }: ChatRoomViewProps): React.JSX.Element
         keyboardVerticalOffset={Platform.OS === 'ios' ? insets.top + IOS_NAVIGATION_BAR_HEIGHT : 0}>
         <View className="flex-1">{renderMessages()}</View>
 
-        {error !== null ? <Text className="text-sm text-destructive">{error.message}</Text> : null}
+        {error !== null ? (
+          <View className="flex-row items-center gap-1.5 py-1">
+            <CircleAlert size={16} color={theme.destructive} strokeWidth={1.8} />
+            <Text className="flex-1 text-sm text-destructive">{error.message}</Text>
+          </View>
+        ) : null}
 
         <MessageComposer
           onSend={async (body) => {

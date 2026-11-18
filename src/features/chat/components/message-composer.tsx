@@ -25,7 +25,7 @@ export function MessageComposer({ onSend, isSending }: MessageComposerProps): Re
   };
 
   return (
-    <View className="flex-row items-end gap-2 border-t border-border bg-background py-2">
+    <View className="-mx-5 flex-row items-end gap-2.5 border-t border-border bg-card px-5 py-3">
       <Input
         accessibilityLabel="Message"
         placeholder="Write a message…"
@@ -34,7 +34,7 @@ export function MessageComposer({ onSend, isSending }: MessageComposerProps): Re
         multiline={true}
         maxLength={CHAT_MESSAGE_MAX_LENGTH}
         containerClassName="flex-1"
-        inputClassName="h-auto max-h-32 min-h-11 py-2.5"
+        inputClassName="h-auto max-h-32 min-h-12 py-3"
       />
       <Button
         accessibilityLabel="Send"
