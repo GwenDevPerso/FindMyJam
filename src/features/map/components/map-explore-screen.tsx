@@ -200,16 +200,16 @@ export function MapExploreScreen(): React.JSX.Element {
         {/* The visible-area search takes its radius from the zoom, so the distance choice only applies around the user. */}
         <MapFilters showDistance={searchArea === null} />
 
-        <View className="self-start border border-border bg-card/95 px-3 py-1.5">
-          <Text className="text-xs font-medium text-foreground">
+        <View className="self-start rounded-full border border-border-strong bg-card/95 px-3 py-1.5">
+          <Text className="font-mono text-xs font-semibold uppercase tracking-label text-text-soft">
             {markers.length} jam{markers.length === 1 ? '' : 's'}
             {isFetchingNextPage ? ' · loading…' : ''}
           </Text>
         </View>
 
         {isUsingFallbackLocation && searchArea === null ? (
-          <View className="self-start bg-muted px-3 py-2">
-            <Text className="text-xs text-muted-foreground">
+          <View className="self-start rounded-lg bg-muted px-3 py-2">
+            <Text className="text-sm text-text-soft">
               Location unavailable — showing jams near Paris. Enable location for nearby results.
             </Text>
           </View>
@@ -222,8 +222,8 @@ export function MapExploreScreen(): React.JSX.Element {
             accessibilityRole="button"
             accessibilityLabel="Search this area"
             onPress={handleSearchVisibleArea}
-            className="min-h-11 justify-center bg-primary px-4 py-2.5">
-            <Text className="text-sm font-semibold text-primary-foreground">Search this area</Text>
+            className="min-h-11 justify-center rounded-full border border-accent bg-background/90 px-4 active:bg-surface-hover">
+            <Text className="text-base font-bold text-accent">Search this area</Text>
           </Pressable>
         </View>
       ) : null}

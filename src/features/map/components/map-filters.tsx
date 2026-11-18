@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Pressable, ScrollView, View } from 'react-native';
 
+import { Chip } from '@/components/ui/chip';
+import { CountBadge } from '@/components/ui/count-badge';
 import { Text } from '@/components/ui/text';
 import {
   DATE_FILTER_LABELS,
@@ -13,7 +15,6 @@ import { MultiSelectChips } from '@/features/profile/components/multi-select-chi
 import { useReferenceInstruments } from '@/features/profile/hooks/use-reference-instruments';
 import { useReferenceMusicStyles } from '@/features/profile/hooks/use-reference-music-styles';
 import { useMapFiltersStore } from '@/store/map-filters.store';
-import { cn } from '@/utils/cn';
 
 type MapFiltersProps = {
   /** The jams list searches around a city with a fixed radius, so it hides the distance choice. */
@@ -32,33 +33,9 @@ function formatActiveFiltersLabel(count: number): string {
   return `${count} active filter${count === 1 ? '' : 's'}`;
 }
 
-type FilterChipProps = {
-  label: string;
-  isSelected: boolean;
-  onPress: () => void;
-};
-
-function FilterChip({ label, isSelected, onPress }: FilterChipProps): React.JSX.Element {
-  return (
-    <Pressable
-      accessibilityRole="button"
-      accessibilityState={{ selected: isSelected }}
-      onPress={onPress}
-      className={cn('border px-4 py-2', isSelected ? 'border-primary bg-primary' : 'border-border-strong bg-transparent')}>
-      <Text
-        className={cn(
-          'text-xs font-medium uppercase tracking-label',
-          isSelected ? 'text-primary-foreground' : 'text-text-soft',
-        )}>
-        {label}
-      </Text>
-    </Pressable>
-  );
-}
-
 function SectionTitle({ title }: { title: string }): React.JSX.Element {
   return (
-    <Text className="mb-2 text-xs font-medium uppercase tracking-label text-muted-foreground">{title}</Text>
+    <Text className="mb-2 font-mono text-xs font-semibold uppercase tracking-label text-muted-foreground">{title}</Text>
   );
 }
 
@@ -85,8 +62,8 @@ function InstrumentAndStyleFilters(): React.JSX.Element {
             void instrumentsQuery.refetch();
             void musicStylesQuery.refetch();
           }}
-          className="border border-border-strong px-3 py-1.5">
-          <Text className="text-xs font-medium uppercase tracking-label text-text-soft">Retry</Text>
+          className="min-h-11 justify-center rounded-lg border border-border-strong px-3">
+          <Text className="font-mono text-xs font-semibold uppercase tracking-label text-text-soft">Retry</Text>
         </Pressable>
       </View>
     );
@@ -136,24 +113,17 @@ export function MapFilters({ showDistance }: MapFiltersProps): React.JSX.Element
   );
 
   return (
-    <View className="gap-3 border border-border bg-card/95 px-3 py-3">
+    <View className="gap-3 rounded-xl border border-border-strong bg-card/95 p-3">
       <View className="flex-row items-center gap-2">
-        <Text className="text-xs font-medium uppercase tracking-label text-foreground">Filters</Text>
+        <Text className="font-mono text-xs font-semibold uppercase tracking-label text-foreground">Filters</Text>
 
-        {activeFilterCount > 0 ? (
-          <View
-            accessible={true}
-            accessibilityLabel={formatActiveFiltersLabel(activeFilterCount)}
-            className="min-w-5 items-center rounded-full bg-primary px-1.5 py-0.5">
-            <Text className="text-xs font-bold text-primary-foreground">{activeFilterCount}</Text>
-          </View>
-        ) : null}
+        <CountBadge count={activeFilterCount} accessibilityLabel={formatActiveFiltersLabel(activeFilterCount)} />
 
         <View className="flex-1" />
 
         {activeFilterCount > 0 ? (
-          <Pressable accessibilityRole="button" onPress={resetFilters} className="px-2 py-1">
-            <Text className="text-xs font-medium uppercase tracking-label text-primary-text">Reset</Text>
+          <Pressable accessibilityRole="button" onPress={resetFilters} hitSlop={8} className="px-2 py-1">
+            <Text className="font-mono text-xs font-semibold uppercase tracking-label text-primary-text">Reset</Text>
           </Pressable>
         ) : null}
 
@@ -163,8 +133,9 @@ export function MapFilters({ showDistance }: MapFiltersProps): React.JSX.Element
           onPress={() => {
             setIsExpanded((current) => !current);
           }}
+          hitSlop={8}
           className="px-2 py-1">
-          <Text className="text-xs font-medium uppercase tracking-label text-foreground">
+          <Text className="font-mono text-xs font-semibold uppercase tracking-label text-accent">
             {isExpanded ? 'Fewer filters' : 'More filters'}
           </Text>
         </Pressable>
@@ -173,18 +144,20 @@ export function MapFilters({ showDistance }: MapFiltersProps): React.JSX.Element
       {showDistance ? (
         <View>
           <SectionTitle title="Distance" />
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerClassName="gap-2">
+          <View className="flex-row gap-1 rounded-lg border border-border-strong bg-card p-1">
             {DISTANCE_FILTER_OPTIONS.map((option) => (
-              <FilterChip
+              <Chip
                 key={option}
                 label={formatRadiusLabel(option)}
+                variant="segment"
                 isSelected={radiusMeters === option}
+                className="flex-1"
                 onPress={() => {
                   setRadiusMeters(option);
                 }}
               />
             ))}
-          </ScrollView>
+          </View>
         </View>
       ) : null}
 
@@ -192,9 +165,10 @@ export function MapFilters({ showDistance }: MapFiltersProps): React.JSX.Element
         <SectionTitle title="Date" />
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerClassName="gap-2">
           {DATE_FILTER_OPTIONS.map((option) => (
-            <FilterChip
+            <Chip
               key={option}
               label={DATE_FILTER_LABELS[option]}
+              variant="filter"
               isSelected={dateFilter === option}
               onPress={() => {
                 setDateFilter(option);

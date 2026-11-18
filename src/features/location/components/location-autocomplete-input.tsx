@@ -99,7 +99,7 @@ export function LocationAutocompleteInput({
       />
 
       {showSuggestions ? (
-        <View className="absolute left-0 right-0 top-full z-20 mt-1 overflow-hidden border border-border-strong bg-card">
+        <View className="absolute left-0 right-0 top-full z-20 mt-1 overflow-hidden rounded-xl border border-border-strong bg-card">
           {placeSearchQuery.isFetching ? (
             <View className="items-center py-4">
               <ActivityIndicator color={theme.primaryText} />
@@ -125,7 +125,7 @@ export function LocationAutocompleteInput({
                   onPress={() => {
                     handleSelect(item);
                   }}
-                  className="border-b border-border px-3 py-3 active:bg-secondary">
+                  className="min-h-11 border-b border-border px-4 py-3 active:bg-surface-hover">
                   <Text className="text-sm text-foreground" numberOfLines={2}>
                     {item.label}
                   </Text>
