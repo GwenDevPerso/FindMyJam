@@ -41,16 +41,16 @@ export function InstrumentBadge({
       accessibilityRole="text"
       accessibilityLabel={`Instrument: ${name}`}
       className={cn(
-        'flex-row items-center border border-accent bg-transparent',
+        'flex-row items-center rounded-sm border border-accent bg-transparent',
         sizeClasses[size],
         className,
       )}>
       {createElement(getInstrumentIcon(slug), {
         size: iconSizes[size],
         color: theme.accent,
-        strokeWidth: 2,
+        strokeWidth: 1.8,
       })}
-      <Text className={cn('font-medium text-accent', textSizes[size])}>{name}</Text>
+      <Text className={cn('font-mono font-semibold uppercase tracking-label text-accent', textSizes[size])}>{name}</Text>
     </View>
   );
 }

@@ -15,16 +15,16 @@ type CardTextProps = {
   className?: string;
 };
 
-// DESIGN.md §4: no elevation — every card is a surface with a 1px border line.
+// DESIGN.md §5: a `surface` with a 1px `border`, radius 18–24; no grey shadow.
 const variantClasses: Record<CardVariant, string> = {
   default: 'border border-border bg-card',
   elevated: 'border border-border bg-card-elevated',
-  interactive: 'border border-border bg-card-elevated',
+  interactive: 'border border-border bg-card-elevated active:bg-surface-hover',
 };
 
 export function Card({ children, className, variant = 'default', ...viewProps }: CardProps): React.JSX.Element {
   return (
-    <View className={cn('p-4', variantClasses[variant], className)} {...viewProps}>
+    <View className={cn('rounded-xl p-4', variantClasses[variant], className)} {...viewProps}>
       {children}
     </View>
   );
@@ -39,11 +39,11 @@ export function CardHeader({ children, className, ...viewProps }: ViewProps & { 
 }
 
 export function CardTitle({ children, className }: CardTextProps): React.JSX.Element {
-  return <Text className={cn('text-lg font-semibold text-card-foreground', className)}>{children}</Text>;
+  return <Text className={cn('text-lg font-bold text-card-foreground', className)}>{children}</Text>;
 }
 
 export function CardDescription({ children, className }: CardTextProps): React.JSX.Element {
-  return <Text className={cn('text-xs text-muted-foreground', className)}>{children}</Text>;
+  return <Text className={cn('text-sm text-text-soft', className)}>{children}</Text>;
 }
 
 export function CardContent({ children, className, ...viewProps }: ViewProps & { className?: string }): React.JSX.Element {

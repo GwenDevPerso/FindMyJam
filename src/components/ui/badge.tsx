@@ -13,35 +13,31 @@ type BadgeProps = {
   className?: string;
 };
 
-// Square tags with a 1px line; `primary` uses primary-text (the accent in dark, text in light: DESIGN.md §2).
+// DESIGN.md §5 tags: mono label text, colour + text, never colour alone. neutral (default / outline / skill), info
+// (accent, cyan), action (primary, pink), success (event, green), solid (pink fill).
 const variantClasses: Record<BadgeVariant, string> = {
-  default: 'border border-border bg-secondary',
+  default: 'border border-border-strong bg-secondary',
   primary: 'border border-primary-text bg-transparent',
   accent: 'border border-accent bg-transparent',
   event: 'border border-event bg-transparent',
-  outline: 'border border-border bg-transparent',
-  skill: 'border border-border bg-transparent',
-  solid: 'border border-primary bg-primary',
+  outline: 'border border-border-strong bg-transparent',
+  skill: 'border border-border-strong bg-transparent',
+  solid: 'bg-primary',
 };
 
 const variantTextClasses: Record<BadgeVariant, string> = {
-  default: 'text-secondary-foreground',
+  default: 'text-text-soft',
   primary: 'text-primary-text',
   accent: 'text-accent',
   event: 'text-event',
   outline: 'text-foreground',
-  skill: 'text-muted-foreground',
+  skill: 'text-text-soft',
   solid: 'text-primary-foreground',
 };
 
 const sizeClasses: Record<BadgeSize, string> = {
   sm: 'px-2 py-0.5',
-  md: 'px-3 py-1',
-};
-
-const sizeTextClasses: Record<BadgeSize, string> = {
-  sm: 'text-xs',
-  md: 'text-xs',
+  md: 'px-2.5 py-1',
 };
 
 export function Badge({ label, variant, size, className }: BadgeProps): React.JSX.Element {
@@ -49,8 +45,10 @@ export function Badge({ label, variant, size, className }: BadgeProps): React.JS
     <View
       accessibilityRole="text"
       accessibilityLabel={label}
-      className={cn(variantClasses[variant], sizeClasses[size], className)}>
-      <Text className={cn('font-medium uppercase tracking-label', variantTextClasses[variant], sizeTextClasses[size])}>{label}</Text>
+      className={cn('rounded-sm', variantClasses[variant], sizeClasses[size], className)}>
+      <Text className={cn('font-mono text-xs font-semibold uppercase tracking-label', variantTextClasses[variant])}>
+        {label}
+      </Text>
     </View>
   );
 }

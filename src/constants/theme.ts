@@ -59,8 +59,10 @@ export const Glow = {
   accent: '0 0 22px rgba(34, 227, 255, 0.6)',
 } as const;
 
-// DESIGN.md §4 horizon gradient, used only by src/components/ui/horizon.tsx.
-export const HorizonGradient = ['#1b0830', '#4a1250', '#b8325f', '#ff7a45'] as const;
+// DESIGN.md §4 horizon (sky gradient, then a hard line to `background`; striped sun), used only by
+// src/components/ui/horizon.tsx.
+export const HorizonGradient = ['#1b0830', '#4a1250', '#b8325f', '#ff7a45', '#120821', palette.night] as const;
+export const HorizonSun = ['#ffd36b', '#ff5f8f', '#ff3d8b'] as const;
 
 export type ThemeColor = keyof typeof Colors.light & keyof typeof Colors.dark;
 export type ColorScheme = 'light' | 'dark';

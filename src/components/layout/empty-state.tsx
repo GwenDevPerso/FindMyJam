@@ -24,9 +24,9 @@ export function EmptyState({
       {icon !== undefined ? <View className="items-center justify-center">{icon}</View> : null}
 
       <View className="items-center gap-2">
-        <Text className="text-center text-lg font-semibold text-foreground">{title}</Text>
+        <Text className="text-center text-xl text-foreground">{title}</Text>
         {description !== undefined ? (
-          <Text className="text-center text-sm text-muted-foreground">{description}</Text>
+          <Text className="text-center text-base text-text-soft">{description}</Text>
         ) : null}
       </View>
 

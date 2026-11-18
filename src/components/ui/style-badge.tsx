@@ -15,14 +15,14 @@ const sizeClasses = {
   md: 'px-2.5 py-1',
 } as const;
 
-// DESIGN.md §1: one accent colour — styles are neutral tags (text + 1px line), not one colour per style.
+// DESIGN.md §5: styles are neutral tags (mono label + 1px borderStrong), not one colour per style.
 export function StyleBadge({ name, size, className }: StyleBadgeProps): React.JSX.Element {
   return (
     <View
       accessibilityRole="text"
       accessibilityLabel={`Style: ${name}`}
-      className={cn('border border-border-strong', sizeClasses[size], className)}>
-      <Text className="text-xs font-medium uppercase tracking-label text-text-soft">{name}</Text>
+      className={cn('rounded-sm border border-border-strong', sizeClasses[size], className)}>
+      <Text className="font-mono text-xs font-semibold uppercase tracking-label text-text-soft">{name}</Text>
     </View>
   );
 }

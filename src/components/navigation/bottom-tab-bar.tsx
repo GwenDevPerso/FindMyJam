@@ -1,7 +1,6 @@
 import { type BottomTabBarProps } from 'expo-router/build/react-navigation/bottom-tabs';
 import { Home, Map, User, Users } from 'lucide-react-native';
 import { Pressable, View } from 'react-native';
-import Animated, { useAnimatedStyle, withSpring } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Text } from '@/components/ui/text';
@@ -36,11 +35,6 @@ function TabItem({ routeName, label, isFocused, onPress, onLongPress }: TabItemP
   const Icon = config?.icon ?? Home;
   const iconColor = isFocused ? theme.primaryText : theme.mutedForeground;
 
-  const indicatorStyle = useAnimatedStyle(() => ({
-    opacity: withSpring(isFocused ? 1 : 0, { damping: 18, stiffness: 280 }),
-    transform: [{ scale: withSpring(isFocused ? 1 : 0.6, { damping: 18, stiffness: 280 }) }],
-  }));
-
   return (
     <Pressable
       accessibilityRole="tab"
@@ -48,18 +42,10 @@ function TabItem({ routeName, label, isFocused, onPress, onLongPress }: TabItemP
       accessibilityLabel={label}
       onPress={onPress}
       onLongPress={onLongPress}
-      className="flex-1 items-center justify-center py-2">
-      <View className="relative items-center gap-1">
-        <Animated.View
-          className="absolute -top-1 h-0.5 w-5 bg-primary-text"
-          style={indicatorStyle}
-        />
-        <Icon size={20} color={iconColor} strokeWidth={2} />
-        <Text
-          className={cn(
-            'text-xs font-medium uppercase tracking-label',
-            isFocused ? 'text-primary-text' : 'text-muted-foreground',
-          )}>
+      className="min-h-12 flex-1 items-center justify-center py-1.5">
+      <View className="items-center gap-1">
+        <Icon size={22} color={iconColor} strokeWidth={1.8} />
+        <Text className={cn('text-xs', isFocused ? 'font-bold text-primary-text' : 'font-medium text-muted-foreground')}>
           {label}
         </Text>
       </View>

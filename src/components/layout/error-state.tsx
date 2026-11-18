@@ -27,8 +27,8 @@ export function ErrorState({
       {icon !== undefined ? <View className="items-center justify-center">{icon}</View> : null}
 
       <View className="items-center gap-2">
-        <Text className="text-center text-lg font-semibold text-foreground">{title}</Text>
-        <Text className="text-center text-sm text-muted-foreground">{message}</Text>
+        <Text className="text-center text-xl text-foreground">{title}</Text>
+        <Text className="text-center text-base text-text-soft">{message}</Text>
       </View>
 
       {onRetry !== undefined ? (

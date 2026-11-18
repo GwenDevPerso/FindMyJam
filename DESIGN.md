@@ -115,7 +115,7 @@ Dynamic type stays on: titles may wrap to two lines, never truncate a jam title 
   user location and live states. RN 0.76+ `boxShadow` renders it on iOS and Android; at most one glowing element
   group per screen region.
 - Signature decor — the **horizon**: a sunset gradient (`#1b0830` → `#4a1250` → `#b8325f` → `#ff7a45`, then a hard
-  line to `background`), a striped sun and a perspective grid in `secondaryAccent` at 45 % opacity. Used only on
+  line to `background`), a striped sun (`#ffd36b` → `#ff5f8f` → `#ff3d8b`) and a perspective grid in `secondaryAccent` at 45 % opacity. Used only on
   the Home "Your next jam" card and the Jam detail header; text over it sits on a solid or 85 % `background` backing.
   One component (`src/components/ui/horizon.tsx`, `expo-linear-gradient` + `react-native-svg`), never redrawn per
   screen.

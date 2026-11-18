@@ -1,6 +1,8 @@
+import { CircleAlert } from 'lucide-react-native';
 import { TextInput, View, type TextInputProps } from 'react-native';
 
 import { Text } from '@/components/ui/text';
+import { useTheme } from '@/hooks/use-theme';
 import { cn } from '@/utils/cn';
 
 type InputProps = TextInputProps & {
@@ -18,20 +20,21 @@ export function Input({
   inputClassName,
   ...textInputProps
 }: InputProps): React.JSX.Element {
+  const theme = useTheme();
   const hasError = error !== undefined && error.length > 0;
   const isEditable = editable !== false;
 
   return (
     <View className={cn('gap-1.5', containerClassName)}>
       {label !== undefined ? (
-        <Text className="text-xs font-medium uppercase tracking-label text-muted-foreground">{label}</Text>
+        <Text className="font-mono text-xs font-semibold uppercase tracking-label text-muted-foreground">{label}</Text>
       ) : null}
 
       <TextInput
         editable={isEditable}
-        placeholderClassName="text-muted-foreground"
+        placeholderTextColor={theme.textMuted}
         className={cn(
-          'h-11 border border-input bg-card px-3 font-mono text-sm text-foreground focus:border-primary-text',
+          'h-12 rounded-lg border border-input bg-card px-4 font-sans text-base text-foreground focus:border-ring',
           !isEditable && 'opacity-50',
           hasError && 'border-destructive',
           inputClassName,
@@ -39,7 +42,12 @@ export function Input({
         {...textInputProps}
       />
 
-      {hasError ? <Text className="text-sm text-destructive">{error}</Text> : null}
+      {hasError ? (
+        <View className="flex-row items-center gap-1.5">
+          <CircleAlert size={16} color={theme.destructive} strokeWidth={1.8} />
+          <Text className="flex-1 text-sm text-destructive">{error}</Text>
+        </View>
+      ) : null}
     </View>
   );
 }

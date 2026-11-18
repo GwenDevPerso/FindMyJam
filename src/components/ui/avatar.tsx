@@ -24,7 +24,7 @@ const textSizeClasses: Record<AvatarSize, string> = {
   sm: 'text-xs',
   md: 'text-sm',
   lg: 'text-base',
-  xl: 'text-xl',
+  xl: 'text-lg',
 };
 
 function getFallbackLabel(fallback: string): string {
@@ -43,7 +43,7 @@ export function Avatar({ source, fallback, size, className }: AvatarProps): Reac
   return (
     <View
       className={cn(
-        'items-center justify-center overflow-hidden border border-border bg-secondary',
+        'items-center justify-center overflow-hidden rounded-full bg-primary',
         sizeClasses[size],
         className,
       )}>
@@ -55,7 +55,7 @@ export function Avatar({ source, fallback, size, className }: AvatarProps): Reac
           className="h-full w-full"
         />
       ) : (
-        <Text className={cn('font-mono font-semibold text-secondary-foreground', textSizeClasses[size])}>
+        <Text className={cn('font-mono font-semibold text-primary-foreground', textSizeClasses[size])}>
           {getFallbackLabel(fallback)}
         </Text>
       )}
