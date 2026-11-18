@@ -42,6 +42,8 @@ export type CreateJamInput = {
   instrumentIds: string[];
   styleIds: string[];
   recurrence: JamRecurrenceOption;
+  /** Last date of a series (`YYYY-MM-DD`, inclusive); null when it never ends. Ignored for a one-off jam. */
+  endsOn: string | null;
 };
 
 export type UpdateJamInput = {
@@ -69,6 +71,8 @@ export type UpdateJamSeriesInput = {
   maxParticipants: number;
   instrumentIds: string[];
   styleIds: string[];
+  /** Last date of the series (`YYYY-MM-DD`, inclusive); null when it never ends. */
+  endsOn: string | null;
 };
 
 /** Where the current user stands on a jam's waitlist. */
@@ -83,4 +87,14 @@ export type JamDetail = Jam & {
   isParticipant: boolean;
   /** Recurrence of the jam's series; null for a one-off jam. */
   recurrence: JamRecurrence | null;
+  /** Last date of the jam's series (`YYYY-MM-DD`); null when it never ends or for a one-off jam. */
+  recurrenceEndsOn: string | null;
+};
+
+/** A jam of the user's calendar: one they created, or one they joined. */
+export type CalendarJam = {
+  id: string;
+  title: string;
+  startsAt: string;
+  role: 'created' | 'participant';
 };

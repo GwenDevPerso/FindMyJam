@@ -37,6 +37,13 @@ export const queryKeys = {
       'participated-jams',
     ],
     jams: (userId: string): readonly ['profiles', string, 'jams'] => ['profiles', userId, 'jams'],
+    calendar: (userId: string): readonly ['profiles', string, 'calendar'] => ['profiles', userId, 'calendar'],
+    calendarMonth: (userId: string, month: string): readonly ['profiles', string, 'calendar', string] => [
+      'profiles',
+      userId,
+      'calendar',
+      month,
+    ],
   },
   friends: {
     all: ['friends'] as const,

@@ -24,6 +24,7 @@ export function useDeleteJamSeries() {
       void queryClient.invalidateQueries({ queryKey: queryKeys.map.all });
       if (userId !== null) {
         void queryClient.invalidateQueries({ queryKey: queryKeys.profiles.createdJams(userId) });
+        void queryClient.invalidateQueries({ queryKey: queryKeys.profiles.calendar(userId) });
         void queryClient.invalidateQueries({ queryKey: queryKeys.profiles.jams(userId) });
       }
     },

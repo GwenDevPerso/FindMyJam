@@ -47,6 +47,7 @@ const mockedUseCreateJam = jest.mocked(useCreateJam);
 const mockedUseReferenceInstruments = jest.mocked(useReferenceInstruments);
 const mockedUseReferenceMusicStyles = jest.mocked(useReferenceMusicStyles);
 
+const ENDS_ON_PLACEHOLDER = 'YYYY-MM-DD, empty = never';
 const GUITAR_ID = '11111111-1111-4111-8111-111111111111';
 const JAZZ_ID = '22222222-2222-4222-8222-222222222222';
 
@@ -139,8 +140,70 @@ describe('CreateJamForm', () => {
       instrumentIds: [],
       styleIds: [],
       recurrence: 'none',
+      endsOn: null,
     });
     expect(onSuccess).toHaveBeenCalledWith('jam-1');
+  });
+
+  it('asks for an end date only once a recurrence is picked', async () => {
+    mockCreateJam({});
+    const user = userEvent.setup();
+    await renderForm(jest.fn());
+
+    expect(screen.queryByPlaceholderText(ENDS_ON_PLACEHOLDER)).not.toBeOnTheScreen();
+    await user.press(screen.getByRole('button', { name: 'Every week' }));
+
+    expect(screen.getByPlaceholderText(ENDS_ON_PLACEHOLDER)).toBeOnTheScreen();
+  });
+
+  it('creates a recurring jam ending on the typed date', async () => {
+    const mutateAsync = mockCreateJam({});
+    const user = userEvent.setup();
+    await renderForm(jest.fn());
+
+    await user.type(screen.getByPlaceholderText('Sunday jazz session'), 'Tuesday jazz night');
+    await user.type(screen.getByPlaceholderText('Search for a venue or address'), 'Le Caveau');
+    await user.clear(screen.getByPlaceholderText('YYYY-MM-DD'));
+    await user.type(screen.getByPlaceholderText('YYYY-MM-DD'), '2026-10-13');
+    await user.press(screen.getByRole('button', { name: 'Every week' }));
+    await user.type(screen.getByPlaceholderText(ENDS_ON_PLACEHOLDER), '2026-12-22');
+    await user.press(screen.getByRole('button', { name: 'Create jam' }));
+
+    expect(mutateAsync).toHaveBeenCalledWith(
+      expect.objectContaining({ recurrence: 'weekly', endsOn: '2026-12-22' }),
+    );
+  });
+
+  it('rejects an end date before the first date', async () => {
+    const mutateAsync = mockCreateJam({});
+    const user = userEvent.setup();
+    await renderForm(jest.fn());
+
+    await user.type(screen.getByPlaceholderText('Sunday jazz session'), 'Tuesday jazz night');
+    await user.type(screen.getByPlaceholderText('Search for a venue or address'), 'Le Caveau');
+    await user.clear(screen.getByPlaceholderText('YYYY-MM-DD'));
+    await user.type(screen.getByPlaceholderText('YYYY-MM-DD'), '2026-10-13');
+    await user.press(screen.getByRole('button', { name: 'Every week' }));
+    await user.type(screen.getByPlaceholderText(ENDS_ON_PLACEHOLDER), '2026-10-01');
+    await user.press(screen.getByRole('button', { name: 'Create jam' }));
+
+    expect(await screen.findByText('The end date must be on or after the first date')).toBeOnTheScreen();
+    expect(mutateAsync).not.toHaveBeenCalled();
+  });
+
+  it('ignores a typed end date when the jam does not repeat', async () => {
+    const mutateAsync = mockCreateJam({});
+    const user = userEvent.setup();
+    await renderForm(jest.fn());
+
+    await user.type(screen.getByPlaceholderText('Sunday jazz session'), 'Monday blues');
+    await user.type(screen.getByPlaceholderText('Search for a venue or address'), 'Le Caveau');
+    await user.press(screen.getByRole('button', { name: 'Every week' }));
+    await user.type(screen.getByPlaceholderText(ENDS_ON_PLACEHOLDER), '2020-01-01');
+    await user.press(screen.getByRole('button', { name: 'Does not repeat' }));
+    await user.press(screen.getByRole('button', { name: 'Create jam' }));
+
+    expect(mutateAsync).toHaveBeenCalledWith(expect.objectContaining({ recurrence: 'none', endsOn: null }));
   });
 
   it('creates a one-off jam unless a recurrence is picked', async () => {

@@ -28,6 +28,7 @@ export function EditJamForm({ jam, onSuccess }: EditJamFormProps): React.JSX.Ele
       isPending={isPending}
       error={error}
       showRecurrence={false}
+      showEndsOn={false}
       lockDate={false}
       onSubmit={handleSubmit}
     />

@@ -1,6 +1,7 @@
 import type { PostgrestError } from '@supabase/supabase-js';
 
 import type {
+  CalendarJam,
   CreateJamInput,
   JamDetail,
   JamListCursor,
@@ -16,9 +17,10 @@ import { AppError } from '@/lib/errors/app-error';
 import { mapSupabaseError } from '@/lib/errors/map-supabase-error';
 import type { JamRow, JamSeriesRow, SearchJamRow } from '@/lib/supabase/types';
 import type { Jam, JamParticipant, JamRecurrence } from '@/types/domain';
-import { jamRepository } from '@/repositories/jam.repository';
+import { type CalendarJamRow, jamRepository } from '@/repositories/jam.repository';
 import { jamSeriesRepository } from '@/repositories/jam-series.repository';
 import { participationRepository } from '@/repositories/participation.repository';
+import { getMonthRange } from '@/utils/calendar';
 import { toLocalDateParts } from '@/utils/date';
 
 const DEFAULT_LIST_LIMIT = 20;
@@ -118,15 +120,17 @@ function assertCreator(owned: { creator_id: string }, userId: string): void {
   }
 }
 
-async function getRecurrence(seriesId: string | null): Promise<JamRecurrence | null> {
+async function getRecurrence(
+  seriesId: string | null,
+): Promise<Pick<JamDetail, 'recurrence' | 'recurrenceEndsOn'>> {
   if (seriesId === null) {
-    return null;
+    return { recurrence: null, recurrenceEndsOn: null };
   }
 
   const { data, error } = await jamSeriesRepository.findById(seriesId);
   assertNoError(error);
 
-  return data?.frequency ?? null;
+  return { recurrence: data?.frequency ?? null, recurrenceEndsOn: data?.ends_on ?? null };
 }
 
 async function getOwnedSeries(userId: string, seriesId: string): Promise<JamSeriesRow> {
@@ -167,6 +171,7 @@ async function createSeries(
     p_max_participants: validated.maxParticipants,
     p_instrument_ids: validated.instrumentIds,
     p_style_ids: validated.styleIds,
+    p_ends_on: validated.endsOn,
   });
   assertNoError(error);
 
@@ -232,7 +237,7 @@ export const jamService = {
         ...jam,
         isCreator: false,
         isParticipant: false,
-        recurrence,
+        ...recurrence,
       };
     }
 
@@ -246,7 +251,7 @@ export const jamService = {
       ...jam,
       isCreator: jam.creatorId === userId,
       isParticipant,
-      recurrence,
+      ...recurrence,
     };
   },
 
@@ -326,6 +331,26 @@ export const jamService = {
     );
   },
 
+  /** The user's jams of a `YYYY-MM` local month, created and joined, sorted by start. */
+  listCalendarMonth: async (userId: string, month: string): Promise<CalendarJam[]> => {
+    const { from, to } = getMonthRange(month);
+
+    const { data, error } = await jamRepository.findForUserBetween(userId, from, to);
+    assertNoError(error);
+
+    const toCalendarJam = (role: CalendarJam['role']) => (row: CalendarJamRow): CalendarJam => ({
+      id: row.id,
+      title: row.title,
+      startsAt: row.starts_at,
+      role,
+    });
+
+    return [
+      ...data.created.map(toCalendarJam('created')),
+      ...data.participated.map(toCalendarJam('participant')),
+    ].sort((a, b) => a.startsAt.localeCompare(b.startsAt));
+  },
+
   /** Applies the template to the series and to all its upcoming dates; past dates keep their values. */
   updateSeries: async (userId: string, seriesId: string, input: UpdateJamSeriesInput): Promise<void> => {
     const validated = updateJamSeriesSchema.parse(input);
@@ -344,6 +369,7 @@ export const jamService = {
       p_max_participants: validated.maxParticipants,
       p_instrument_ids: validated.instrumentIds,
       p_style_ids: validated.styleIds,
+      p_ends_on: validated.endsOn,
     });
     assertNoError(error);
   },

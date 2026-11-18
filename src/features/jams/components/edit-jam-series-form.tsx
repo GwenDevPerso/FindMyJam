@@ -13,11 +13,18 @@ type EditJamSeriesFormProps = {
   /** The date the creator opened; its values prefill the template. */
   jam: Jam;
   seriesId: string;
+  /** Current end date of the series (`YYYY-MM-DD`); null when it never ends. */
+  endsOn: string | null;
   onSuccess: () => void;
 };
 
 /** Edits every upcoming date of a series. The day cannot change, only the time and the other fields. */
-export function EditJamSeriesForm({ jam, seriesId, onSuccess }: EditJamSeriesFormProps): React.JSX.Element {
+export function EditJamSeriesForm({
+  jam,
+  seriesId,
+  endsOn,
+  onSuccess,
+}: EditJamSeriesFormProps): React.JSX.Element {
   const { mutateAsync: updateJamSeries, isPending, error } = useUpdateJamSeries();
 
   const handleSubmit = async (values: CreateJamFormValues): Promise<void> => {
@@ -32,11 +39,12 @@ export function EditJamSeriesForm({ jam, seriesId, onSuccess }: EditJamSeriesFor
       </Text>
 
       <JamForm
-        defaultValues={mapJamToFormValues(jam)}
+        defaultValues={{ ...mapJamToFormValues(jam), endsOn: endsOn ?? '' }}
         submitLabel="Save all upcoming dates"
         isPending={isPending}
         error={error}
         showRecurrence={false}
+        showEndsOn={true}
         lockDate={true}
         onSubmit={handleSubmit}
       />

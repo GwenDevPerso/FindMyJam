@@ -9,25 +9,41 @@ import {
 } from '@/lib/validation/common-schemas';
 import type { Jam } from '@/types/domain';
 import { toLocalDateParts } from '@/utils/date';
+import { parseLocalDate } from '@/utils/recurrence';
 
-export const createJamFormSchema = z.object({
-  title: z.string().trim().min(1, 'Title is required').max(120),
-  description: z.string().trim().max(2000, 'Description must be 2000 characters or less'),
-  date: z.string().trim().min(1, 'Date is required'),
-  time: z
-    .string()
-    .trim()
-    .regex(/^([01]\d|2[0-3]):([0-5]\d)$/, 'Use HH:MM format (e.g. 20:00)'),
-  locationName: z.string().trim().min(1, 'Location is required').max(200),
-  latitude: geoCoordinatesSchema.shape.latitude,
-  longitude: geoCoordinatesSchema.shape.longitude,
-  skillLevel: skillLevelSchema,
-  maxParticipants: z.number().int().min(2).max(100),
-  instrumentIds: uuidArraySchema,
-  styleIds: uuidArraySchema,
-  /** Only offered on creation; `none` everywhere else. */
-  recurrence: jamRecurrenceOptionSchema,
-});
+export const createJamFormSchema = z
+  .object({
+    title: z.string().trim().min(1, 'Title is required').max(120),
+    description: z.string().trim().max(2000, 'Description must be 2000 characters or less'),
+    date: z.string().trim().min(1, 'Date is required'),
+    time: z
+      .string()
+      .trim()
+      .regex(/^([01]\d|2[0-3]):([0-5]\d)$/, 'Use HH:MM format (e.g. 20:00)'),
+    locationName: z.string().trim().min(1, 'Location is required').max(200),
+    latitude: geoCoordinatesSchema.shape.latitude,
+    longitude: geoCoordinatesSchema.shape.longitude,
+    skillLevel: skillLevelSchema,
+    maxParticipants: z.number().int().min(2).max(100),
+    instrumentIds: uuidArraySchema,
+    styleIds: uuidArraySchema,
+    /** Only offered on creation; `none` everywhere else. */
+    recurrence: jamRecurrenceOptionSchema,
+    /** Last date of a series, `YYYY-MM-DD`; empty when it never ends. */
+    endsOn: z
+      .string()
+      .trim()
+      .refine((value) => value.length === 0 || parseLocalDate(value) !== null, 'Use YYYY-MM-DD format'),
+  })
+  .refine(
+    (values) => {
+      const start = parseLocalDate(values.date);
+      const end = parseLocalDate(values.endsOn);
+
+      return start === null || end === null || end >= start;
+    },
+    { message: 'The end date must be on or after the first date', path: ['endsOn'] },
+  );
 
 export type CreateJamFormValues = z.infer<typeof createJamFormSchema>;
 
@@ -53,6 +69,7 @@ export function mapCreateJamFormToInput(values: CreateJamFormValues): CreateJamI
   return {
     ...mapJamFormToUpdateInput(values),
     recurrence: values.recurrence,
+    endsOn: toEndsOn(values.endsOn),
   };
 }
 
@@ -69,7 +86,12 @@ export function mapJamFormToSeriesInput(values: CreateJamFormValues): UpdateJamS
     maxParticipants: values.maxParticipants,
     instrumentIds: values.instrumentIds,
     styleIds: values.styleIds,
+    endsOn: toEndsOn(values.endsOn),
   };
+}
+
+function toEndsOn(value: string): string | null {
+  return value.length > 0 ? value : null;
 }
 
 function pad(value: number): string {
@@ -93,6 +115,7 @@ export function mapJamToFormValues(jam: Jam): CreateJamFormValues {
     instrumentIds: jam.instrumentIds,
     styleIds: jam.styleIds,
     recurrence: 'none',
+    endsOn: '',
   };
 }
 

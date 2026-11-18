@@ -17,6 +17,7 @@ function buildInput(overrides: Partial<CreateJamValues>): CreateJamValues {
     instrumentIds: ['11111111-1111-4111-8111-111111111111'],
     styleIds: [],
     recurrence: 'none',
+    endsOn: null,
     ...overrides,
   };
 }
@@ -54,11 +55,17 @@ describe('createJamSchema', () => {
     [{ skillLevel: 'pro' as CreateJamValues['skillLevel'] }, 'skillLevel'],
     [{ instrumentIds: ['not-a-uuid'] }, 'instrumentIds'],
     [{ recurrence: 'daily' as CreateJamValues['recurrence'] }, 'recurrence'],
+    [{ endsOn: '22/12/2026' }, 'endsOn'],
+    [{ endsOn: '2026-02-30' }, 'endsOn'],
   ])('rejects %j on %s', (overrides, field) => {
     expect(firstIssueFor(overrides)?.path[0]).toBe(field);
   });
 
   it.each(['none', 'weekly', 'biweekly', 'monthly_weekday'] as const)('accepts the "%s" recurrence', (recurrence) => {
     expect(createJamSchema.safeParse(buildInput({ recurrence })).success).toBe(true);
+  });
+
+  it('accepts an end date', () => {
+    expect(createJamSchema.safeParse(buildInput({ recurrence: 'weekly', endsOn: '2026-12-22' })).success).toBe(true);
   });
 });

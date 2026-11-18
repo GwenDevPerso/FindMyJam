@@ -24,6 +24,7 @@ export function useJoinJam() {
       void queryClient.invalidateQueries({ queryKey: queryKeys.jams.infinites() });
       if (userId !== null) {
         void queryClient.invalidateQueries({ queryKey: queryKeys.profiles.participatedJams(userId) });
+        void queryClient.invalidateQueries({ queryKey: queryKeys.profiles.calendar(userId) });
       }
     },
   });

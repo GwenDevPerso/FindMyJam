@@ -25,6 +25,8 @@ export const createJamSchema = z.object({
   instrumentIds: uuidArraySchema,
   styleIds: uuidArraySchema,
   recurrence: jamRecurrenceOptionSchema,
+  /** Last date of a series (`YYYY-MM-DD`, inclusive); null when it never ends. */
+  endsOn: z.string().date('Invalid end date').nullable(),
 });
 
 export type CreateJamFormValues = z.infer<typeof createJamSchema>;

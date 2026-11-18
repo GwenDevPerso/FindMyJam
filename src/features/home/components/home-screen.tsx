@@ -1,5 +1,6 @@
 import { type Href, router } from 'expo-router';
-import { Bell, Map, Plus, Search } from 'lucide-react-native';
+import { Bell, CalendarDays, Map, Plus, Search } from 'lucide-react-native';
+import { useState } from 'react';
 import { Text, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 
@@ -12,6 +13,7 @@ import { AnimatedPressableScale } from '@/components/ui/animated-pressable';
 import { BadgeGroup } from '@/components/ui/badge';
 import { InstrumentBadge } from '@/components/ui/instrument-badge';
 import { StyleBadge } from '@/components/ui/style-badge';
+import { JamCalendarModal } from '@/features/jams/components/jam-calendar-modal';
 import { JamCard } from '@/features/jams/components/jam-card';
 import { useJams } from '@/features/jams/hooks/use-jams';
 import { NotificationBadge } from '@/features/notifications/components/notification-badge';
@@ -51,6 +53,7 @@ function QuickAction({ label, icon: Icon, color, onPress }: QuickActionProps): R
 export function HomeScreen(): React.JSX.Element {
   const theme = useTheme();
   const userId = useAuthStore((state) => state.userId);
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
   const profileQuery = useProfile({ userId, enabled: userId !== null });
   const locationQuery = useUserLocation({ enabled: true });
@@ -97,6 +100,11 @@ export function HomeScreen(): React.JSX.Element {
     router.push(Routes.notifications as Href);
   };
 
+  const handleCalendarJamPress = (jamId: string): void => {
+    setIsCalendarOpen(false);
+    router.push(Routes.jamDetail(jamId) as Href);
+  };
+
   return (
     <Screen scrollable={true} contentClassName="pb-8" withTabBarInset={true}>
       <Animated.View entering={FadeInDown.duration(400).springify()} className="mb-6 flex-row items-start justify-between pt-2">
@@ -107,18 +115,35 @@ export function HomeScreen(): React.JSX.Element {
           </Text>
         </View>
 
-        <AnimatedPressableScale
-          accessibilityRole="button"
-          accessibilityLabel="Open notifications"
-          scaleValue={0.92}
-          onPress={handleNotificationsPress}
-          className="rounded-full border border-border bg-card-elevated p-3">
-          <View>
-            <Bell size={20} color={theme.primary} />
-            <NotificationBadge count={unreadCountQuery.data ?? 0} />
-          </View>
-        </AnimatedPressableScale>
+        <View className="flex-row gap-2">
+          <AnimatedPressableScale
+            accessibilityRole="button"
+            accessibilityLabel="Open my calendar"
+            scaleValue={0.92}
+            onPress={() => setIsCalendarOpen(true)}
+            className="rounded-full border border-border bg-card-elevated p-3">
+            <CalendarDays size={20} color={theme.primary} />
+          </AnimatedPressableScale>
+
+          <AnimatedPressableScale
+            accessibilityRole="button"
+            accessibilityLabel="Open notifications"
+            scaleValue={0.92}
+            onPress={handleNotificationsPress}
+            className="rounded-full border border-border bg-card-elevated p-3">
+            <View>
+              <Bell size={20} color={theme.primary} />
+              <NotificationBadge count={unreadCountQuery.data ?? 0} />
+            </View>
+          </AnimatedPressableScale>
+        </View>
       </Animated.View>
+
+      <JamCalendarModal
+        visible={isCalendarOpen}
+        onClose={() => setIsCalendarOpen(false)}
+        onJamPress={handleCalendarJamPress}
+      />
 
       {profile !== undefined &&
       (profile.instruments.length > 0 || profile.musicStyles.length > 0) ? (

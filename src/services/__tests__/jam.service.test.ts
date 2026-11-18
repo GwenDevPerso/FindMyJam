@@ -41,6 +41,7 @@ function buildCreateJamInput(overrides: Partial<CreateJamInput>): CreateJamInput
     instrumentIds: [INSTRUMENT_ID],
     styleIds: [STYLE_ID],
     recurrence: 'none',
+    endsOn: null,
     ...overrides,
   };
 }
@@ -57,6 +58,7 @@ function buildUpdateJamSeriesInput(overrides: Partial<UpdateJamSeriesInput>): Up
     maxParticipants: 6,
     instrumentIds: [INSTRUMENT_ID],
     styleIds: [STYLE_ID],
+    endsOn: null,
     ...overrides,
   };
 }
@@ -78,6 +80,7 @@ function buildJamSeriesRow(overrides: Partial<JamSeriesRow>): JamSeriesRow {
     max_participants: 6,
     instrument_ids: [INSTRUMENT_ID],
     style_ids: [STYLE_ID],
+    ends_on: null,
     generated_until: '2026-10-03',
     created_at: '2026-07-01T10:00:00.000Z',
     updated_at: '2026-07-01T10:00:00.000Z',
@@ -285,13 +288,14 @@ describe('jamService', () => {
 
       expect(jam.seriesId).toBeNull();
       expect(jam.recurrence).toBeNull();
+      expect(jam.recurrenceEndsOn).toBeNull();
       expect(mockedJamSeriesRepository.findById).not.toHaveBeenCalled();
     });
 
     it('returns the frequency of the series of an occurrence', async () => {
       mockedJamRepository.findById.mockResolvedValue({ data: buildJamRow({ series_id: SERIES_ID }), error: null });
       mockedJamSeriesRepository.findById.mockResolvedValue({
-        data: buildJamSeriesRow({ frequency: 'monthly_weekday' }),
+        data: buildJamSeriesRow({ frequency: 'monthly_weekday', ends_on: '2026-12-22' }),
         error: null,
       });
       mockEnrichment(0);
@@ -302,6 +306,7 @@ describe('jamService', () => {
       expect(mockedJamSeriesRepository.findById).toHaveBeenCalledWith(SERIES_ID);
       expect(jam.seriesId).toBe(SERIES_ID);
       expect(jam.recurrence).toBe('monthly_weekday');
+      expect(jam.recurrenceEndsOn).toBe('2026-12-22');
     });
 
     it('throws the mapped AppError when the series lookup fails', async () => {
@@ -424,8 +429,36 @@ describe('jamService', () => {
           p_max_participants: 6,
           p_instrument_ids: [INSTRUMENT_ID],
           p_style_ids: [STYLE_ID],
+          p_ends_on: null,
         });
         expect(mockedJamRepository.create).not.toHaveBeenCalled();
+      });
+
+      it('passes the end date of the series', async () => {
+        mockedJamSeriesRepository.create.mockResolvedValue({
+          data: { series_id: SERIES_ID, first_jam_id: JAM_ID },
+          error: null,
+        });
+        mockedJamRepository.findById.mockResolvedValue({ data: buildJamRow({ series_id: SERIES_ID }), error: null });
+
+        await jamService.create(
+          CREATOR_ID,
+          buildCreateJamInput({ startsAt: STARTS_AT, recurrence: 'weekly', endsOn: '2026-12-22' }),
+        );
+
+        expect(mockedJamSeriesRepository.create).toHaveBeenCalledWith(
+          expect.objectContaining({ p_ends_on: '2026-12-22' }),
+        );
+      });
+
+      it('rejects an end date that is not a date', async () => {
+        await expect(
+          jamService.create(
+            CREATOR_ID,
+            buildCreateJamInput({ startsAt: STARTS_AT, recurrence: 'weekly', endsOn: '22/12/2026' }),
+          ),
+        ).rejects.toThrow();
+        expect(mockedJamSeriesRepository.create).not.toHaveBeenCalled();
       });
 
       it('returns the first date of the series', async () => {
@@ -587,7 +620,19 @@ describe('jamService', () => {
         p_max_participants: 6,
         p_instrument_ids: [INSTRUMENT_ID],
         p_style_ids: [STYLE_ID],
+        p_ends_on: null,
       });
+    });
+
+    it('sends the new end date of the series', async () => {
+      mockedJamSeriesRepository.findById.mockResolvedValue({ data: buildJamSeriesRow({}), error: null });
+      mockedJamSeriesRepository.update.mockResolvedValue({ error: null });
+
+      await jamService.updateSeries(CREATOR_ID, SERIES_ID, buildUpdateJamSeriesInput({ endsOn: '2026-12-22' }));
+
+      expect(mockedJamSeriesRepository.update).toHaveBeenCalledWith(
+        expect.objectContaining({ p_ends_on: '2026-12-22' }),
+      );
     });
 
     it('throws the mapped AppError when the update fails', async () => {
@@ -645,6 +690,47 @@ describe('jamService', () => {
 
       await expect(jamService.getParticipants(JAM_ID)).resolves.toEqual(participants);
       expect(mockedParticipationRepository.findByJamId).toHaveBeenCalledWith(JAM_ID);
+    });
+  });
+
+  describe('listCalendarMonth', () => {
+    it("asks for the user's jams of the local month", async () => {
+      mockedJamRepository.findForUserBetween.mockResolvedValue({ data: { created: [], participated: [] }, error: null });
+
+      await jamService.listCalendarMonth(CREATOR_ID, '2026-11');
+
+      expect(mockedJamRepository.findForUserBetween).toHaveBeenCalledWith(
+        CREATOR_ID,
+        new Date(2026, 10, 1).toISOString(),
+        new Date(2026, 11, 1).toISOString(),
+      );
+    });
+
+    it('tags each jam with the role of the user and sorts them by start', async () => {
+      mockedJamRepository.findForUserBetween.mockResolvedValue({
+        data: {
+          created: [{ id: 'jam-b', title: 'Blues night', starts_at: '2026-11-20T19:00:00.000Z' }],
+          participated: [{ id: 'jam-a', title: 'Jazz brunch', starts_at: '2026-11-08T10:00:00.000Z' }],
+        },
+        error: null,
+      });
+
+      await expect(jamService.listCalendarMonth(CREATOR_ID, '2026-11')).resolves.toEqual([
+        { id: 'jam-a', title: 'Jazz brunch', startsAt: '2026-11-08T10:00:00.000Z', role: 'participant' },
+        { id: 'jam-b', title: 'Blues night', startsAt: '2026-11-20T19:00:00.000Z', role: 'created' },
+      ]);
+    });
+
+    it('throws the mapped AppError when the lookup fails', async () => {
+      mockedJamRepository.findForUserBetween.mockResolvedValue({
+        data: { created: [], participated: [] },
+        error: buildPostgrestError({ code: '42501', message: 'permission denied' }),
+      });
+
+      await expect(jamService.listCalendarMonth(CREATOR_ID, '2026-11')).rejects.toMatchObject({
+        name: 'AppError',
+        code: 'UNAUTHORIZED',
+      });
     });
   });
 });
