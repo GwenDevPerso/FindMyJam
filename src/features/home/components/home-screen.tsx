@@ -11,6 +11,7 @@ import { ErrorState } from '@/components/layout/error-state';
 import { Screen } from '@/components/layout/screen';
 import { AnimatedListItem } from '@/components/ui/animated-list-item';
 import { AnimatedPressableScale } from '@/components/ui/animated-pressable';
+import { IconButton } from '@/components/ui/icon-button';
 import { BadgeGroup } from '@/components/ui/badge';
 import { InstrumentBadge } from '@/components/ui/instrument-badge';
 import { StyleBadge } from '@/components/ui/style-badge';
@@ -41,11 +42,11 @@ function QuickAction({ label, icon: Icon, color, onPress }: QuickActionProps): R
       scaleValue={0.95}
       onPress={onPress}
       className="flex-1">
-      <View className="items-center gap-2 border border-border bg-card p-4 active:bg-surface-hover">
-        <View className="border border-border p-2.5">
-          <Icon size={22} color={color} strokeWidth={2} />
+      <View className="items-center gap-2 rounded-xl border border-border bg-card p-4 active:bg-surface-hover">
+        <View className="rounded-md border border-border-strong p-2.5">
+          <Icon size={22} color={color} strokeWidth={1.8} />
         </View>
-        <Text className="text-center text-xs font-medium uppercase tracking-label text-foreground">{label}</Text>
+        <Text className="text-center font-mono text-xs font-semibold uppercase tracking-label text-foreground">{label}</Text>
       </View>
     </AnimatedPressableScale>
   );
@@ -110,33 +111,24 @@ export function HomeScreen(): React.JSX.Element {
     <Screen scrollable={true} contentClassName="pb-8" withTabBarInset={true}>
       <Animated.View entering={FadeInDown.duration(400).springify()} className="mb-6 flex-row items-start justify-between pt-2">
         <View className="flex-1">
-          <Text className="text-xs font-medium uppercase tracking-label text-muted-foreground">Welcome back</Text>
-          <Text className="text-3xl font-extrabold tracking-tight text-foreground">
+          <Text className="font-mono text-xs font-semibold uppercase tracking-label text-accent">Welcome back</Text>
+          <Text className="text-3xl tracking-display text-foreground">
             {profile?.username ?? 'Musician'}
           </Text>
         </View>
 
         <View className="flex-row gap-2">
-          <AnimatedPressableScale
-            accessibilityRole="button"
+          <IconButton
             accessibilityLabel="Open my calendar"
-            scaleValue={0.92}
-            onPress={() => setIsCalendarOpen(true)}
-            className="border border-border bg-card p-3">
-            <CalendarDays size={20} color={theme.primaryText} />
-          </AnimatedPressableScale>
+            variant="default"
+            onPress={() => setIsCalendarOpen(true)}>
+            <CalendarDays size={20} color={theme.text} strokeWidth={1.8} />
+          </IconButton>
 
-          <AnimatedPressableScale
-            accessibilityRole="button"
-            accessibilityLabel="Open notifications"
-            scaleValue={0.92}
-            onPress={handleNotificationsPress}
-            className="border border-border bg-card p-3">
-            <View>
-              <Bell size={20} color={theme.primaryText} />
-              <NotificationBadge count={unreadCountQuery.data ?? 0} />
-            </View>
-          </AnimatedPressableScale>
+          <IconButton accessibilityLabel="Open notifications" variant="default" onPress={handleNotificationsPress}>
+            <Bell size={20} color={theme.text} strokeWidth={1.8} />
+            <NotificationBadge count={unreadCountQuery.data ?? 0} />
+          </IconButton>
         </View>
       </Animated.View>
 
@@ -171,7 +163,7 @@ export function HomeScreen(): React.JSX.Element {
         <QuickAction
           label="Explore map"
           icon={Map}
-          color={theme.primaryText}
+          color={theme.accent}
           onPress={handleExplorePress}
         />
         <QuickAction
@@ -183,17 +175,17 @@ export function HomeScreen(): React.JSX.Element {
         <QuickAction
           label="Create jam"
           icon={Plus}
-          color={theme.event}
+          color={theme.primaryText}
           onPress={handleCreateJamPress}
         />
       </Animated.View>
 
-      <View className="mb-4 flex-row items-center justify-between">
-        <Text className="text-lg font-semibold text-foreground">Nearby jams</Text>
+      <View className="mb-3 flex-row items-baseline justify-between">
+        <Text className="text-xl text-foreground">Nearby jams</Text>
         <Text
           accessibilityRole="button"
           onPress={handleSeeAllJamsPress}
-          className="text-xs font-medium uppercase tracking-label text-primary-text">
+          className="font-mono text-xs font-semibold uppercase tracking-label text-accent">
           See all
         </Text>
       </View>

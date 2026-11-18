@@ -32,22 +32,22 @@ export function JamCard({ jam, onPress }: JamCardProps): React.JSX.Element {
       accessibilityHint="Opens jam details"
       scaleValue={0.97}
       onPress={handlePress}>
-      <Card variant="interactive" className="mb-3 overflow-hidden">
-        <View className="absolute left-0 top-0 h-full w-1 bg-primary" accessibilityElementsHidden />
-
-        <CardHeader className="pl-2">
+      <Card variant="interactive" className="mb-3">
+        <CardHeader>
+          <CardDescription className="font-mono text-xs font-semibold uppercase tracking-label text-accent">
+            {formatJamDateTime(jam.startsAt)}
+          </CardDescription>
           <CardTitle>{jam.title}</CardTitle>
-          <CardDescription>{formatJamDateTime(jam.startsAt)}</CardDescription>
         </CardHeader>
 
-        <CardContent className="pl-2">
+        <CardContent>
           <View className="flex-row items-center gap-1.5">
-            <MapPin size={14} color={theme.mutedForeground} strokeWidth={2} />
-            <Text className="flex-1 text-sm text-foreground">{jam.locationName}</Text>
+            <MapPin size={14} color={theme.accent} strokeWidth={1.8} />
+            <Text className="flex-1 text-sm text-text-soft">{jam.locationName}</Text>
           </View>
 
           {jam.description !== null && jam.description.length > 0 ? (
-            <Text className="text-sm leading-5 text-muted-foreground" numberOfLines={2}>
+            <Text className="text-sm text-muted-foreground" numberOfLines={2}>
               {jam.description}
             </Text>
           ) : null}
@@ -55,17 +55,17 @@ export function JamCard({ jam, onPress }: JamCardProps): React.JSX.Element {
           <JamBadges instrumentIds={jam.instrumentIds} styleIds={jam.styleIds} maxVisible={4} size="sm" />
         </CardContent>
 
-        <CardFooter className="pl-2">
+        <CardFooter>
           <View className="flex-1 flex-row flex-wrap items-center gap-2">
             <Badge label={formatSkillLevel(jam.skillLevel)} variant="skill" size="sm" />
             <View className="flex-row items-center gap-1">
-              <Users size={12} color={theme.mutedForeground} strokeWidth={2} />
-              <Text className="text-xs text-muted-foreground">{participantLabel}</Text>
+              <Users size={16} color={theme.mutedForeground} strokeWidth={1.8} />
+              <Text className="font-mono text-xs text-text-soft">{participantLabel}</Text>
             </View>
             {distanceLabel !== null ? (
               <View className="flex-row items-center gap-1">
-                <Navigation size={12} color={theme.mutedForeground} strokeWidth={2} />
-                <Text className="text-xs text-muted-foreground">{distanceLabel}</Text>
+                <Navigation size={16} color={theme.accent} strokeWidth={1.8} />
+                <Text className="font-mono text-xs text-accent">{distanceLabel}</Text>
               </View>
             ) : null}
           </View>
