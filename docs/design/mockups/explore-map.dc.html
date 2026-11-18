@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>FindMyJam — Map</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&amp;family=JetBrains+Mono:wght@400;600&amp;family=Space+Grotesk:wght@400;500;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#22e3ff}a:hover{color:#8ff3ff}
+@keyframes fmj-pulse{0%{transform:scale(1);opacity:.55}100%{transform:scale(3.2);opacity:0}}
+.fmj-pulse{animation:fmj-pulse 2s ease-out infinite}
+@media (prefers-reduced-motion: reduce){.fmj-pulse{animation:none}}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #0e0a1c; color: #f4ecff; font-family: 'Space Grotesk', system-ui, sans-serif; display: flex; flex-direction: column; overflow: hidden; position: relative">
+
+<div aria-hidden="true" style="position: absolute; inset: 0; background-image: repeating-linear-gradient(28deg, transparent 0px, transparent 46px, rgba(185, 168, 214, 0.14) 46px, rgba(185, 168, 214, 0.14) 48px), repeating-linear-gradient(118deg, transparent 0px, transparent 70px, rgba(185, 168, 214, 0.10) 70px, rgba(185, 168, 214, 0.10) 72px)"></div>
+<div aria-hidden="true" style="position: absolute; left: -60px; right: -60px; top: 470px; height: 38px; transform: rotate(-14deg); background: linear-gradient(90deg, #12306a, #1b4a9a, #12306a); opacity: 0.7; box-shadow: 0 0 30px rgba(34, 120, 255, 0.35)"></div>
+<div aria-hidden="true" style="position: absolute; left: 230px; top: 250px; width: 120px; height: 80px; border-radius: 40% 60% 50% 50%; background: #13261f; opacity: 0.8"></div>
+<div aria-hidden="true" style="position: absolute; left: -40px; top: 360px; width: 470px; height: 5px; transform: rotate(8deg); background: rgba(255, 46, 136, 0.25)"></div>
+
+<div aria-hidden="true" style="position: absolute; left: 195px; top: 400px; width: 0; height: 0">
+<div style="{{radiusStyle}}"></div>
+<div class="fmj-pulse" style="position: absolute; left: -9px; top: -9px; width: 18px; height: 18px; border-radius: 50%; background: {{neon}}"></div>
+<div style="position: absolute; left: -9px; top: -9px; width: 18px; height: 18px; box-sizing: border-box; border-radius: 50%; background: {{neon}}; border: 3px solid #0e0a1c; box-shadow: 0 0 12px {{neon}}"></div>
+</div>
+
+<sc-for list="{{pins}}" as="pin" hint-placeholder-count="4">
+<button onClick="{{pin.pick}}" aria-label="{{pin.label}}" style="{{pin.style}}">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
+</button>
+</sc-for>
+
+<header style="position: relative; padding: 56px 16px 0 16px; display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; gap: 8px">
+<div role="group" aria-label="Distance" style="flex: 1 1 auto; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; padding: 4px; border-radius: 14px; background: rgba(20, 12, 38, 0.92); border: 1px solid #3a2a5c">
+<sc-for list="{{radii}}" as="r" hint-placeholder-count="4">
+<button onClick="{{r.pick}}" aria-pressed="{{r.pressed}}" style="{{r.style}}">{{r.label}}</button>
+</sc-for>
+</div>
+<button aria-label="More filters: instruments and styles, 2 active" style="position: relative; width: 48px; height: 48px; flex: 0 0 48px; border-radius: 14px; background: rgba(20, 12, 38, 0.92); border: 1px solid #3a2a5c; color: #f4ecff; display: flex; align-items: center; justify-content: center; cursor: pointer">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"></path></svg>
+<span aria-hidden="true" style="position: absolute; top: -6px; right: -6px; width: 20px; height: 20px; border-radius: 10px; background: {{accent}}; color: #12051f; font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600; display: flex; align-items: center; justify-content: center">2</span>
+</button>
+</div>
+<div role="group" aria-label="Date" style="display: flex; gap: 6px; flex-wrap: wrap">
+<sc-for list="{{dates}}" as="d" hint-placeholder-count="4">
+<button onClick="{{d.pick}}" aria-pressed="{{d.pressed}}" style="{{d.style}}">{{d.label}}</button>
+</sc-for>
+</div>
+<button style="align-self: center; margin-top: 4px; min-height: 40px; padding: 0 16px; border-radius: 999px; border: 1px solid {{neon}}; background: rgba(11, 7, 22, 0.9); color: {{neon}}; font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 13px; box-shadow: 0 0 14px rgba(34, 227, 255, 0.35); cursor: pointer">Search this area</button>
+</header>
+
+<div style="flex: 1 1 auto"></div>
+
+<section aria-live="polite" aria-label="Selected jam" style="position: relative; margin: 0 12px 10px 12px; border-radius: 22px; background: #140c26; border: 1px solid #4a2a6a; padding: 14px; display: flex; flex-direction: column; gap: 10px; box-shadow: 0 -10px 40px rgba(11, 7, 22, 0.8)">
+<div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.12em; color: #b9a8d6">{{countLabel}}</div>
+<sc-if value="{{hasSelection}}" hint-placeholder-val="{{true}}">
+<div style="display: flex; align-items: center; gap: 12px">
+<div style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 4px">
+<div style="font-weight: 700; font-size: 17px">{{selected.title}}</div>
+<div style="font-size: 13px; color: #d9ccef">{{selected.meta}}</div>
+</div>
+<a href="Jam.dc.html" style="height: 48px; padding: 0 18px; border-radius: 14px; background: {{accent}}; color: #12051f; font-weight: 700; font-size: 14px; letter-spacing: 0.06em; text-transform: uppercase; box-shadow: 0 0 18px {{accent}}; display: flex; align-items: center; text-decoration: none">View</a>
+</div>
+</sc-if>
+<sc-if value="{{empty}}" hint-placeholder-val="{{false}}">
+<div style="font-size: 14px; color: #d9ccef">No jam matches these filters. Try a wider distance or another date.</div>
+</sc-if>
+</section>
+
+<nav aria-label="Main" style="position: relative; background: #140c26; border-top: 1px solid #2a1c44; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); align-items: center; padding: 6px 6px 26px 6px">
+<a href="Main.dc.html" style="min-height: 52px; color: #b9a8d6; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; font-size: 11px; font-weight: 500; text-decoration: none">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-8 9 8"></path><path d="M5 10v10h14V10"></path></svg>Home</a>
+<a href="Map.dc.html" aria-current="page" style="min-height: 52px; color: {{accent}}; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; font-size: 11px; font-weight: 700; text-decoration: none">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2z"></path><path d="M9 4v14M15 6v14"></path></svg>Map</a>
+<button aria-label="Create a jam" style="justify-self: center; width: 52px; height: 52px; border-radius: 16px; border: 0; background: {{accent}}; color: #12051f; box-shadow: 0 0 20px {{accent}}; display: flex; align-items: center; justify-content: center; cursor: pointer">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+</button>
+<button style="min-height: 52px; background: transparent; border: 0; color: #b9a8d6; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; font-family: inherit; font-size: 11px; font-weight: 500; cursor: pointer">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20a6.5 6.5 0 0 1 13 0"></path><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18.5 20a6.5 6.5 0 0 0-3-5.5"></path></svg>Friends</button>
+<button style="min-height: 52px; background: transparent; border: 0; color: #b9a8d6; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; font-family: inherit; font-size: 11px; font-weight: 500; cursor: pointer">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 21a8 8 0 0 1 16 0"></path></svg>Profile</button>
+</nav>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#ff2e88","options":["#ff2e88","#ff8a3d","#b14cff"]},"neon":{"editor":"color","default":"#22e3ff","options":["#22e3ff","#5dff9e","#ffd23d"]},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+constructor(props) {
+super(props);
+this.state = { radius: 10, date: 'any', picked: 'jazz' };
+}
+renderVals() {
+const accent = this.props.accent ?? '#ff2e88';
+const neon = this.props.neon ?? '#22e3ff';
+const all = [
+{ id: 'blues', title: 'Blues & soul open session', km: 0.8, when: ['today', 'week'], meta: '0.8 km · Thu 21 Nov, 20:00 · 7 / 10', x: 150, y: 350 },
+{ id: 'jazz', title: 'Jazz standards session', km: 1.6, when: ['week'], meta: '1.6 km · Fri 22 Nov, 19:30 · Full, waitlist', x: 262, y: 330 },
+{ id: 'rock', title: 'Garage rock jam', km: 3.4, when: ['weekend', 'week'], meta: '3.4 km · Sat 23 Nov, 16:00 · 4 / 6', x: 96, y: 520 },
+{ id: 'funk', title: 'Funk night at Le Comptoir', km: 7.2, when: ['weekend', 'week'], meta: '7.2 km · Sun 24 Nov, 20:30 · 6 / 8', x: 300, y: 560 },
+{ id: 'folk', title: 'Folk circle in the park', km: 18, when: ['week'], meta: '18 km · Tue 26 Nov, 18:00 · 3 / 12', x: 60, y: 300 },
+{ id: 'metal', title: 'Metal riffs rehearsal', km: 31, when: ['weekend'], meta: '31 km · Sat 23 Nov, 14:00 · 2 / 5', x: 340, y: 270 }
+];
+const matches = all.filter((j) => j.km <= this.state.radius && (this.state.date === 'any' || j.when.indexOf(this.state.date) >= 0));
+const current = matches.find((j) => j.id === this.state.picked) || matches[0];
+const pins = matches.map((j) => {
+const on = current && j.id === current.id;
+const size = on ? 44 : 36;
+return {
+label: j.title + ', ' + j.km + ' km',
+pick: () => this.setState({ picked: j.id }),
+style: 'position: absolute; left: ' + (j.x - size / 2) + 'px; top: ' + (j.y - size / 2) + 'px; width: ' + size + 'px; height: ' + size + 'px; border-radius: 50% 50% 50% 4px; transform: rotate(-45deg); display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; ' +
+  (on ? 'background: ' + accent + '; color: #12051f; border: 2px solid #f4ecff; box-shadow: 0 0 22px ' + accent + '; z-index: 2;' : 'background: #140c26; color: ' + accent + '; border: 2px solid ' + accent + '; box-shadow: 0 0 12px ' + accent + ';')
+};
+});
+const chip = (on, extra) => "min-height: 40px; border-radius: 10px; font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 600; cursor: pointer; " + (extra || '') +
+  (on ? 'background: ' + accent + '; color: #12051f; border: 1px solid ' + accent + ';' : 'background: transparent; color: #e2d6f5; border: 1px solid transparent;');
+const radii = [5, 10, 25, 50].map((km) => ({
+label: km + ' km', pressed: km === this.state.radius ? 'true' : 'false',
+pick: () => this.setState({ radius: km }), style: chip(km === this.state.radius)
+}));
+const dates = [['any', 'Any date'], ['today', 'Today'], ['weekend', 'This weekend'], ['week', 'Next 7 days']].map((d) => {
+const on = d[0] === this.state.date;
+return {
+label: d[1], pressed: on ? 'true' : 'false', pick: () => this.setState({ date: d[0] }),
+style: "min-height: 36px; padding: 0 12px; border-radius: 999px; font-family: 'Space Grotesk', sans-serif; font-size: 13px; cursor: pointer; " +
+  (on ? 'background: #140c26; color: ' + neon + '; border: 1px solid ' + neon + '; font-weight: 700;' : 'background: rgba(20, 12, 38, 0.92); color: #e2d6f5; border: 1px solid #3a2a5c;')
+};
+});
+const px = Math.min(this.state.radius * 14, 190);
+return {
+accent, neon, pins, radii, dates,
+countLabel: matches.length + (matches.length === 1 ? ' JAM' : ' JAMS') + ' WITHIN ' + this.state.radius + ' KM',
+hasSelection: !!current, empty: !current,
+selected: current || { title: '', meta: '' },
+radiusStyle: 'position: absolute; left: ' + (-px) + 'px; top: ' + (-px) + 'px; width: ' + (2 * px) + 'px; height: ' + (2 * px) + 'px; border-radius: 50%; border: 1px dashed ' + neon + '; background: rgba(34, 227, 255, 0.06);'
+};
+}
+}
+</script>
+</body>
+</html>
