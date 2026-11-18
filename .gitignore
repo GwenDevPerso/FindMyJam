@@ -45,12 +45,10 @@ example
 .cursor/
 .claude/
 
-ARCHITECTURE.md
 AGENTS.md
 CLAUDE.md
-DATABASE.md
-PROJECT_CONTEXT.md
 TASKS.md
 
 # Understand-Anything knowledge graph
 .ua/
+.env
