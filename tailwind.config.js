@@ -60,9 +60,9 @@ module.exports = {
         sm: ['13px', { lineHeight: '18px' }],
         base: ['15px', { lineHeight: '22px' }],
         lg: ['16px', { lineHeight: '21px' }],
-        xl: ['24px', { lineHeight: '28px' }],
-        '2xl': ['32px', { lineHeight: '34px' }],
-        '3xl': ['44px', { lineHeight: '44px' }],
+        xl: ['24px', { lineHeight: '30px' }],
+        '2xl': ['32px', { lineHeight: '40px' }],
+        '3xl': ['44px', { lineHeight: '54px' }],
       },
       // DESIGN.md §4: glow is the only shadow; grey drop shadows compile to nothing.
       boxShadow: {

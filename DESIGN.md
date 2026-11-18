@@ -85,9 +85,9 @@ icon). Never colour alone.
 
 | Variant | Size / line height | Family · weight | Use |
 | --- | --- | --- | --- |
-| `display` | 44 / 44, uppercase, tracking 0.03em | **Anton** 400 | Screen title (MODELS-style one-word titles, "JAMS NEAR YOU") |
-| `title` | 32 / 34, uppercase, tracking 0.02em | Anton 400 | Hero and jam titles |
-| `heading` | 24 / 28, uppercase, tracking 0.03em | Anton 400 | Section titles |
+| `display` | 44 / 54, uppercase, tracking 0.03em | **Anton** 400 | Screen title (MODELS-style one-word titles, "JAMS NEAR YOU") |
+| `title` | 32 / 40, uppercase, tracking 0.02em | Anton 400 | Hero and jam titles |
+| `heading` | 24 / 30, uppercase, tracking 0.03em | Anton 400 | Section titles |
 | `subheading` | 16 / 21 | **Space Grotesk** 700 | Card titles, list item titles |
 | `body` | 15 / 22 | Space Grotesk 400 | Default text, chat messages |
 | `meta` | 13 / 18 | Space Grotesk 400, `textSoft` | Metadata lines ("1.6 km · Jazz · Intermediate") |
@@ -99,9 +99,10 @@ Fonts: `@expo-google-fonts/anton`, `@expo-google-fonts/space-grotesk` (400, 500,
 `@expo-google-fonts/jetbrains-mono` (400, 600), loaded with `useFonts` in `AuthProvider` as today (splash held until
 ready, system font fallback). The `Text` primitive (`src/components/ui/text.tsx`) picks the face: `text-xl` and up →
 Anton, smaller → Space Grotesk, `font-mono` → JetBrains Mono. Tailwind size scale: `text-xs` = label (11/16),
-`text-sm` = meta (13/18), `text-base` = body (15/22), `text-lg` = subheading (16/21), `text-xl` = heading (24/28),
-`text-2xl` = title (32/34), `text-3xl` = display (44/44). Label style: `font-mono text-xs uppercase tracking-label`.
+`text-sm` = meta (13/18), `text-base` = body (15/22), `text-lg` = subheading (16/21), `text-xl` = heading (24/30),
+`text-2xl` = title (32/40), `text-3xl` = display (44/54). Label style: `font-mono text-xs uppercase tracking-label`.
 Dynamic type stays on: titles may wrap to two lines, never truncate a jam title to one.
+Anton line heights stay at about 1.2× the size or more: Anton is tall (cap height 0.86 em, descent 0.33 em), and with a tighter line height iOS cuts the top of the capitals.
 
 ## 4. Spacing, radius, elevation, motion
 
