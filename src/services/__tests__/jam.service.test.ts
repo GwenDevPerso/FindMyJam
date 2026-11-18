@@ -692,4 +692,45 @@ describe('jamService', () => {
       expect(mockedParticipationRepository.findByJamId).toHaveBeenCalledWith(JAM_ID);
     });
   });
+
+  describe('listCalendarMonth', () => {
+    it("asks for the user's jams of the local month", async () => {
+      mockedJamRepository.findForUserBetween.mockResolvedValue({ data: { created: [], participated: [] }, error: null });
+
+      await jamService.listCalendarMonth(CREATOR_ID, '2026-11');
+
+      expect(mockedJamRepository.findForUserBetween).toHaveBeenCalledWith(
+        CREATOR_ID,
+        new Date(2026, 10, 1).toISOString(),
+        new Date(2026, 11, 1).toISOString(),
+      );
+    });
+
+    it('tags each jam with the role of the user and sorts them by start', async () => {
+      mockedJamRepository.findForUserBetween.mockResolvedValue({
+        data: {
+          created: [{ id: 'jam-b', title: 'Blues night', starts_at: '2026-11-20T19:00:00.000Z' }],
+          participated: [{ id: 'jam-a', title: 'Jazz brunch', starts_at: '2026-11-08T10:00:00.000Z' }],
+        },
+        error: null,
+      });
+
+      await expect(jamService.listCalendarMonth(CREATOR_ID, '2026-11')).resolves.toEqual([
+        { id: 'jam-a', title: 'Jazz brunch', startsAt: '2026-11-08T10:00:00.000Z', role: 'participant' },
+        { id: 'jam-b', title: 'Blues night', startsAt: '2026-11-20T19:00:00.000Z', role: 'created' },
+      ]);
+    });
+
+    it('throws the mapped AppError when the lookup fails', async () => {
+      mockedJamRepository.findForUserBetween.mockResolvedValue({
+        data: { created: [], participated: [] },
+        error: buildPostgrestError({ code: '42501', message: 'permission denied' }),
+      });
+
+      await expect(jamService.listCalendarMonth(CREATOR_ID, '2026-11')).rejects.toMatchObject({
+        name: 'AppError',
+        code: 'UNAUTHORIZED',
+      });
+    });
+  });
 });

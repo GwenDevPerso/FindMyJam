@@ -23,6 +23,9 @@ export function useLeaveJam() {
       void queryClient.invalidateQueries({ queryKey: queryKeys.jams.waitlist(jamId) });
       void queryClient.invalidateQueries({ queryKey: queryKeys.jams.lists() });
       void queryClient.invalidateQueries({ queryKey: queryKeys.jams.infinites() });
+      if (userId !== null) {
+        void queryClient.invalidateQueries({ queryKey: queryKeys.profiles.calendar(userId) });
+      }
     },
   });
 }

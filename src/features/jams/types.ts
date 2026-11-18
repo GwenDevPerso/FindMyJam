@@ -90,3 +90,11 @@ export type JamDetail = Jam & {
   /** Last date of the jam's series (`YYYY-MM-DD`); null when it never ends or for a one-off jam. */
   recurrenceEndsOn: string | null;
 };
+
+/** A jam of the user's calendar: one they created, or one they joined. */
+export type CalendarJam = {
+  id: string;
+  title: string;
+  startsAt: string;
+  role: 'created' | 'participant';
+};

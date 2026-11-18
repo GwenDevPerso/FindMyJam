@@ -27,6 +27,7 @@ export function useUpdateJam() {
       void queryClient.invalidateQueries({ queryKey: queryKeys.jams.lists() });
       void queryClient.invalidateQueries({ queryKey: queryKeys.jams.infinites() });
       void queryClient.invalidateQueries({ queryKey: queryKeys.map.all });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.profiles.calendar(jam.creatorId) });
     },
   });
 }

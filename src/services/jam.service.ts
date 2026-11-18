@@ -1,6 +1,7 @@
 import type { PostgrestError } from '@supabase/supabase-js';
 
 import type {
+  CalendarJam,
   CreateJamInput,
   JamDetail,
   JamListCursor,
@@ -16,9 +17,10 @@ import { AppError } from '@/lib/errors/app-error';
 import { mapSupabaseError } from '@/lib/errors/map-supabase-error';
 import type { JamRow, JamSeriesRow, SearchJamRow } from '@/lib/supabase/types';
 import type { Jam, JamParticipant, JamRecurrence } from '@/types/domain';
-import { jamRepository } from '@/repositories/jam.repository';
+import { type CalendarJamRow, jamRepository } from '@/repositories/jam.repository';
 import { jamSeriesRepository } from '@/repositories/jam-series.repository';
 import { participationRepository } from '@/repositories/participation.repository';
+import { getMonthRange } from '@/utils/calendar';
 import { toLocalDateParts } from '@/utils/date';
 
 const DEFAULT_LIST_LIMIT = 20;
@@ -327,6 +329,26 @@ export const jamService = {
       validated.instrumentIds,
       validated.styleIds,
     );
+  },
+
+  /** The user's jams of a `YYYY-MM` local month, created and joined, sorted by start. */
+  listCalendarMonth: async (userId: string, month: string): Promise<CalendarJam[]> => {
+    const { from, to } = getMonthRange(month);
+
+    const { data, error } = await jamRepository.findForUserBetween(userId, from, to);
+    assertNoError(error);
+
+    const toCalendarJam = (role: CalendarJam['role']) => (row: CalendarJamRow): CalendarJam => ({
+      id: row.id,
+      title: row.title,
+      startsAt: row.starts_at,
+      role,
+    });
+
+    return [
+      ...data.created.map(toCalendarJam('created')),
+      ...data.participated.map(toCalendarJam('participant')),
+    ].sort((a, b) => a.startsAt.localeCompare(b.startsAt));
   },
 
   /** Applies the template to the series and to all its upcoming dates; past dates keep their values. */

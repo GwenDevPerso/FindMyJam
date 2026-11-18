@@ -12,6 +12,8 @@ import { supabase } from '@/services/supabase';
 const JAM_COLUMNS =
   'id, creator_id, title, description, starts_at, location_name, latitude, longitude, skill_level, max_participants, series_id, occurrence_date, created_at, updated_at';
 
+export type CalendarJamRow = Pick<JamRow, 'id' | 'title' | 'starts_at'>;
+
 export type JamRepositoryResult<T> = {
   data: T;
   error: PostgrestError | null;
@@ -285,5 +287,38 @@ export const jamRepository = {
       .sort((a, b) => a.starts_at.localeCompare(b.starts_at));
 
     return { data: jams, error: null };
+  },
+
+  /** Jams the user created and jams the user joined, starting in [from, to). */
+  findForUserBetween: async (
+    userId: string,
+    from: string,
+    to: string,
+  ): Promise<JamRepositoryResult<{ created: CalendarJamRow[]; participated: CalendarJamRow[] }>> => {
+    const [createdResult, participatedResult] = await Promise.all([
+      supabase
+        .from('jams')
+        .select('id, title, starts_at')
+        .eq('creator_id', userId)
+        .gte('starts_at', from)
+        .lt('starts_at', to),
+      supabase
+        .from('jam_participants')
+        .select('jams!inner(id, title, starts_at)')
+        .eq('user_id', userId)
+        .gte('jams.starts_at', from)
+        .lt('jams.starts_at', to),
+    ]);
+
+    const participated = (participatedResult.data ?? []).flatMap((row) => {
+      const jam = row.jams as CalendarJamRow | CalendarJamRow[] | null;
+
+      return jam === null ? [] : Array.isArray(jam) ? jam : [jam];
+    });
+
+    return {
+      data: { created: createdResult.data ?? [], participated },
+      error: createdResult.error ?? participatedResult.error,
+    };
   },
 };
