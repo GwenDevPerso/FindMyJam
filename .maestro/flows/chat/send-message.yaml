@@ -36,9 +36,9 @@ env:
     visible: ${JAM_TITLE}
     timeout: 30000
 - scrollUntilVisible:
-    element: Open chat
+    element: Open chat →
     direction: DOWN
-- tapOn: Open chat
+- tapOn: Open chat →
 - extendedWaitUntil:
     visible: No messages yet
     timeout: 30000

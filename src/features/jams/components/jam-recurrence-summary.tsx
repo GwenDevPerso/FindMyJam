@@ -18,5 +18,5 @@ export function JamRecurrenceSummary({
     return null;
   }
 
-  return <Text className="self-start rounded-sm border border-primary-text px-2.5 py-1 font-mono text-xs font-semibold uppercase tracking-label text-primary-text">{formatRecurrenceSummary(recurrence, startsAt)}</Text>;
+  return <Text className="self-start rounded-sm border border-primary-text bg-background/85 px-2.5 py-1 font-mono text-xs font-semibold uppercase tracking-label text-primary-text">{formatRecurrenceSummary(recurrence, startsAt)}</Text>;
 }

@@ -3,7 +3,7 @@ import { router } from 'expo-router';
 import { Alert, type AlertButton } from 'react-native';
 
 import { Routes } from '@/constants/routes';
-import { JamOwnerActions } from '@/features/jams/components/jam-owner-actions';
+import { JamDeleteButton } from '@/features/jams/components/jam-delete-button';
 import { useDeleteJam } from '@/features/jams/hooks/use-delete-jam';
 import { useDeleteJamSeries } from '@/features/jams/hooks/use-delete-jam-series';
 
@@ -83,7 +83,7 @@ function findButton(buttons: AlertButton[], text: string): AlertButton {
   return button;
 }
 
-describe('JamOwnerActions', () => {
+describe('JamDeleteButton', () => {
   let alertSpy: jest.SpyInstance;
 
   beforeEach(() => {
@@ -97,21 +97,9 @@ describe('JamOwnerActions', () => {
     alertSpy.mockRestore();
   });
 
-  it('opens the edit screen of the jam when "Edit jam" is pressed', async () => {
-    const mutate = mockDeleteJam({}, { succeeds: true });
-    await render(<JamOwnerActions jamId={JAM_ID} seriesId={null} jamTitle="Sunday jazz session" />);
-
-    await userEvent.setup().press(screen.getByRole('button', { name: 'Edit jam' }));
-
-    expect(mockedRouter.push).toHaveBeenCalledTimes(1);
-    expect(mockedRouter.push).toHaveBeenCalledWith(Routes.jamEdit(JAM_ID));
-    expect(alertSpy).not.toHaveBeenCalled();
-    expect(mutate).not.toHaveBeenCalled();
-  });
-
   it('asks for confirmation before deleting anything', async () => {
     const mutate = mockDeleteJam({}, { succeeds: true });
-    await render(<JamOwnerActions jamId={JAM_ID} seriesId={null} jamTitle="Sunday jazz session" />);
+    await render(<JamDeleteButton jamId={JAM_ID} seriesId={null} jamTitle="Sunday jazz session" />);
 
     const buttons = await openConfirmation(alertSpy);
 
@@ -126,7 +114,7 @@ describe('JamOwnerActions', () => {
 
   it('deletes the jam and goes back once the deletion is confirmed', async () => {
     const mutate = mockDeleteJam({}, { succeeds: true });
-    await render(<JamOwnerActions jamId={JAM_ID} seriesId={null} jamTitle="Sunday jazz session" />);
+    await render(<JamDeleteButton jamId={JAM_ID} seriesId={null} jamTitle="Sunday jazz session" />);
 
     const buttons = await openConfirmation(alertSpy);
     findButton(buttons, 'Delete').onPress?.();
@@ -140,7 +128,7 @@ describe('JamOwnerActions', () => {
   it('goes to the jam list after deleting when there is no screen to go back to', async () => {
     mockedRouter.canGoBack.mockReturnValue(false);
     mockDeleteJam({}, { succeeds: true });
-    await render(<JamOwnerActions jamId={JAM_ID} seriesId={null} jamTitle="Sunday jazz session" />);
+    await render(<JamDeleteButton jamId={JAM_ID} seriesId={null} jamTitle="Sunday jazz session" />);
 
     const buttons = await openConfirmation(alertSpy);
     findButton(buttons, 'Delete').onPress?.();
@@ -152,7 +140,7 @@ describe('JamOwnerActions', () => {
 
   it('stays on the screen when the deletion does not succeed', async () => {
     const mutate = mockDeleteJam({}, { succeeds: false });
-    await render(<JamOwnerActions jamId={JAM_ID} seriesId={null} jamTitle="Sunday jazz session" />);
+    await render(<JamDeleteButton jamId={JAM_ID} seriesId={null} jamTitle="Sunday jazz session" />);
 
     const buttons = await openConfirmation(alertSpy);
     findButton(buttons, 'Delete').onPress?.();
@@ -164,7 +152,7 @@ describe('JamOwnerActions', () => {
 
   it('deletes nothing and stays on the screen when the confirmation is cancelled', async () => {
     const mutate = mockDeleteJam({}, { succeeds: true });
-    await render(<JamOwnerActions jamId={JAM_ID} seriesId={null} jamTitle="Sunday jazz session" />);
+    await render(<JamDeleteButton jamId={JAM_ID} seriesId={null} jamTitle="Sunday jazz session" />);
 
     const buttons = await openConfirmation(alertSpy);
     findButton(buttons, 'Cancel').onPress?.();
@@ -177,7 +165,7 @@ describe('JamOwnerActions', () => {
   it('shows the error returned by the deletion attempt', async () => {
     mockDeleteJam({ error: new Error('Only the creator can delete this jam') }, { succeeds: false });
 
-    await render(<JamOwnerActions jamId={JAM_ID} seriesId={null} jamTitle="Sunday jazz session" />);
+    await render(<JamDeleteButton jamId={JAM_ID} seriesId={null} jamTitle="Sunday jazz session" />);
 
     expect(screen.getByText('Only the creator can delete this jam')).toBeOnTheScreen();
   });
@@ -185,16 +173,15 @@ describe('JamOwnerActions', () => {
   it('shows the delete button as busy while the jam is being deleted', async () => {
     mockDeleteJam({ isPending: true }, { succeeds: false });
 
-    await render(<JamOwnerActions jamId={JAM_ID} seriesId={null} jamTitle="Sunday jazz session" />);
+    await render(<JamDeleteButton jamId={JAM_ID} seriesId={null} jamTitle="Sunday jazz session" />);
 
     expect(screen.queryByText('Delete jam')).not.toBeOnTheScreen();
     expect(screen.getByRole('button', { busy: true })).toBeDisabled();
-    expect(screen.getByRole('button', { name: 'Edit jam' })).toBeOnTheScreen();
   });
 
   describe('for a date of a series', () => {
     async function renderSeriesActions(): Promise<void> {
-      await render(<JamOwnerActions jamId={JAM_ID} seriesId={SERIES_ID} jamTitle="Tuesday jazz night" />);
+      await render(<JamDeleteButton jamId={JAM_ID} seriesId={SERIES_ID} jamTitle="Tuesday jazz night" />);
     }
 
     it('asks whether to delete this date or all upcoming dates', async () => {
@@ -259,7 +246,6 @@ describe('JamOwnerActions', () => {
 
       expect(screen.queryByText('Delete jam')).not.toBeOnTheScreen();
       expect(screen.getByRole('button', { busy: true })).toBeDisabled();
-      expect(screen.getByRole('button', { name: 'Edit jam' })).toBeDisabled();
     });
   });
 });

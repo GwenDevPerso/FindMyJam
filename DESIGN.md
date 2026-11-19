@@ -202,8 +202,8 @@ Screens without a mockup apply the same tokens and primitives; no new decor.
 
 ## 10. Moving the app to this design
 
-Done on 2026-11-18, one commit per step (`git log --oneline -- DESIGN.md src`); visual change only, no copy, label,
-role, data or navigation change. Replaces the Terminal design.
+Done on 2026-11-18, one commit per step (`git log --oneline -- DESIGN.md src`); steps 1–6 are a visual change only, no
+copy, label, role, data or navigation change. Replaces the Terminal design.
 
 1. Tokens: §2 in `src/global.css` (`:root` only), `tailwind.config.js` (§4 radius, `shadow-glow` /
    `shadow-glow-accent`, §3 sizes, `tracking-label` / `tracking-button` / `tracking-display`) and
@@ -217,12 +217,19 @@ role, data or navigation change. Replaces the Terminal design.
 5. Map: `NightMapStyle`, pink pin markers (selected: filled, 44, glow), a cyan user-location dot with a pulse (off
    with reduce motion) instead of the platform dot, the dashed cyan search circle.
 6. `check-design.sh`: 0 blocking, 0 major, 16 minor (`FlatList` → `FlashList`, needs a dependency).
+7. Jam detail, 2026-11-19, to its mockup in full (this step changes labels and content, unlike steps 1–6): its own
+   header over the horizon (back and share buttons, the recurrence tag on an 85 % backing, the title), the info
+   cards (date, level, place and distance), "Looking for", the musicians as an `AvatarStack` with the seats,
+   "+n more · n waiting" and the host, the waitlist rank, and the actions pinned in a footer ("Open chat →" with
+   Leave or Edit, or Join / Join the waitlist with the locked-chat hint).
+   Kept from the app, not in the mockup: the map preview after the description, and "Delete jam" at the end for the
+   creator. Instruments and styles keep their badges (§7) rather than the mockup's plain pills.
 
 Not done, on purpose or for later:
 
 - Mockup content that does not exist in the app (it would be new text or data): the Home "Your next jam" hero
-  (so `Horizon` is only on Jam detail today), the Explore selected-jam sheet, the Jam detail info grid labels and
-  avatar stack (`AvatarStack` is ready), the Chat room header and day divider, the mockups' "FINDMYJAM" logotype.
+  (so `Horizon` is only on Jam detail today), the Explore selected-jam sheet, the Chat room header and day divider,
+  the mockups' "FINDMYJAM" logotype.
 - The raised "Create" tab button (§6: not adopted).
 - Not checked on a device: smallest screen, largest text size, the glow (`boxShadow`) and the pin markers on
   Android, the dashed circle (`lineDashPattern` is iOS only), the pulse inside a map marker.

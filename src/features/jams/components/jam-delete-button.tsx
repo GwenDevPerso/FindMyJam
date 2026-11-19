@@ -7,15 +7,15 @@ import { Routes } from '@/constants/routes';
 import { useDeleteJam } from '@/features/jams/hooks/use-delete-jam';
 import { useDeleteJamSeries } from '@/features/jams/hooks/use-delete-jam-series';
 
-type JamOwnerActionsProps = {
+type JamDeleteButtonProps = {
   jamId: string;
   /** Series of the jam; when set, the deletion offers this date only or all upcoming dates. */
   seriesId: string | null;
   jamTitle: string;
 };
 
-/** Edit and delete actions of a jam; render it only for the jam's creator. */
-export function JamOwnerActions({ jamId, seriesId, jamTitle }: JamOwnerActionsProps): React.JSX.Element {
+/** Delete action of a jam, with its confirmation; render it only for the jam's creator. */
+export function JamDeleteButton({ jamId, seriesId, jamTitle }: JamDeleteButtonProps): React.JSX.Element {
   const deleteJam = useDeleteJam();
   const deleteJamSeries = useDeleteJamSeries();
 
@@ -62,18 +62,7 @@ export function JamOwnerActions({ jamId, seriesId, jamTitle }: JamOwnerActionsPr
   };
 
   return (
-    <View className="gap-3">
-      <Button
-        label="Edit jam"
-        variant="outline"
-        size="lg"
-        isLoading={false}
-        disabled={isDeleting}
-        onPress={() => {
-          router.push(Routes.jamEdit(jamId) as Href);
-        }}
-      />
-
+    <View className="gap-2">
       <Button
         label="Delete jam"
         variant="destructive"

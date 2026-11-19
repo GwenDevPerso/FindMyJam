@@ -17,7 +17,8 @@ type HorizonProps = {
 // screen readers. Used on the Home hero card and the Jam detail header, nowhere else.
 const heightClasses: Record<HorizonVariant, string> = {
   card: 'h-28',
-  header: 'h-48',
+  // The jam screen header sizes the horizon to its content (buttons, tag, title).
+  header: 'h-full',
 };
 
 // Stops of HorizonGradient: sky, sky, glow, horizon line, then the ground.
