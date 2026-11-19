@@ -22,6 +22,7 @@ and meet musicians. Done means a musician can sign up, find or create a jam, joi
 - Jams: create, edit and delete (title, description, date and time, location on a map, styles, instruments sought,
   skill level, maximum participants); recurring jams (weekly, every 2 weeks, monthly) with an optional end date.
 - Participation: join and leave a jam; waitlist on full jams with automatic promotion.
+- Sharing: share a jam's title, date and place through the device's share sheet.
 - Map: jams on a map, filtered by distance, style, instrument and date; distance-sorted list.
 - Friends: search users, send, accept and remove friend requests; view another user's profile.
 - Chat: one room per jam, or per series for recurring jams, for its creator and participants.
@@ -45,7 +46,7 @@ Excluded by the current docs and design:
 | Phase | Content | Done when |
 | --- | --- | --- |
 | 1 | Everything in "In scope" (shipped, see `git log`) | AC1–AC24 have tests named after them and are green |
-| 2 | <!-- TODO: next features --> | |
+| 2 | Share a jam from its screen | AC25 has a test named after it and is green |
 
 ### Assumptions
 
@@ -297,6 +298,7 @@ describe the shipped behaviour.
 | AC22 | The calendar | The user taps a day, then a jam | The day's jams are listed, then the jam opens | 1 |
 | AC23 | Any list screen | Data is loading, fails or is empty | A loader, an error with retry, or an empty state is shown | 1 |
 | AC24 | A jam starting soon | Its start is near | Participants receive a "starting soon" notification | 1 |
+| AC25 | Any user on a jam's screen | They tap Share | The device's share sheet opens with the jam's title, date and time, and place | 2 |
 
 ## 6. API and definitions
 
