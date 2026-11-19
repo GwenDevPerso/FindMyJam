@@ -41,13 +41,15 @@ function QuickAction({ label, icon: Icon, color, onPress }: QuickActionProps): R
       accessibilityLabel={label}
       scaleValue={0.95}
       onPress={onPress}
-      className="flex-1">
-      <View className="grow items-center justify-center gap-2 rounded-xl border border-border bg-card p-4 active:bg-surface-hover">
-        <View className="rounded-md border border-border-strong p-2.5">
-          <Icon size={22} color={color} strokeWidth={1.8} />
-        </View>
-        <Text className="text-center font-mono text-xs font-semibold uppercase tracking-label text-foreground">{label}</Text>
+      className="flex-1 items-center justify-center gap-2 rounded-xl border border-border bg-card p-4 active:bg-surface-hover">
+      <View className="rounded-md border border-border-strong p-2.5">
+        <Icon size={22} color={color} strokeWidth={1.8} />
       </View>
+      <Text
+        numberOfLines={2}
+        className="text-center font-mono text-xs font-semibold uppercase tracking-label text-foreground">
+        {label}
+      </Text>
     </AnimatedPressableScale>
   );
 }
@@ -79,23 +81,23 @@ export function HomeScreen(): React.JSX.Element {
   const jams = jamsQuery.data?.jams ?? [];
 
   const handleExplorePress = (): void => {
-    router.push('/explore');
+    router.push(Routes.explore);
   };
 
   const handleSearchPress = (): void => {
-    router.push('/friends/search');
+    router.push(Routes.friendsSearch);
   };
 
   const handleCreateJamPress = (): void => {
-    router.push('/jams/create' as Href);
+    router.push(Routes.jamsCreate);
   };
 
   const handleJamPress = (jamId: string): void => {
-    router.push(`/jams/${jamId}` as Href);
+    router.push(Routes.jamDetail(jamId));
   };
 
   const handleSeeAllJamsPress = (): void => {
-    router.push('/jams/all');
+    router.push(Routes.jamsAll);
   };
 
   const handleNotificationsPress = (): void => {
@@ -112,7 +114,7 @@ export function HomeScreen(): React.JSX.Element {
       <Animated.View entering={FadeInDown.duration(400).springify()} className="mb-6 flex-row items-start justify-between pt-2">
         <View className="flex-1">
           <Text className="font-mono text-xs font-semibold uppercase tracking-label text-accent">Welcome back</Text>
-          <Text className="text-2xl text-foreground">
+          <Text numberOfLines={1} adjustsFontSizeToFit={true} className="text-xl text-foreground">
             {profile?.username ?? 'Musician'}
           </Text>
         </View>

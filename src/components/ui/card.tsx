@@ -19,7 +19,8 @@ type CardTextProps = {
 const variantClasses: Record<CardVariant, string> = {
   default: 'border border-border bg-card',
   elevated: 'border border-border bg-card-elevated',
-  interactive: 'border border-border bg-card-elevated active:bg-surface-hover',
+  // No `active:` here: on a View, NativeWind turns it into a Pressable that swallows the parent's press.
+  interactive: 'border border-border bg-card-elevated',
 };
 
 export function Card({ children, className, variant = 'default', ...viewProps }: CardProps): React.JSX.Element {
