@@ -5,6 +5,8 @@ import { BottomTabBar } from '@/components/navigation/bottom-tab-bar';
 export default function AppTabs(): React.JSX.Element {
   return (
     <Tabs
+      // Back from a hidden tab (a jam opened from Home, Explore or Profile) returns to the tab it came from.
+      backBehavior="history"
       tabBar={(props) => <BottomTabBar {...props} />}
       screenOptions={{
         headerShown: false,
