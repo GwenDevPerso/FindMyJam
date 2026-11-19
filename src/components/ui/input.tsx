@@ -34,7 +34,9 @@ export function Input({
         editable={isEditable}
         placeholderTextColor={theme.textMuted}
         className={cn(
-          'h-12 rounded-lg border border-input bg-card px-4 font-sans text-base text-foreground focus:border-ring',
+          'rounded-lg border border-input bg-card px-4 font-sans text-base text-foreground focus:border-ring',
+          // A multiline field sets its own height (fixed or growing); 48 stays the minimum.
+          textInputProps.multiline === true ? 'min-h-12' : 'h-12',
           !isEditable && 'opacity-50',
           hasError && 'border-destructive',
           inputClassName,

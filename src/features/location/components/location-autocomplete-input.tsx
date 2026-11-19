@@ -96,6 +96,11 @@ export function LocationAutocompleteInput({
         error={error}
         autoCorrect={false}
         autoCapitalize="words"
+        // Picked addresses are long: the field grows to show them whole instead of spilling out of its box.
+        multiline={true}
+        submitBehavior="blurAndSubmit"
+        returnKeyType="done"
+        inputClassName="py-3"
       />
 
       {showSuggestions ? (

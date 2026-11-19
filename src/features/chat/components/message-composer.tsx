@@ -34,7 +34,7 @@ export function MessageComposer({ onSend, isSending }: MessageComposerProps): Re
         multiline={true}
         maxLength={CHAT_MESSAGE_MAX_LENGTH}
         containerClassName="flex-1"
-        inputClassName="h-auto max-h-32 min-h-12 py-3"
+        inputClassName="max-h-32 py-3"
       />
       <Button
         accessibilityLabel="Send"
